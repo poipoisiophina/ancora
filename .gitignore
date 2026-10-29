@@ -1,0 +1,35 @@
+# Everything listed here is recreated: build_driver.bat builds the binaries and
+# fetches the OpenVR SDK, package.bat fetches Inno Setup and builds the installer.
+
+# OpenVR SDK, cloned on demand by build_driver.bat
+/external/
+
+# Inno Setup compiler, fetched on demand by package.bat
+/tools/
+
+# build outputs
+/driver/obj/
+/driver/ancora/bin/
+/driver/ancora/logic/
+/gui/bin/
+/src/bin/
+
+# installer output of package.bat
+/dist/
+
+# compiler output anywhere, including the diagnostic tools and the copied openvr_api.dll
+*.exe
+*.dll
+*.obj
+*.pdb
+*.ilk
+*.lib
+*.exp
+
+# temporary and backup files (config writes, script backups)
+*.tmp
+*.bak
+
+# editor state
+.vs/
+*.user

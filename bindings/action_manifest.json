@@ -1,0 +1,45 @@
+{
+    "action_sets": [
+        {
+            "name": "/actions/ancora",
+            "usage": "single"
+        }
+    ],
+    "actions": [
+        {
+            "name": "/actions/ancora/in/StickL",
+            "type": "vector2"
+        },
+        {
+            "name": "/actions/ancora/in/StickR",
+            "type": "vector2"
+        },
+        {
+            "name": "/actions/ancora/in/TouchL",
+            "type": "boolean"
+        },
+        {
+            "name": "/actions/ancora/in/TouchR",
+            "type": "boolean"
+        }
+    ],
+    "default_bindings": [
+        {
+            "controller_type": "oculus_touch",
+            "binding_url": "binding_oculus_touch.json"
+        },
+        {
+            "controller_type": "knuckles",
+            "binding_url": "binding_oculus_touch.json"
+        }
+    ],
+    "localization": [
+        {
+            "language_tag": "en_US",
+            "/actions/ancora/in/StickL": "Left thumbstick",
+            "/actions/ancora/in/StickR": "Right thumbstick",
+            "/actions/ancora/in/TouchL": "Left thumbstick touch",
+            "/actions/ancora/in/TouchR": "Right thumbstick touch"
+        }
+    ]
+}

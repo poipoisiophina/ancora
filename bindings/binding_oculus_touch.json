@@ -1,0 +1,27 @@
+{
+    "controller_type": "oculus_touch",
+    "description": "Ancora reader default binding",
+    "name": "Ancora reader",
+    "bindings": {
+        "/actions/ancora": {
+            "sources": [
+                {
+                    "path": "/user/hand/left/input/joystick",
+                    "mode": "joystick",
+                    "inputs": {
+                        "position": { "output": "/actions/ancora/in/StickL" },
+                        "touch":    { "output": "/actions/ancora/in/TouchL" }
+                    }
+                },
+                {
+                    "path": "/user/hand/right/input/joystick",
+                    "mode": "joystick",
+                    "inputs": {
+                        "position": { "output": "/actions/ancora/in/StickR" },
+                        "touch":    { "output": "/actions/ancora/in/TouchR" }
+                    }
+                }
+            ]
+        }
+    }
+}

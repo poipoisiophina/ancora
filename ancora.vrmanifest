@@ -1,0 +1,15 @@
+{
+    "source": "builtin",
+    "applications": [
+        {
+            "app_key": "ancora.reader",
+            "launch_type": "binary",
+            "binary_path_windows": "reader.exe",
+            "is_dashboard_overlay": false,
+            "action_manifest_path": "bindings/action_manifest.json",
+            "strings": {
+                "en_us": { "name": "Ancora Reader" }
+            }
+        }
+    ]
+}

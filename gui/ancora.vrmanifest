@@ -1,0 +1,18 @@
+{
+    "source": "builtin",
+    "applications": [
+        {
+            "app_key": "ancora.panel",
+            "launch_type": "binary",
+            "binary_path_windows": "ancora.exe",
+            "arguments": "--steamvr",
+            "is_dashboard_overlay": true,
+            "strings": {
+                "en_us": {
+                    "name": "ancora",
+                    "description": "Stick drift anchor control panel"
+                }
+            }
+        }
+    ]
+}
