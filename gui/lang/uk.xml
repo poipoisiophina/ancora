@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Ukrainian. Machine drafted, needs a native review. See en.xml. -->
+<language code="uk" name="Українська" dir="ltr" font="Segoe UI">
+  <nav_status>Стан</nav_status>
+  <nav_tune>Налаштування</nav_tune>
+  <nav_diag>Діагностика</nav_diag>
+  <rail_steamvr_on>SteamVR працює</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR вимкнено</rail_steamvr_off>
+  <rail_both>Обидва контролери</rail_both>
+  <rail_one>Один контролер</rail_one>
+  <rail_none>Немає контролерів</rail_none>
+  <lang_auto>Автоматично ({name})</lang_auto>
+  <lang_missing>{name}: неперекладених рядків: {n}, показано англійською</lang_missing>
+  <hint_back>Назад</hint_back>
+  <hint_apply>Застосувати</hint_apply>
+  <hint_select>Вибрати</hint_select>
+  <hint_next>Далі</hint_next>
+  <hand_left>Лівий контролер</hand_left>
+  <hand_right>Правий контролер</hand_right>
+  <state_no_signal>Немає сигналу</state_no_signal>
+  <sub_no_signal>Запустіть SteamVR, щоб побачити цей контролер.</sub_no_signal>
+  <state_not_connected>Не підключено</state_not_connected>
+  <sub_wake>Розбудіть контролер, щоб побачити його стік.</sub_wake>
+  <sub_silent>Немає даних стіка {n} с. Перевірте батарею або розбудіть контролер.</sub_silent>
+  <state_not_corrected>Без корекції</state_not_corrected>
+  <sub_unchanged>Передається в ігри без змін.</sub_unchanged>
+  <state_anchored>Дрифт заякорено</state_anchored>
+  <sub_drifting>Дрифт {value}. Палець прибрано, ігри отримують 0.</sub_drifting>
+  <sub_thumb_off>Палець прибрано, ігри отримують 0.</sub_thumb_off>
+  <state_in_deadzone>У мертвій зоні</state_in_deadzone>
+  <sub_in_deadzone>Усередині мертвої зони {percent}, ігри отримують 0.</sub_in_deadzone>
+  <state_following>Стежить за пальцем</state_following>
+  <sub_past_deadzone>За мертвою зоною {percent}, ігри отримують масштабоване відхилення.</sub_past_deadzone>
+  <sub_as_is>Передається в ігри як є.</sub_as_is>
+  <read_reports>Показання</read_reports>
+  <read_games>Ігри отримують</read_games>
+  <read_thumb>Палець</read_thumb>
+  <thumb_no_sensor>немає датчика</thumb_no_sensor>
+  <thumb_on>на стіку</thumb_on>
+  <thumb_off>прибрано</thumb_off>
+  <set_gate>Блок за пальцем</set_gate>
+  <set_smoothing>Згладжування</set_smoothing>
+  <set_deadzone>Мертва зона</set_deadzone>
+  <value_off>вимк.</value_off>
+  <value_ms>{n} мс</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Якір увімкнено</master_on>
+  <master_off>Якір вимкнено</master_off>
+  <tune_suggested>рекомендовано {value}</tune_suggested>
+  <legend_rests>Точка спокою</legend_rests>
+  <legend_suggested>Рекомендована мертва зона</legend_suggested>
+  <step_rest>Відпустіть стік</step_rest>
+  <step_rest_active>Вимірюємо точку спокою, не торкайтеся стіка.</step_rest_active>
+  <step_rest_done>Записано {n} с спокою.</step_rest_done>
+  <step_flick>Відхиліть і відпустіть</step_flick>
+  <step_flick_settle>{n} з {total}. Відпустіть, вимірюємо, де він зупиниться.</step_flick_settle>
+  <step_flick_release>{n} з {total}. Тепер відпустіть.</step_flick_release>
+  <step_flick_push>{n} з {total}. Відхиліть до упору, потім відпустіть.</step_flick_push>
+  <step_flick_done>Записано відхилень: {total} з {total}.</step_flick_done>
+  <step_review>Перевірити й застосувати</step_review>
+  <res_peak>макс. дрифт</res_peak>
+  <res_typical>типовий дрифт</res_typical>
+  <res_direction>напрямок</res_direction>
+  <dir_none>немає</dir_none>
+  <dir_right>праворуч</dir_right>
+  <dir_forward_right>вперед праворуч</dir_forward_right>
+  <dir_forward>вперед</dir_forward>
+  <dir_forward_left>вперед ліворуч</dir_forward_left>
+  <dir_left>ліворуч</dir_left>
+  <dir_back_left>назад ліворуч</dir_back_left>
+  <dir_back>назад</dir_back>
+  <dir_back_right>назад праворуч</dir_back_right>
+  <find_none>Дрифту майже немає. Мертва зона не потрібна.</find_none>
+  <find_gate_ok>Датчик пальця був вимкнений, коли ви відпускали стік, тож блок за пальцем уже зупиняє цей дрифт.</find_gate_ok>
+  <find_gate_fail>Датчик пальця спрацьовував, коли ви відпускали стік, тож одного блоку за пальцем замало.</find_gate_fail>
+  <find_no_sensor>Датчик пальця не знайдено, зупинити дрифт може лише мертва зона.</find_no_sensor>
+  <find_creep>Коли палець лежить на стіку, він ще може зміщуватися. Мертва зона {value} це покриває.</find_creep>
+  <tune_intro>Вимірює дрифт цього стіка й пропонує мертву зону. Близько 20 секунд: відпустіть стік, потім кілька разів відхиліть і відпустіть.</tune_intro>
+  <btn_start>Почати вимірювання</btn_start>
+  <btn_apply_left>Застосувати {value} до лівого</btn_apply_left>
+  <btn_apply_right>Застосувати {value} до правого</btn_apply_right>
+  <btn_restart>Почати знову</btn_restart>
+  <tile_driver>Драйвер</tile_driver>
+  <drv_loaded>Завантажено</drv_loaded>
+  <drv_registered>Зареєстровано</drv_registered>
+  <drv_missing>Не встановлено</drv_missing>
+  <drv_patched>Змінено таблиць вводу: {n}</drv_patched>
+  <drv_not_seen>немає в журналі SteamVR</drv_not_seen>
+  <tile_logic>Логіка</tile_logic>
+  <logic_gen>Покоління {n}</logic_gen>
+  <logic_none>Не завантажено</logic_none>
+  <logic_loaded>завантажено {time}, повторено вводів: {n}</logic_loaded>
+  <tile_config>Конфігурація</tile_config>
+  <cfg_pending>Ще не застосовано</cfg_pending>
+  <cfg_applied>Застосовано {time}</cfg_applied>
+  <col_controller>Контролер</col_controller>
+  <col_inputs>Входи</col_inputs>
+  <col_thumb>Палець зараз</col_thumb>
+  <col_updates>Оновлення</col_updates>
+  <diag_left_untracked>Лівий: не відстежується</diag_left_untracked>
+  <diag_right_untracked>Правий: не відстежується</diag_right_untracked>
+  <inputs_silent>мовчить</inputs_silent>
+  <rate_idle>спокій</rate_idle>
+  <log_title>Журнал SteamVR, рядки ancora</log_title>
+  <log_empty>У журналі SteamVR ще немає рядків ancora.</log_empty>
+  <btn_copy>Копіювати діагностику</btn_copy>
+  <btn_open_cfg>Відкрити конфігурацію</btn_open_cfg>
+  <btn_open_log>Відкрити журнал SteamVR</btn_open_log>
+  <note_saved>Збережено: {what}</note_saved>
+  <what_anchoring>якір</what_anchoring>
+  <what_left_gate>лівий блок за пальцем</what_left_gate>
+  <what_right_gate>правий блок за пальцем</what_right_gate>
+  <what_left_smoothing>ліве згладжування</what_left_smoothing>
+  <what_right_smoothing>праве згладжування</what_right_smoothing>
+  <what_left_deadzone>ліва мертва зона</what_left_deadzone>
+  <what_right_deadzone>права мертва зона</what_right_deadzone>
+  <what_language>мова</what_language>
+  <note_copied>Діагностику скопійовано</note_copied>
+  <note_no_log>Розташування журналу SteamVR невідоме</note_no_log>
+  <tray_open>Відкрити ancora</tray_open>
+  <tray_exit>Вихід</tray_exit>
+</language>

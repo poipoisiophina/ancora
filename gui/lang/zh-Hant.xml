@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Traditional Chinese. Machine drafted, needs a native review. See en.xml. -->
+<language code="zh-Hant" name="繁體中文" dir="ltr" font="Microsoft JhengHei UI">
+  <nav_status>狀態</nav_status>
+  <nav_tune>調校</nav_tune>
+  <nav_diag>診斷</nav_diag>
+  <rail_steamvr_on>SteamVR 執行中</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR 未執行</rail_steamvr_off>
+  <rail_both>兩支控制器</rail_both>
+  <rail_one>一支控制器</rail_one>
+  <rail_none>沒有控制器</rail_none>
+  <lang_auto>自動 ({name})</lang_auto>
+  <lang_missing>{name}：{n} 則文字未翻譯，以英文顯示</lang_missing>
+  <hint_back>返回</hint_back>
+  <hint_apply>套用</hint_apply>
+  <hint_select>選擇</hint_select>
+  <hint_next>下一個</hint_next>
+  <hand_left>左控制器</hand_left>
+  <hand_right>右控制器</hand_right>
+  <state_no_signal>無訊號</state_no_signal>
+  <sub_no_signal>啟動 SteamVR 即可看到這支控制器。</sub_no_signal>
+  <state_not_connected>未連線</state_not_connected>
+  <sub_wake>喚醒控制器即可看到搖桿。</sub_wake>
+  <sub_silent>{n} 秒沒有搖桿資料。請檢查電池或喚醒控制器。</sub_silent>
+  <state_not_corrected>未校正</state_not_corrected>
+  <sub_unchanged>原樣傳給遊戲。</sub_unchanged>
+  <state_anchored>漂移已鎖定</state_anchored>
+  <sub_drifting>漂移 {value}。拇指已離開，遊戲收到 0。</sub_drifting>
+  <sub_thumb_off>拇指已離開，遊戲收到 0。</sub_thumb_off>
+  <state_in_deadzone>在死區內</state_in_deadzone>
+  <sub_in_deadzone>在 {percent} 死區內，遊戲收到 0。</sub_in_deadzone>
+  <state_following>跟隨拇指</state_following>
+  <sub_past_deadzone>超出 {percent} 死區，遊戲收到按比例的推動。</sub_past_deadzone>
+  <sub_as_is>原樣傳給遊戲。</sub_as_is>
+  <read_reports>讀數</read_reports>
+  <read_games>遊戲收到</read_games>
+  <read_thumb>拇指</read_thumb>
+  <thumb_no_sensor>無感測器</thumb_no_sensor>
+  <thumb_on>在搖桿上</thumb_on>
+  <thumb_off>離開</thumb_off>
+  <set_gate>拇指閘控</set_gate>
+  <set_smoothing>平滑</set_smoothing>
+  <set_deadzone>死區</set_deadzone>
+  <value_off>關</value_off>
+  <value_ms>{n} 毫秒</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>鎖定已開啟</master_on>
+  <master_off>鎖定已關閉</master_off>
+  <tune_suggested>建議 {value}</tune_suggested>
+  <legend_rests>靜止位置</legend_rests>
+  <legend_suggested>建議死區</legend_suggested>
+  <step_rest>放開搖桿</step_rest>
+  <step_rest_active>正在記錄靜止位置，請保持拇指離開。</step_rest_active>
+  <step_rest_done>已記錄 {n} 秒靜止。</step_rest_done>
+  <step_flick>推到底再放開</step_flick>
+  <step_flick_settle>{n} / {total}。放開，正在測量停止位置。</step_flick_settle>
+  <step_flick_release>{n} / {total}。現在放開。</step_flick_release>
+  <step_flick_push>{n} / {total}。推到底，然後放開。</step_flick_push>
+  <step_flick_done>已記錄 {total} / {total} 次。</step_flick_done>
+  <step_review>檢視並套用</step_review>
+  <res_peak>最大漂移</res_peak>
+  <res_typical>典型漂移</res_typical>
+  <res_direction>方向</res_direction>
+  <dir_none>無</dir_none>
+  <dir_right>右</dir_right>
+  <dir_forward_right>右前</dir_forward_right>
+  <dir_forward>前</dir_forward>
+  <dir_forward_left>左前</dir_forward_left>
+  <dir_left>左</dir_left>
+  <dir_back_left>左後</dir_back_left>
+  <dir_back>後</dir_back>
+  <dir_back_right>右後</dir_back_right>
+  <find_none>幾乎沒有漂移，不需要死區。</find_none>
+  <find_gate_ok>放開時拇指感測器保持關閉，所以拇指閘控已經能阻止這次漂移。</find_gate_ok>
+  <find_gate_fail>放開時拇指感測器顯示觸碰，所以只靠拇指閘控無法阻止。</find_gate_fail>
+  <find_no_sensor>找不到拇指感測器，只能用死區阻止。</find_no_sensor>
+  <find_creep>拇指放在搖桿上時仍可能緩慢移動。{value} 的死區可以涵蓋。</find_creep>
+  <tune_intro>測量這支搖桿的漂移並建議死區。約需 20 秒：先放開搖桿，然後推到底再放開幾次。</tune_intro>
+  <btn_start>開始測量</btn_start>
+  <btn_apply_left>將 {value} 套用到左側</btn_apply_left>
+  <btn_apply_right>將 {value} 套用到右側</btn_apply_right>
+  <btn_restart>重新開始</btn_restart>
+  <tile_driver>驅動程式</tile_driver>
+  <drv_loaded>已載入</drv_loaded>
+  <drv_registered>已註冊</drv_registered>
+  <drv_missing>未安裝</drv_missing>
+  <drv_patched>已修補 {n} 個輸入表</drv_patched>
+  <drv_not_seen>SteamVR 記錄中未見</drv_not_seen>
+  <tile_logic>邏輯</tile_logic>
+  <logic_gen>第 {n} 代</logic_gen>
+  <logic_none>未載入</logic_none>
+  <logic_loaded>{time} 載入，重播 {n} 個輸入</logic_loaded>
+  <tile_config>設定</tile_config>
+  <cfg_pending>尚未套用</cfg_pending>
+  <cfg_applied>{time} 已套用</cfg_applied>
+  <col_controller>控制器</col_controller>
+  <col_inputs>找到的輸入</col_inputs>
+  <col_thumb>目前拇指</col_thumb>
+  <col_updates>更新</col_updates>
+  <diag_left_untracked>左：未追蹤</diag_left_untracked>
+  <diag_right_untracked>右：未追蹤</diag_right_untracked>
+  <inputs_silent>無資料</inputs_silent>
+  <rate_idle>閒置</rate_idle>
+  <log_title>SteamVR 記錄，ancora 行</log_title>
+  <log_empty>SteamVR 記錄中還沒有 ancora 行。</log_empty>
+  <btn_copy>複製診斷</btn_copy>
+  <btn_open_cfg>開啟設定檔</btn_open_cfg>
+  <btn_open_log>開啟 SteamVR 記錄</btn_open_log>
+  <note_saved>{what}已儲存</note_saved>
+  <what_anchoring>鎖定</what_anchoring>
+  <what_left_gate>左拇指閘控</what_left_gate>
+  <what_right_gate>右拇指閘控</what_right_gate>
+  <what_left_smoothing>左平滑</what_left_smoothing>
+  <what_right_smoothing>右平滑</what_right_smoothing>
+  <what_left_deadzone>左死區</what_left_deadzone>
+  <what_right_deadzone>右死區</what_right_deadzone>
+  <what_language>語言</what_language>
+  <note_copied>診斷已複製</note_copied>
+  <note_no_log>SteamVR 記錄位置不明</note_no_log>
+  <tray_open>開啟 ancora</tray_open>
+  <tray_exit>結束</tray_exit>
+</language>

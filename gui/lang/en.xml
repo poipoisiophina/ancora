@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ancora panel text, English. This file is the reference for every other language.
+  To translate: copy it to <code>.xml (a language tag such as de, pt-BR, zh-Hant),
+  set code, name (the language's own name), dir (ltr or rtl) and font, then
+  translate the text of each element. Keep the element names and every {placeholder}
+  exactly as they are; their order in the sentence may change. Put the file in the
+  "lang" folder next to ancora.exe and pick it from the language button.
+  "ancora" and SteamVR stay as they are. The key names in the footer (Tab, Enter,
+  Esc) are not in these files: the panel takes them from the keyboard layout in use.
+-->
+<language code="en" name="English" dir="ltr" font="Segoe UI">
+  <!-- left rail -->
+  <nav_status>Status</nav_status>
+  <nav_tune>Tune</nav_tune>
+  <nav_diag>Diagnostics</nav_diag>
+  <rail_steamvr_on>SteamVR running</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR off</rail_steamvr_off>
+  <rail_both>Both controllers</rail_both>
+  <rail_one>One controller</rail_one>
+  <rail_none>No controllers</rail_none>
+  <!-- language menu; {name} is a language name -->
+  <lang_auto>Automatic ({name})</lang_auto>
+  <lang_missing>{name}: {n} strings not translated, shown in English</lang_missing>
+
+  <!-- footer key hints -->
+  <hint_back>Back</hint_back>
+  <hint_apply>Apply</hint_apply>
+  <hint_select>Select</hint_select>
+  <hint_next>Next</hint_next>
+
+  <!-- status page -->
+  <hand_left>Left controller</hand_left>
+  <hand_right>Right controller</hand_right>
+  <state_no_signal>No signal</state_no_signal>
+  <sub_no_signal>Start SteamVR to see this controller.</sub_no_signal>
+  <state_not_connected>Not connected</state_not_connected>
+  <sub_wake>Wake the controller to see its stick.</sub_wake>
+  <sub_silent>No stick data for {n} s. Check its battery or wake it.</sub_silent>
+  <state_not_corrected>Not corrected</state_not_corrected>
+  <sub_unchanged>Passed to games unchanged.</sub_unchanged>
+  <state_anchored>Drift anchored</state_anchored>
+  <sub_drifting>Drifting {value}. Thumb off, so games get 0.</sub_drifting>
+  <sub_thumb_off>Thumb off, so games get 0.</sub_thumb_off>
+  <state_in_deadzone>In deadzone</state_in_deadzone>
+  <sub_in_deadzone>Inside the {percent} deadzone, so games get 0.</sub_in_deadzone>
+  <state_following>Following thumb</state_following>
+  <sub_past_deadzone>Past the {percent} deadzone, games get a scaled push.</sub_past_deadzone>
+  <sub_as_is>Passed to games as is.</sub_as_is>
+  <read_reports>Reports</read_reports>
+  <read_games>Games get</read_games>
+  <read_thumb>Thumb</read_thumb>
+  <thumb_no_sensor>no sensor</thumb_no_sensor>
+  <thumb_on>on stick</thumb_on>
+  <thumb_off>off</thumb_off>
+  <set_gate>Thumb gate</set_gate>
+  <set_smoothing>Smoothing</set_smoothing>
+  <set_deadzone>Deadzone</set_deadzone>
+  <!-- a setting that is switched off -->
+  <value_off>off</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Anchoring on</master_on>
+  <master_off>Anchoring off</master_off>
+
+  <!-- tune page -->
+  <tune_suggested>suggested {value}</tune_suggested>
+  <legend_rests>Where it rests</legend_rests>
+  <legend_suggested>Suggested deadzone</legend_suggested>
+  <step_rest>Let go of the stick</step_rest>
+  <step_rest_active>Recording where it rests, keep your thumb off.</step_rest_active>
+  <step_rest_done>{n} s of rest recorded.</step_rest_done>
+  <step_flick>Flick it and let go</step_flick>
+  <step_flick_settle>{n} of {total}. Let go, measuring where it settles.</step_flick_settle>
+  <step_flick_release>{n} of {total}. Now let go.</step_flick_release>
+  <step_flick_push>{n} of {total}. Push it all the way, then let go.</step_flick_push>
+  <step_flick_done>{total} of {total} flicks recorded.</step_flick_done>
+  <step_review>Review and apply</step_review>
+  <res_peak>peak drift</res_peak>
+  <res_typical>typical drift</res_typical>
+  <res_direction>direction</res_direction>
+  <!-- direction the stick drifts to -->
+  <dir_none>none</dir_none>
+  <dir_right>right</dir_right>
+  <dir_forward_right>forward right</dir_forward_right>
+  <dir_forward>forward</dir_forward>
+  <dir_forward_left>forward left</dir_forward_left>
+  <dir_left>left</dir_left>
+  <dir_back_left>back left</dir_back_left>
+  <dir_back>back</dir_back>
+  <dir_back_right>back right</dir_back_right>
+  <find_none>Barely any drift measured. No deadzone needed.</find_none>
+  <find_gate_ok>Thumb sensor stayed off while you let go, so the thumb gate already stops this drift.</find_gate_ok>
+  <find_gate_fail>Thumb sensor read on while you let go, so the thumb gate alone cannot stop it.</find_gate_fail>
+  <find_no_sensor>No thumb sensor found, so only a deadzone can stop it.</find_no_sensor>
+  <find_creep>With your thumb resting on the stick it can still creep. A {value} deadzone covers that.</find_creep>
+  <tune_intro>Measures how this stick drifts and suggests a deadzone. Takes about 20 seconds: let go of the stick, then flick it a few times.</tune_intro>
+  <btn_start>Start measuring</btn_start>
+  <btn_apply_left>Apply {value} deadzone to left</btn_apply_left>
+  <btn_apply_right>Apply {value} deadzone to right</btn_apply_right>
+  <btn_restart>Start over</btn_restart>
+
+  <!-- diagnostics page -->
+  <tile_driver>Driver</tile_driver>
+  <drv_loaded>Loaded</drv_loaded>
+  <drv_registered>Registered</drv_registered>
+  <drv_missing>Not installed</drv_missing>
+  <drv_patched>{n} input tables patched</drv_patched>
+  <drv_not_seen>not seen in the SteamVR log</drv_not_seen>
+  <tile_logic>Logic</tile_logic>
+  <logic_gen>Generation {n}</logic_gen>
+  <logic_none>Not loaded</logic_none>
+  <logic_loaded>loaded {time}, {n} inputs replayed</logic_loaded>
+  <tile_config>Config</tile_config>
+  <cfg_pending>Not applied yet</cfg_pending>
+  <cfg_applied>Applied {time}</cfg_applied>
+  <col_controller>Controller</col_controller>
+  <col_inputs>Inputs found</col_inputs>
+  <col_thumb>Thumb now</col_thumb>
+  <col_updates>Updates</col_updates>
+  <diag_left_untracked>Left: not tracked</diag_left_untracked>
+  <diag_right_untracked>Right: not tracked</diag_right_untracked>
+  <!-- the controller sends no stick data -->
+  <inputs_silent>silent</inputs_silent>
+  <rate_idle>idle</rate_idle>
+  <log_title>SteamVR log, ancora lines</log_title>
+  <log_empty>No ancora lines in the SteamVR log yet.</log_empty>
+  <btn_copy>Copy diagnostics</btn_copy>
+  <btn_open_cfg>Open config file</btn_open_cfg>
+  <btn_open_log>Open SteamVR log</btn_open_log>
+
+  <!-- short notes in the footer after a change; {what} is one of the what_ strings
+       or a controller name -->
+  <note_saved>{what} saved</note_saved>
+  <what_anchoring>Anchoring</what_anchoring>
+  <what_left_gate>Left thumb gate</what_left_gate>
+  <what_right_gate>Right thumb gate</what_right_gate>
+  <what_left_smoothing>Left smoothing</what_left_smoothing>
+  <what_right_smoothing>Right smoothing</what_right_smoothing>
+  <what_left_deadzone>Left deadzone</what_left_deadzone>
+  <what_right_deadzone>Right deadzone</what_right_deadzone>
+  <what_language>Language</what_language>
+  <note_copied>Diagnostics copied</note_copied>
+  <note_no_log>SteamVR log location unknown</note_no_log>
+
+  <!-- tray icon menu -->
+  <tray_open>Open ancora</tray_open>
+  <tray_exit>Exit</tray_exit>
+</language>

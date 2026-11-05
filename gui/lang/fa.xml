@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Persian / Farsi (right to left). Machine drafted, needs a native review. See en.xml. -->
+<language code="fa" name="فارسی" dir="rtl" font="Segoe UI">
+  <nav_status>وضعیت</nav_status>
+  <nav_tune>تنظیم</nav_tune>
+  <nav_diag>عیب‌یابی</nav_diag>
+  <rail_steamvr_on>SteamVR در حال اجرا</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR خاموش</rail_steamvr_off>
+  <rail_both>هر دو دسته</rail_both>
+  <rail_one>یک دسته</rail_one>
+  <rail_none>بدون دسته</rail_none>
+  <lang_auto>خودکار ({name})</lang_auto>
+  <lang_missing>{name}: {n} متن ترجمه نشده، به انگلیسی نمایش داده می‌شود</lang_missing>
+  <hint_back>بازگشت</hint_back>
+  <hint_apply>اعمال</hint_apply>
+  <hint_select>انتخاب</hint_select>
+  <hint_next>بعدی</hint_next>
+  <hand_left>دستهٔ چپ</hand_left>
+  <hand_right>دستهٔ راست</hand_right>
+  <state_no_signal>بدون سیگنال</state_no_signal>
+  <sub_no_signal>SteamVR را اجرا کنید تا این دسته را ببینید.</sub_no_signal>
+  <state_not_connected>وصل نیست</state_not_connected>
+  <sub_wake>دسته را بیدار کنید تا استیک آن را ببینید.</sub_wake>
+  <sub_silent>{n} ثانیه است که داده‌ای از استیک نیامده. باتری را بررسی کنید یا دسته را بیدار کنید.</sub_silent>
+  <state_not_corrected>بدون اصلاح</state_not_corrected>
+  <sub_unchanged>بدون تغییر به بازی‌ها می‌رود.</sub_unchanged>
+  <state_anchored>دریفت مهار شد</state_anchored>
+  <sub_drifting>دریفت {value}. شست برداشته شده، پس بازی‌ها 0 می‌گیرند.</sub_drifting>
+  <sub_thumb_off>شست برداشته شده، پس بازی‌ها 0 می‌گیرند.</sub_thumb_off>
+  <state_in_deadzone>درون ناحیهٔ مرده</state_in_deadzone>
+  <sub_in_deadzone>درون ناحیهٔ مردهٔ {percent}، پس بازی‌ها 0 می‌گیرند.</sub_in_deadzone>
+  <state_following>دنبال شست</state_following>
+  <sub_past_deadzone>بیرون از ناحیهٔ مردهٔ {percent}، بازی‌ها حرکتی مقیاس‌شده می‌گیرند.</sub_past_deadzone>
+  <sub_as_is>همان‌طور که هست به بازی‌ها می‌رود.</sub_as_is>
+  <read_reports>خوانش</read_reports>
+  <read_games>بازی‌ها می‌گیرند</read_games>
+  <read_thumb>شست</read_thumb>
+  <thumb_no_sensor>بدون حسگر</thumb_no_sensor>
+  <thumb_on>روی استیک</thumb_on>
+  <thumb_off>برداشته</thumb_off>
+  <set_gate>دروازهٔ شست</set_gate>
+  <set_smoothing>نرم‌سازی</set_smoothing>
+  <set_deadzone>ناحیهٔ مرده</set_deadzone>
+  <value_off>خاموش</value_off>
+  <value_ms>{n} میلی‌ثانیه</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>مهار روشن</master_on>
+  <master_off>مهار خاموش</master_off>
+  <tune_suggested>پیشنهادی {value}</tune_suggested>
+  <legend_rests>نقطهٔ سکون</legend_rests>
+  <legend_suggested>ناحیهٔ مردهٔ پیشنهادی</legend_suggested>
+  <step_rest>استیک را رها کنید</step_rest>
+  <step_rest_active>در حال ثبت نقطهٔ سکون، شست را روی آن نگذارید.</step_rest_active>
+  <step_rest_done>{n} ثانیه سکون ثبت شد.</step_rest_done>
+  <step_flick>بزنید و رها کنید</step_flick>
+  <step_flick_settle>{n} از {total}. رها کنید، محل توقف در حال اندازه‌گیری است.</step_flick_settle>
+  <step_flick_release>{n} از {total}. حالا رها کنید.</step_flick_release>
+  <step_flick_push>{n} از {total}. تا انتها فشار دهید، سپس رها کنید.</step_flick_push>
+  <step_flick_done>{total} از {total} حرکت ثبت شد.</step_flick_done>
+  <step_review>بازبینی و اعمال</step_review>
+  <res_peak>بیشترین دریفت</res_peak>
+  <res_typical>دریفت معمول</res_typical>
+  <res_direction>جهت</res_direction>
+  <dir_none>هیچ</dir_none>
+  <dir_right>راست</dir_right>
+  <dir_forward_right>جلو راست</dir_forward_right>
+  <dir_forward>جلو</dir_forward>
+  <dir_forward_left>جلو چپ</dir_forward_left>
+  <dir_left>چپ</dir_left>
+  <dir_back_left>عقب چپ</dir_back_left>
+  <dir_back>عقب</dir_back>
+  <dir_back_right>عقب راست</dir_back_right>
+  <find_none>تقریباً دریفتی نیست. ناحیهٔ مرده لازم نیست.</find_none>
+  <find_gate_ok>حسگر شست هنگام رها کردن خاموش ماند، پس دروازهٔ شست همین حالا جلوی این دریفت را می‌گیرد.</find_gate_ok>
+  <find_gate_fail>حسگر شست هنگام رها کردن لمس را ثبت کرد، پس دروازهٔ شست به‌تنهایی جلوی آن را نمی‌گیرد.</find_gate_fail>
+  <find_no_sensor>حسگر شستی پیدا نشد، فقط ناحیهٔ مرده جلوی آن را می‌گیرد.</find_no_sensor>
+  <find_creep>وقتی شست روی استیک است ممکن است کمی بلغزد. ناحیهٔ مردهٔ {value} این را پوشش می‌دهد.</find_creep>
+  <tune_intro>دریفت این استیک را اندازه می‌گیرد و ناحیهٔ مرده پیشنهاد می‌دهد. حدود 20 ثانیه: استیک را رها کنید، سپس چند بار بزنید و رها کنید.</tune_intro>
+  <btn_start>شروع اندازه‌گیری</btn_start>
+  <btn_apply_left>اعمال {value} روی چپ</btn_apply_left>
+  <btn_apply_right>اعمال {value} روی راست</btn_apply_right>
+  <btn_restart>شروع دوباره</btn_restart>
+  <tile_driver>درایور</tile_driver>
+  <drv_loaded>بارگذاری شد</drv_loaded>
+  <drv_registered>ثبت شده</drv_registered>
+  <drv_missing>نصب نشده</drv_missing>
+  <drv_patched>{n} جدول ورودی وصله شد</drv_patched>
+  <drv_not_seen>در گزارش SteamVR دیده نشد</drv_not_seen>
+  <tile_logic>منطق</tile_logic>
+  <logic_gen>نسل {n}</logic_gen>
+  <logic_none>بارگذاری نشده</logic_none>
+  <logic_loaded>بارگذاری در {time}، {n} ورودی بازپخش شد</logic_loaded>
+  <tile_config>پیکربندی</tile_config>
+  <cfg_pending>هنوز اعمال نشده</cfg_pending>
+  <cfg_applied>اعمال در {time}</cfg_applied>
+  <col_controller>دسته</col_controller>
+  <col_inputs>ورودی‌ها</col_inputs>
+  <col_thumb>شست اکنون</col_thumb>
+  <col_updates>به‌روزرسانی‌ها</col_updates>
+  <diag_left_untracked>چپ: ردیابی نمی‌شود</diag_left_untracked>
+  <diag_right_untracked>راست: ردیابی نمی‌شود</diag_right_untracked>
+  <inputs_silent>ساکت</inputs_silent>
+  <rate_idle>بیکار</rate_idle>
+  <log_title>گزارش SteamVR، خطوط ancora</log_title>
+  <log_empty>هنوز خطی از ancora در گزارش SteamVR نیست.</log_empty>
+  <btn_copy>کپی عیب‌یابی</btn_copy>
+  <btn_open_cfg>باز کردن فایل پیکربندی</btn_open_cfg>
+  <btn_open_log>باز کردن گزارش SteamVR</btn_open_log>
+  <note_saved>{what} ذخیره شد</note_saved>
+  <what_anchoring>مهار</what_anchoring>
+  <what_left_gate>دروازهٔ شست چپ</what_left_gate>
+  <what_right_gate>دروازهٔ شست راست</what_right_gate>
+  <what_left_smoothing>نرم‌سازی چپ</what_left_smoothing>
+  <what_right_smoothing>نرم‌سازی راست</what_right_smoothing>
+  <what_left_deadzone>ناحیهٔ مردهٔ چپ</what_left_deadzone>
+  <what_right_deadzone>ناحیهٔ مردهٔ راست</what_right_deadzone>
+  <what_language>زبان</what_language>
+  <note_copied>عیب‌یابی کپی شد</note_copied>
+  <note_no_log>محل گزارش SteamVR نامعلوم است</note_no_log>
+  <tray_open>باز کردن ancora</tray_open>
+  <tray_exit>خروج</tray_exit>
+</language>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Spanish. Machine drafted, needs a native review. See en.xml. -->
+<language code="es" name="Español" dir="ltr" font="Segoe UI">
+  <nav_status>Estado</nav_status>
+  <nav_tune>Ajuste</nav_tune>
+  <nav_diag>Diagnóstico</nav_diag>
+  <rail_steamvr_on>SteamVR activo</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR apagado</rail_steamvr_off>
+  <rail_both>Ambos mandos</rail_both>
+  <rail_one>Un mando</rail_one>
+  <rail_none>Sin mandos</rail_none>
+  <lang_auto>Automático ({name})</lang_auto>
+  <lang_missing>{name}: {n} textos sin traducir, se muestran en inglés</lang_missing>
+  <hint_back>Atrás</hint_back>
+  <hint_apply>Aplicar</hint_apply>
+  <hint_select>Elegir</hint_select>
+  <hint_next>Siguiente</hint_next>
+  <hand_left>Mando izquierdo</hand_left>
+  <hand_right>Mando derecho</hand_right>
+  <state_no_signal>Sin señal</state_no_signal>
+  <sub_no_signal>Inicia SteamVR para ver este mando.</sub_no_signal>
+  <state_not_connected>No conectado</state_not_connected>
+  <sub_wake>Despierta el mando para ver su joystick.</sub_wake>
+  <sub_silent>Sin datos del joystick desde hace {n} s. Revisa la pila o despiértalo.</sub_silent>
+  <state_not_corrected>Sin corregir</state_not_corrected>
+  <sub_unchanged>Se envía a los juegos sin cambios.</sub_unchanged>
+  <state_anchored>Deriva anclada</state_anchored>
+  <sub_drifting>Deriva de {value}. Pulgar fuera, los juegos reciben 0.</sub_drifting>
+  <sub_thumb_off>Pulgar fuera, los juegos reciben 0.</sub_thumb_off>
+  <state_in_deadzone>En zona muerta</state_in_deadzone>
+  <sub_in_deadzone>Dentro de la zona muerta del {percent}, los juegos reciben 0.</sub_in_deadzone>
+  <state_following>Sigue al pulgar</state_following>
+  <sub_past_deadzone>Fuera de la zona muerta del {percent}, los juegos reciben un empuje escalado.</sub_past_deadzone>
+  <sub_as_is>Se envía a los juegos tal cual.</sub_as_is>
+  <read_reports>Lectura</read_reports>
+  <read_games>Juegos reciben</read_games>
+  <read_thumb>Pulgar</read_thumb>
+  <thumb_no_sensor>sin sensor</thumb_no_sensor>
+  <thumb_on>en el joystick</thumb_on>
+  <thumb_off>fuera</thumb_off>
+  <set_gate>Bloqueo por pulgar</set_gate>
+  <set_smoothing>Suavizado</set_smoothing>
+  <set_deadzone>Zona muerta</set_deadzone>
+  <value_off>no</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Anclaje activado</master_on>
+  <master_off>Anclaje desactivado</master_off>
+  <tune_suggested>sugerido {value}</tune_suggested>
+  <legend_rests>Dónde reposa</legend_rests>
+  <legend_suggested>Zona muerta sugerida</legend_suggested>
+  <step_rest>Suelta el joystick</step_rest>
+  <step_rest_active>Midiendo dónde reposa, no toques el joystick.</step_rest_active>
+  <step_rest_done>{n} s de reposo medidos.</step_rest_done>
+  <step_flick>Empújalo y suéltalo</step_flick>
+  <step_flick_settle>{n} de {total}. Suelta, midiendo dónde se detiene.</step_flick_settle>
+  <step_flick_release>{n} de {total}. Suelta ahora.</step_flick_release>
+  <step_flick_push>{n} de {total}. Empuja hasta el fondo y suelta.</step_flick_push>
+  <step_flick_done>{total} de {total} empujes medidos.</step_flick_done>
+  <step_review>Revisar y aplicar</step_review>
+  <res_peak>deriva máxima</res_peak>
+  <res_typical>deriva típica</res_typical>
+  <res_direction>dirección</res_direction>
+  <dir_none>ninguna</dir_none>
+  <dir_right>derecha</dir_right>
+  <dir_forward_right>delante derecha</dir_forward_right>
+  <dir_forward>delante</dir_forward>
+  <dir_forward_left>delante izquierda</dir_forward_left>
+  <dir_left>izquierda</dir_left>
+  <dir_back_left>atrás izquierda</dir_back_left>
+  <dir_back>atrás</dir_back>
+  <dir_back_right>atrás derecha</dir_back_right>
+  <find_none>Casi no hay deriva. No hace falta zona muerta.</find_none>
+  <find_gate_ok>El sensor del pulgar se quedó apagado al soltar, así que el bloqueo por pulgar ya detiene esta deriva.</find_gate_ok>
+  <find_gate_fail>El sensor del pulgar detectó contacto al soltar, así que el bloqueo por pulgar solo no basta.</find_gate_fail>
+  <find_no_sensor>No hay sensor de pulgar, solo una zona muerta puede detenerla.</find_no_sensor>
+  <find_creep>Con el pulgar apoyado en el joystick aún puede desplazarse. Una zona muerta de {value} lo cubre.</find_creep>
+  <tune_intro>Mide cómo deriva este joystick y sugiere una zona muerta. Tarda unos 20 segundos: suelta el joystick y luego empújalo y suéltalo unas cuantas veces.</tune_intro>
+  <btn_start>Empezar a medir</btn_start>
+  <btn_apply_left>Aplicar {value} a la izquierda</btn_apply_left>
+  <btn_apply_right>Aplicar {value} a la derecha</btn_apply_right>
+  <btn_restart>Empezar de nuevo</btn_restart>
+  <tile_driver>Controlador</tile_driver>
+  <drv_loaded>Cargado</drv_loaded>
+  <drv_registered>Registrado</drv_registered>
+  <drv_missing>No instalado</drv_missing>
+  <drv_patched>{n} tablas de entrada modificadas</drv_patched>
+  <drv_not_seen>no aparece en el registro de SteamVR</drv_not_seen>
+  <tile_logic>Lógica</tile_logic>
+  <logic_gen>Generación {n}</logic_gen>
+  <logic_none>No cargada</logic_none>
+  <logic_loaded>cargada {time}, {n} entradas repetidas</logic_loaded>
+  <tile_config>Configuración</tile_config>
+  <cfg_pending>Aún no aplicada</cfg_pending>
+  <cfg_applied>Aplicada {time}</cfg_applied>
+  <col_controller>Mando</col_controller>
+  <col_inputs>Entradas</col_inputs>
+  <col_thumb>Pulgar ahora</col_thumb>
+  <col_updates>Lecturas</col_updates>
+  <diag_left_untracked>Izquierdo: sin seguimiento</diag_left_untracked>
+  <diag_right_untracked>Derecho: sin seguimiento</diag_right_untracked>
+  <inputs_silent>en silencio</inputs_silent>
+  <rate_idle>inactivo</rate_idle>
+  <log_title>Registro de SteamVR, líneas de ancora</log_title>
+  <log_empty>Aún no hay líneas de ancora en el registro de SteamVR.</log_empty>
+  <btn_copy>Copiar diagnóstico</btn_copy>
+  <btn_open_cfg>Abrir configuración</btn_open_cfg>
+  <btn_open_log>Abrir registro de SteamVR</btn_open_log>
+  <note_saved>{what}: guardado</note_saved>
+  <what_anchoring>Anclaje</what_anchoring>
+  <what_left_gate>Bloqueo por pulgar izquierdo</what_left_gate>
+  <what_right_gate>Bloqueo por pulgar derecho</what_right_gate>
+  <what_left_smoothing>Suavizado izquierdo</what_left_smoothing>
+  <what_right_smoothing>Suavizado derecho</what_right_smoothing>
+  <what_left_deadzone>Zona muerta izquierda</what_left_deadzone>
+  <what_right_deadzone>Zona muerta derecha</what_right_deadzone>
+  <what_language>Idioma</what_language>
+  <note_copied>Diagnóstico copiado</note_copied>
+  <note_no_log>Ubicación del registro de SteamVR desconocida</note_no_log>
+  <tray_open>Abrir ancora</tray_open>
+  <tray_exit>Salir</tray_exit>
+</language>

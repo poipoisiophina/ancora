@@ -46,13 +46,16 @@ copy /y driver\obj\driver_ancora.dll driver\ancora\bin\win64\driver_ancora.dll >
 echo built driver\ancora\bin\win64\driver_ancora.dll
 rem control panel (no OpenVR dependency)
 if not exist gui\bin mkdir gui\bin
-cl /nologo /std:c++17 /O2 /EHsc /MT /W3 /DUNICODE /D_UNICODE /Fodriver\obj\ ^
+cl /nologo /std:c++17 /utf-8 /O2 /EHsc /MT /W3 /DUNICODE /D_UNICODE /Fodriver\obj\ ^
    gui\src\ancora_panel.cpp /Fe:gui\bin\ancora.exe ^
    /link /SUBSYSTEM:WINDOWS || exit /b 1
 rem the panel draws its own icon: write it as an .ico, then relink with it embedded
 rem as resource 1, so Explorer and Settings > Apps show it (the installer uses it too)
 gui\bin\ancora.exe --icon-ico "%~dp0driver\obj\ancora.ico" || exit /b 1
 > driver\obj\ancora.rc echo 1 ICON "ancora.ico"
+rem every panel language file goes in as an RCDATA resource; the panel finds them by
+rem enumerating RCDATA, so adding gui\lang\xx.xml is all a new language needs
+for %%f in (gui\lang\*.xml) do >> driver\obj\ancora.rc echo "%%~nf" RCDATA "../../gui/lang/%%~nxf"
 pushd driver\obj
 rc /nologo /fo ancora.res ancora.rc || (popd & exit /b 1)
 popd

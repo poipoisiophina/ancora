@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Brazilian Portuguese. Machine drafted, needs a native review. See en.xml. -->
+<language code="pt-BR" name="Português (Brasil)" dir="ltr" font="Segoe UI">
+  <nav_status>Status</nav_status>
+  <nav_tune>Ajuste</nav_tune>
+  <nav_diag>Diagnóstico</nav_diag>
+  <rail_steamvr_on>SteamVR em execução</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR desligado</rail_steamvr_off>
+  <rail_both>Os dois controles</rail_both>
+  <rail_one>Um controle</rail_one>
+  <rail_none>Nenhum controle</rail_none>
+  <lang_auto>Automático ({name})</lang_auto>
+  <lang_missing>{name}: {n} textos sem tradução, exibidos em inglês</lang_missing>
+  <hint_back>Voltar</hint_back>
+  <hint_apply>Aplicar</hint_apply>
+  <hint_select>Selecionar</hint_select>
+  <hint_next>Próximo</hint_next>
+  <hand_left>Controle esquerdo</hand_left>
+  <hand_right>Controle direito</hand_right>
+  <state_no_signal>Sem sinal</state_no_signal>
+  <sub_no_signal>Inicie o SteamVR para ver este controle.</sub_no_signal>
+  <state_not_connected>Desconectado</state_not_connected>
+  <sub_wake>Acorde o controle para ver o analógico.</sub_wake>
+  <sub_silent>Sem dados do analógico há {n} s. Verifique a pilha ou acorde o controle.</sub_silent>
+  <state_not_corrected>Sem correção</state_not_corrected>
+  <sub_unchanged>Enviado aos jogos sem mudanças.</sub_unchanged>
+  <state_anchored>Drift ancorado</state_anchored>
+  <sub_drifting>Drift de {value}. Polegar fora, os jogos recebem 0.</sub_drifting>
+  <sub_thumb_off>Polegar fora, os jogos recebem 0.</sub_thumb_off>
+  <state_in_deadzone>Na zona morta</state_in_deadzone>
+  <sub_in_deadzone>Dentro da zona morta de {percent}, os jogos recebem 0.</sub_in_deadzone>
+  <state_following>Seguindo o polegar</state_following>
+  <sub_past_deadzone>Além da zona morta de {percent}, os jogos recebem um movimento escalonado.</sub_past_deadzone>
+  <sub_as_is>Enviado aos jogos como está.</sub_as_is>
+  <read_reports>Leitura</read_reports>
+  <read_games>Jogos recebem</read_games>
+  <read_thumb>Polegar</read_thumb>
+  <thumb_no_sensor>sem sensor</thumb_no_sensor>
+  <thumb_on>no analógico</thumb_on>
+  <thumb_off>fora</thumb_off>
+  <set_gate>Trava do polegar</set_gate>
+  <set_smoothing>Suavização</set_smoothing>
+  <set_deadzone>Zona morta</set_deadzone>
+  <value_off>desligado</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Ancoragem ligada</master_on>
+  <master_off>Ancoragem desligada</master_off>
+  <tune_suggested>sugerido {value}</tune_suggested>
+  <legend_rests>Onde repousa</legend_rests>
+  <legend_suggested>Zona morta sugerida</legend_suggested>
+  <step_rest>Solte o analógico</step_rest>
+  <step_rest_active>Medindo onde ele repousa, mantenha o polegar fora.</step_rest_active>
+  <step_rest_done>{n} s de repouso medidos.</step_rest_done>
+  <step_flick>Empurre e solte</step_flick>
+  <step_flick_settle>{n} de {total}. Solte, medindo onde ele para.</step_flick_settle>
+  <step_flick_release>{n} de {total}. Agora solte.</step_flick_release>
+  <step_flick_push>{n} de {total}. Empurre até o fim e solte.</step_flick_push>
+  <step_flick_done>{total} de {total} empurrões medidos.</step_flick_done>
+  <step_review>Revisar e aplicar</step_review>
+  <res_peak>drift máximo</res_peak>
+  <res_typical>drift típico</res_typical>
+  <res_direction>direção</res_direction>
+  <dir_none>nenhuma</dir_none>
+  <dir_right>direita</dir_right>
+  <dir_forward_right>frente direita</dir_forward_right>
+  <dir_forward>frente</dir_forward>
+  <dir_forward_left>frente esquerda</dir_forward_left>
+  <dir_left>esquerda</dir_left>
+  <dir_back_left>trás esquerda</dir_back_left>
+  <dir_back>trás</dir_back>
+  <dir_back_right>trás direita</dir_back_right>
+  <find_none>Quase nenhum drift medido. Não precisa de zona morta.</find_none>
+  <find_gate_ok>O sensor do polegar ficou desligado quando você soltou, então a trava do polegar já impede esse drift.</find_gate_ok>
+  <find_gate_fail>O sensor do polegar detectou toque quando você soltou, então a trava do polegar sozinha não resolve.</find_gate_fail>
+  <find_no_sensor>Nenhum sensor de polegar encontrado, só uma zona morta pode impedir.</find_no_sensor>
+  <find_creep>Com o polegar apoiado no analógico ele ainda pode deslizar. Uma zona morta de {value} cobre isso.</find_creep>
+  <tune_intro>Mede como este analógico tem drift e sugere uma zona morta. Leva uns 20 segundos: solte o analógico, depois empurre e solte algumas vezes.</tune_intro>
+  <btn_start>Começar a medir</btn_start>
+  <btn_apply_left>Aplicar {value} à esquerda</btn_apply_left>
+  <btn_apply_right>Aplicar {value} à direita</btn_apply_right>
+  <btn_restart>Recomeçar</btn_restart>
+  <tile_driver>Driver</tile_driver>
+  <drv_loaded>Carregado</drv_loaded>
+  <drv_registered>Registrado</drv_registered>
+  <drv_missing>Não instalado</drv_missing>
+  <drv_patched>{n} tabelas de entrada alteradas</drv_patched>
+  <drv_not_seen>não aparece no log do SteamVR</drv_not_seen>
+  <tile_logic>Lógica</tile_logic>
+  <logic_gen>Geração {n}</logic_gen>
+  <logic_none>Não carregada</logic_none>
+  <logic_loaded>carregada {time}, {n} entradas repetidas</logic_loaded>
+  <tile_config>Configuração</tile_config>
+  <cfg_pending>Ainda não aplicada</cfg_pending>
+  <cfg_applied>Aplicada {time}</cfg_applied>
+  <col_controller>Controle</col_controller>
+  <col_inputs>Entradas</col_inputs>
+  <col_thumb>Polegar agora</col_thumb>
+  <col_updates>Leituras</col_updates>
+  <diag_left_untracked>Esquerdo: sem rastreio</diag_left_untracked>
+  <diag_right_untracked>Direito: sem rastreio</diag_right_untracked>
+  <inputs_silent>mudo</inputs_silent>
+  <rate_idle>parado</rate_idle>
+  <log_title>Log do SteamVR, linhas do ancora</log_title>
+  <log_empty>Ainda não há linhas do ancora no log do SteamVR.</log_empty>
+  <btn_copy>Copiar diagnóstico</btn_copy>
+  <btn_open_cfg>Abrir configuração</btn_open_cfg>
+  <btn_open_log>Abrir log do SteamVR</btn_open_log>
+  <note_saved>{what}: salvo</note_saved>
+  <what_anchoring>Ancoragem</what_anchoring>
+  <what_left_gate>Trava do polegar esquerda</what_left_gate>
+  <what_right_gate>Trava do polegar direita</what_right_gate>
+  <what_left_smoothing>Suavização esquerda</what_left_smoothing>
+  <what_right_smoothing>Suavização direita</what_right_smoothing>
+  <what_left_deadzone>Zona morta esquerda</what_left_deadzone>
+  <what_right_deadzone>Zona morta direita</what_right_deadzone>
+  <what_language>Idioma</what_language>
+  <note_copied>Diagnóstico copiado</note_copied>
+  <note_no_log>Local do log do SteamVR desconhecido</note_no_log>
+  <tray_open>Abrir ancora</tray_open>
+  <tray_exit>Sair</tray_exit>
+</language>

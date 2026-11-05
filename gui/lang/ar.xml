@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Arabic (right to left). Machine drafted, needs a native review. See en.xml. -->
+<language code="ar" name="العربية" dir="rtl" font="Segoe UI">
+  <nav_status>الحالة</nav_status>
+  <nav_tune>الضبط</nav_tune>
+  <nav_diag>التشخيص</nav_diag>
+  <rail_steamvr_on>SteamVR يعمل</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR متوقف</rail_steamvr_off>
+  <rail_both>وحدتا تحكم</rail_both>
+  <rail_one>وحدة تحكم واحدة</rail_one>
+  <rail_none>لا توجد وحدات تحكم</rail_none>
+  <lang_auto>تلقائي ({name})</lang_auto>
+  <lang_missing>{name}: {n} نصوص غير مترجمة، تظهر بالإنجليزية</lang_missing>
+  <hint_back>رجوع</hint_back>
+  <hint_apply>تطبيق</hint_apply>
+  <hint_select>اختيار</hint_select>
+  <hint_next>التالي</hint_next>
+  <hand_left>وحدة التحكم اليسرى</hand_left>
+  <hand_right>وحدة التحكم اليمنى</hand_right>
+  <state_no_signal>لا توجد إشارة</state_no_signal>
+  <sub_no_signal>شغّل SteamVR لرؤية وحدة التحكم هذه.</sub_no_signal>
+  <state_not_connected>غير متصلة</state_not_connected>
+  <sub_wake>أيقظ وحدة التحكم لرؤية عصاها.</sub_wake>
+  <sub_silent>لا بيانات من العصا منذ {n} ثانية. تحقق من البطارية أو أيقظ وحدة التحكم.</sub_silent>
+  <state_not_corrected>بلا تصحيح</state_not_corrected>
+  <sub_unchanged>تُمرَّر إلى الألعاب دون تغيير.</sub_unchanged>
+  <state_anchored>الانجراف مثبَّت</state_anchored>
+  <sub_drifting>انجراف {value}. الإبهام مرفوع، فتتلقى الألعاب 0.</sub_drifting>
+  <sub_thumb_off>الإبهام مرفوع، فتتلقى الألعاب 0.</sub_thumb_off>
+  <state_in_deadzone>داخل المنطقة الميتة</state_in_deadzone>
+  <sub_in_deadzone>داخل منطقة ميتة بنسبة {percent}، فتتلقى الألعاب 0.</sub_in_deadzone>
+  <state_following>يتبع الإبهام</state_following>
+  <sub_past_deadzone>خارج منطقة ميتة بنسبة {percent}، تتلقى الألعاب دفعة مُعايَرة.</sub_past_deadzone>
+  <sub_as_is>تُمرَّر إلى الألعاب كما هي.</sub_as_is>
+  <read_reports>القراءة</read_reports>
+  <read_games>تتلقى الألعاب</read_games>
+  <read_thumb>الإبهام</read_thumb>
+  <thumb_no_sensor>لا مستشعر</thumb_no_sensor>
+  <thumb_on>على العصا</thumb_on>
+  <thumb_off>مرفوع</thumb_off>
+  <set_gate>بوابة الإبهام</set_gate>
+  <set_smoothing>التنعيم</set_smoothing>
+  <set_deadzone>المنطقة الميتة</set_deadzone>
+  <value_off>متوقف</value_off>
+  <value_ms>{n} ملي ث</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>التثبيت مفعّل</master_on>
+  <master_off>التثبيت متوقف</master_off>
+  <tune_suggested>المقترح {value}</tune_suggested>
+  <legend_rests>نقطة السكون</legend_rests>
+  <legend_suggested>المنطقة الميتة المقترحة</legend_suggested>
+  <step_rest>اترك العصا</step_rest>
+  <step_rest_active>جارٍ تسجيل نقطة السكون، أبقِ إبهامك مرفوعًا.</step_rest_active>
+  <step_rest_done>سُجّلت {n} ثوانٍ من السكون.</step_rest_done>
+  <step_flick>ادفعها ثم اتركها</step_flick>
+  <step_flick_settle>{n} من {total}. اتركها، جارٍ قياس موضع توقفها.</step_flick_settle>
+  <step_flick_release>{n} من {total}. اتركها الآن.</step_flick_release>
+  <step_flick_push>{n} من {total}. ادفعها إلى آخرها ثم اتركها.</step_flick_push>
+  <step_flick_done>سُجّلت {total} من {total} دفعات.</step_flick_done>
+  <step_review>المراجعة والتطبيق</step_review>
+  <res_peak>أقصى انجراف</res_peak>
+  <res_typical>الانجراف المعتاد</res_typical>
+  <res_direction>الاتجاه</res_direction>
+  <dir_none>لا يوجد</dir_none>
+  <dir_right>يمين</dir_right>
+  <dir_forward_right>أمام يمين</dir_forward_right>
+  <dir_forward>أمام</dir_forward>
+  <dir_forward_left>أمام يسار</dir_forward_left>
+  <dir_left>يسار</dir_left>
+  <dir_back_left>خلف يسار</dir_back_left>
+  <dir_back>خلف</dir_back>
+  <dir_back_right>خلف يمين</dir_back_right>
+  <find_none>لا يكاد يوجد انجراف. لا حاجة إلى منطقة ميتة.</find_none>
+  <find_gate_ok>بقي مستشعر الإبهام متوقفًا عندما تركت العصا، لذا توقف بوابة الإبهام هذا الانجراف بالفعل.</find_gate_ok>
+  <find_gate_fail>سجّل مستشعر الإبهام لمسًا عندما تركت العصا، لذا لا تكفي بوابة الإبهام وحدها لإيقافه.</find_gate_fail>
+  <find_no_sensor>لا يوجد مستشعر إبهام، ولا يوقفه إلا منطقة ميتة.</find_no_sensor>
+  <find_creep>مع إبهام مستقر على العصا قد تنزلق قليلًا. منطقة ميتة بقيمة {value} تغطي ذلك.</find_creep>
+  <tune_intro>يقيس انجراف هذه العصا ويقترح منطقة ميتة. يستغرق نحو 20 ثانية: اترك العصا، ثم ادفعها واتركها بضع مرات.</tune_intro>
+  <btn_start>ابدأ القياس</btn_start>
+  <btn_apply_left>طبّق {value} على اليسرى</btn_apply_left>
+  <btn_apply_right>طبّق {value} على اليمنى</btn_apply_right>
+  <btn_restart>البدء من جديد</btn_restart>
+  <tile_driver>برنامج التشغيل</tile_driver>
+  <drv_loaded>محمَّل</drv_loaded>
+  <drv_registered>مسجَّل</drv_registered>
+  <drv_missing>غير مثبَّت</drv_missing>
+  <drv_patched>عُدّلت {n} جداول إدخال</drv_patched>
+  <drv_not_seen>غير ظاهر في سجل SteamVR</drv_not_seen>
+  <tile_logic>المنطق</tile_logic>
+  <logic_gen>الجيل {n}</logic_gen>
+  <logic_none>غير محمَّل</logic_none>
+  <logic_loaded>حُمّل {time}، أُعيد {n} إدخالًا</logic_loaded>
+  <tile_config>الإعدادات</tile_config>
+  <cfg_pending>لم تُطبَّق بعد</cfg_pending>
+  <cfg_applied>طُبّقت {time}</cfg_applied>
+  <col_controller>وحدة التحكم</col_controller>
+  <col_inputs>الإدخالات</col_inputs>
+  <col_thumb>الإبهام الآن</col_thumb>
+  <col_updates>التحديثات</col_updates>
+  <diag_left_untracked>اليسرى: غير متتبَّعة</diag_left_untracked>
+  <diag_right_untracked>اليمنى: غير متتبَّعة</diag_right_untracked>
+  <inputs_silent>صامتة</inputs_silent>
+  <rate_idle>خاملة</rate_idle>
+  <log_title>سجل SteamVR، أسطر ancora</log_title>
+  <log_empty>لا توجد أسطر ancora في سجل SteamVR بعد.</log_empty>
+  <btn_copy>نسخ التشخيص</btn_copy>
+  <btn_open_cfg>فتح ملف الإعدادات</btn_open_cfg>
+  <btn_open_log>فتح سجل SteamVR</btn_open_log>
+  <note_saved>حُفظ: {what}</note_saved>
+  <what_anchoring>التثبيت</what_anchoring>
+  <what_left_gate>بوابة الإبهام اليسرى</what_left_gate>
+  <what_right_gate>بوابة الإبهام اليمنى</what_right_gate>
+  <what_left_smoothing>التنعيم الأيسر</what_left_smoothing>
+  <what_right_smoothing>التنعيم الأيمن</what_right_smoothing>
+  <what_left_deadzone>المنطقة الميتة اليسرى</what_left_deadzone>
+  <what_right_deadzone>المنطقة الميتة اليمنى</what_right_deadzone>
+  <what_language>اللغة</what_language>
+  <note_copied>نُسخ التشخيص</note_copied>
+  <note_no_log>موقع سجل SteamVR غير معروف</note_no_log>
+  <tray_open>فتح ancora</tray_open>
+  <tray_exit>خروج</tray_exit>
+</language>

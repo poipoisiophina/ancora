@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, French. Machine drafted, needs a native review. See en.xml. -->
+<language code="fr" name="Français" dir="ltr" font="Segoe UI">
+  <nav_status>État</nav_status>
+  <nav_tune>Réglage</nav_tune>
+  <nav_diag>Diagnostic</nav_diag>
+  <rail_steamvr_on>SteamVR actif</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR arrêté</rail_steamvr_off>
+  <rail_both>Deux manettes</rail_both>
+  <rail_one>Une manette</rail_one>
+  <rail_none>Aucune manette</rail_none>
+  <lang_auto>Automatique ({name})</lang_auto>
+  <lang_missing>{name} : {n} textes non traduits, affichés en anglais</lang_missing>
+  <hint_back>Retour</hint_back>
+  <hint_apply>Appliquer</hint_apply>
+  <hint_select>Choisir</hint_select>
+  <hint_next>Suivant</hint_next>
+  <hand_left>Manette gauche</hand_left>
+  <hand_right>Manette droite</hand_right>
+  <state_no_signal>Aucun signal</state_no_signal>
+  <sub_no_signal>Lancez SteamVR pour voir cette manette.</sub_no_signal>
+  <state_not_connected>Non connectée</state_not_connected>
+  <sub_wake>Réveillez la manette pour voir son stick.</sub_wake>
+  <sub_silent>Aucune donnée du stick depuis {n} s. Vérifiez la pile ou réveillez-la.</sub_silent>
+  <state_not_corrected>Non corrigée</state_not_corrected>
+  <sub_unchanged>Transmis aux jeux sans changement.</sub_unchanged>
+  <state_anchored>Dérive ancrée</state_anchored>
+  <sub_drifting>Dérive de {value}. Pouce levé, les jeux reçoivent 0.</sub_drifting>
+  <sub_thumb_off>Pouce levé, les jeux reçoivent 0.</sub_thumb_off>
+  <state_in_deadzone>Dans la zone morte</state_in_deadzone>
+  <sub_in_deadzone>Dans la zone morte de {percent}, les jeux reçoivent 0.</sub_in_deadzone>
+  <state_following>Suit le pouce</state_following>
+  <sub_past_deadzone>Au-delà de la zone morte de {percent}, les jeux reçoivent une poussée mise à l'échelle.</sub_past_deadzone>
+  <sub_as_is>Transmis aux jeux tel quel.</sub_as_is>
+  <read_reports>Mesure</read_reports>
+  <read_games>Jeux</read_games>
+  <read_thumb>Pouce</read_thumb>
+  <thumb_no_sensor>sans capteur</thumb_no_sensor>
+  <thumb_on>sur le stick</thumb_on>
+  <thumb_off>levé</thumb_off>
+  <set_gate>Détection du pouce</set_gate>
+  <set_smoothing>Lissage</set_smoothing>
+  <set_deadzone>Zone morte</set_deadzone>
+  <value_off>désactivé</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Ancrage activé</master_on>
+  <master_off>Ancrage désactivé</master_off>
+  <tune_suggested>suggéré {value}</tune_suggested>
+  <legend_rests>Point de repos</legend_rests>
+  <legend_suggested>Zone morte suggérée</legend_suggested>
+  <step_rest>Lâchez le stick</step_rest>
+  <step_rest_active>Mesure du point de repos, gardez le pouce levé.</step_rest_active>
+  <step_rest_done>{n} s de repos mesurées.</step_rest_done>
+  <step_flick>Poussez-le et lâchez</step_flick>
+  <step_flick_settle>{n} sur {total}. Lâchez, mesure du point d'arrêt.</step_flick_settle>
+  <step_flick_release>{n} sur {total}. Lâchez maintenant.</step_flick_release>
+  <step_flick_push>{n} sur {total}. Poussez à fond, puis lâchez.</step_flick_push>
+  <step_flick_done>{total} poussées sur {total} mesurées.</step_flick_done>
+  <step_review>Vérifier et appliquer</step_review>
+  <res_peak>dérive max</res_peak>
+  <res_typical>dérive typique</res_typical>
+  <res_direction>direction</res_direction>
+  <dir_none>aucune</dir_none>
+  <dir_right>droite</dir_right>
+  <dir_forward_right>avant droite</dir_forward_right>
+  <dir_forward>avant</dir_forward>
+  <dir_forward_left>avant gauche</dir_forward_left>
+  <dir_left>gauche</dir_left>
+  <dir_back_left>arrière gauche</dir_back_left>
+  <dir_back>arrière</dir_back>
+  <dir_back_right>arrière droite</dir_back_right>
+  <find_none>Presque aucune dérive mesurée. Pas besoin de zone morte.</find_none>
+  <find_gate_ok>Le capteur du pouce est resté inactif quand vous avez lâché, la détection du pouce bloque donc déjà cette dérive.</find_gate_ok>
+  <find_gate_fail>Le capteur du pouce est resté actif quand vous avez lâché, la détection du pouce seule ne suffit pas.</find_gate_fail>
+  <find_no_sensor>Aucun capteur de pouce trouvé, seule une zone morte peut l'arrêter.</find_no_sensor>
+  <find_creep>Avec le pouce posé sur le stick, il peut encore glisser. Une zone morte de {value} couvre cela.</find_creep>
+  <tune_intro>Mesure la dérive de ce stick et suggère une zone morte. Environ 20 secondes : lâchez le stick, puis poussez-le et lâchez quelques fois.</tune_intro>
+  <btn_start>Lancer la mesure</btn_start>
+  <btn_apply_left>Appliquer {value} à gauche</btn_apply_left>
+  <btn_apply_right>Appliquer {value} à droite</btn_apply_right>
+  <btn_restart>Recommencer</btn_restart>
+  <tile_driver>Pilote</tile_driver>
+  <drv_loaded>Chargé</drv_loaded>
+  <drv_registered>Enregistré</drv_registered>
+  <drv_missing>Non installé</drv_missing>
+  <drv_patched>{n} tables d'entrée modifiées</drv_patched>
+  <drv_not_seen>absent du journal SteamVR</drv_not_seen>
+  <tile_logic>Logique</tile_logic>
+  <logic_gen>Génération {n}</logic_gen>
+  <logic_none>Non chargée</logic_none>
+  <logic_loaded>chargée à {time}, {n} entrées rejouées</logic_loaded>
+  <tile_config>Configuration</tile_config>
+  <cfg_pending>Pas encore appliquée</cfg_pending>
+  <cfg_applied>Appliquée à {time}</cfg_applied>
+  <col_controller>Manette</col_controller>
+  <col_inputs>Entrées</col_inputs>
+  <col_thumb>Pouce</col_thumb>
+  <col_updates>Mises à jour</col_updates>
+  <diag_left_untracked>Gauche : non suivie</diag_left_untracked>
+  <diag_right_untracked>Droite : non suivie</diag_right_untracked>
+  <inputs_silent>muette</inputs_silent>
+  <rate_idle>inactif</rate_idle>
+  <log_title>Journal SteamVR, lignes ancora</log_title>
+  <log_empty>Aucune ligne ancora dans le journal SteamVR pour l'instant.</log_empty>
+  <btn_copy>Copier le diagnostic</btn_copy>
+  <btn_open_cfg>Ouvrir la configuration</btn_open_cfg>
+  <btn_open_log>Ouvrir le journal SteamVR</btn_open_log>
+  <note_saved>{what} : enregistré</note_saved>
+  <what_anchoring>Ancrage</what_anchoring>
+  <what_left_gate>Détection du pouce gauche</what_left_gate>
+  <what_right_gate>Détection du pouce droit</what_right_gate>
+  <what_left_smoothing>Lissage gauche</what_left_smoothing>
+  <what_right_smoothing>Lissage droit</what_right_smoothing>
+  <what_left_deadzone>Zone morte gauche</what_left_deadzone>
+  <what_right_deadzone>Zone morte droite</what_right_deadzone>
+  <what_language>Langue</what_language>
+  <note_copied>Diagnostic copié</note_copied>
+  <note_no_log>Emplacement du journal SteamVR inconnu</note_no_log>
+  <tray_open>Ouvrir ancora</tray_open>
+  <tray_exit>Quitter</tray_exit>
+</language>

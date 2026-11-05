@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Hebrew (right to left). Machine drafted, needs a native review. See en.xml. -->
+<language code="he" name="עברית" dir="rtl" font="Segoe UI">
+  <nav_status>מצב</nav_status>
+  <nav_tune>כוונון</nav_tune>
+  <nav_diag>אבחון</nav_diag>
+  <rail_steamvr_on>SteamVR פועל</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR כבוי</rail_steamvr_off>
+  <rail_both>שני בקרים</rail_both>
+  <rail_one>בקר אחד</rail_one>
+  <rail_none>אין בקרים</rail_none>
+  <lang_auto>אוטומטי ({name})</lang_auto>
+  <lang_missing>{name}: {n} מחרוזות לא תורגמו, מוצגות באנגלית</lang_missing>
+  <hint_back>חזרה</hint_back>
+  <hint_apply>החלה</hint_apply>
+  <hint_select>בחירה</hint_select>
+  <hint_next>הבא</hint_next>
+  <hand_left>בקר שמאלי</hand_left>
+  <hand_right>בקר ימני</hand_right>
+  <state_no_signal>אין אות</state_no_signal>
+  <sub_no_signal>הפעילו את SteamVR כדי לראות את הבקר הזה.</sub_no_signal>
+  <state_not_connected>לא מחובר</state_not_connected>
+  <sub_wake>העירו את הבקר כדי לראות את הסטיק שלו.</sub_wake>
+  <sub_silent>אין נתוני סטיק כבר {n} שניות. בדקו את הסוללה או העירו את הבקר.</sub_silent>
+  <state_not_corrected>ללא תיקון</state_not_corrected>
+  <sub_unchanged>מועבר למשחקים ללא שינוי.</sub_unchanged>
+  <state_anchored>הסחיפה מעוגנת</state_anchored>
+  <sub_drifting>סחיפה של {value}. האגודל מורם, המשחקים מקבלים 0.</sub_drifting>
+  <sub_thumb_off>האגודל מורם, המשחקים מקבלים 0.</sub_thumb_off>
+  <state_in_deadzone>בתוך האזור המת</state_in_deadzone>
+  <sub_in_deadzone>בתוך אזור מת של {percent}, המשחקים מקבלים 0.</sub_in_deadzone>
+  <state_following>עוקב אחרי האגודל</state_following>
+  <sub_past_deadzone>מעבר לאזור מת של {percent}, המשחקים מקבלים דחיפה מותאמת.</sub_past_deadzone>
+  <sub_as_is>מועבר למשחקים כמו שהוא.</sub_as_is>
+  <read_reports>קריאה</read_reports>
+  <read_games>המשחקים מקבלים</read_games>
+  <read_thumb>אגודל</read_thumb>
+  <thumb_no_sensor>אין חיישן</thumb_no_sensor>
+  <thumb_on>על הסטיק</thumb_on>
+  <thumb_off>מורם</thumb_off>
+  <set_gate>שער אגודל</set_gate>
+  <set_smoothing>החלקה</set_smoothing>
+  <set_deadzone>אזור מת</set_deadzone>
+  <value_off>כבוי</value_off>
+  <value_ms>{n} מ"ש</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>עיגון פועל</master_on>
+  <master_off>עיגון כבוי</master_off>
+  <tune_suggested>מומלץ {value}</tune_suggested>
+  <legend_rests>נקודת מנוחה</legend_rests>
+  <legend_suggested>אזור מת מומלץ</legend_suggested>
+  <step_rest>שחררו את הסטיק</step_rest>
+  <step_rest_active>מתעד את נקודת המנוחה, השאירו את האגודל מורם.</step_rest_active>
+  <step_rest_done>תועדו {n} שניות של מנוחה.</step_rest_done>
+  <step_flick>הטו ושחררו</step_flick>
+  <step_flick_settle>{n} מתוך {total}. שחררו, מודד היכן הוא נעצר.</step_flick_settle>
+  <step_flick_release>{n} מתוך {total}. עכשיו שחררו.</step_flick_release>
+  <step_flick_push>{n} מתוך {total}. הטו עד הסוף ואז שחררו.</step_flick_push>
+  <step_flick_done>תועדו {total} מתוך {total} הטיות.</step_flick_done>
+  <step_review>סקירה והחלה</step_review>
+  <res_peak>סחיפה מרבית</res_peak>
+  <res_typical>סחיפה טיפוסית</res_typical>
+  <res_direction>כיוון</res_direction>
+  <dir_none>אין</dir_none>
+  <dir_right>ימינה</dir_right>
+  <dir_forward_right>קדימה ימינה</dir_forward_right>
+  <dir_forward>קדימה</dir_forward>
+  <dir_forward_left>קדימה שמאלה</dir_forward_left>
+  <dir_left>שמאלה</dir_left>
+  <dir_back_left>אחורה שמאלה</dir_back_left>
+  <dir_back>אחורה</dir_back>
+  <dir_back_right>אחורה ימינה</dir_back_right>
+  <find_none>כמעט אין סחיפה. אין צורך באזור מת.</find_none>
+  <find_gate_ok>חיישן האגודל נשאר כבוי כששחררתם, כך ששער האגודל כבר עוצר את הסחיפה הזו.</find_gate_ok>
+  <find_gate_fail>חיישן האגודל זיהה מגע כששחררתם, כך ששער האגודל לבדו לא יעצור אותה.</find_gate_fail>
+  <find_no_sensor>לא נמצא חיישן אגודל, רק אזור מת יכול לעצור אותה.</find_no_sensor>
+  <find_creep>כשהאגודל מונח על הסטיק הוא עדיין יכול לזחול. אזור מת של {value} מכסה זאת.</find_creep>
+  <tune_intro>מודד איך הסטיק הזה נסחף וממליץ על אזור מת. לוקח כ-20 שניות: שחררו את הסטיק, ואז הטו ושחררו אותו כמה פעמים.</tune_intro>
+  <btn_start>התחלת מדידה</btn_start>
+  <btn_apply_left>החלת {value} על השמאלי</btn_apply_left>
+  <btn_apply_right>החלת {value} על הימני</btn_apply_right>
+  <btn_restart>התחלה מחדש</btn_restart>
+  <tile_driver>מנהל התקן</tile_driver>
+  <drv_loaded>נטען</drv_loaded>
+  <drv_registered>רשום</drv_registered>
+  <drv_missing>לא מותקן</drv_missing>
+  <drv_patched>{n} טבלאות קלט תוקנו</drv_patched>
+  <drv_not_seen>לא מופיע ביומן של SteamVR</drv_not_seen>
+  <tile_logic>לוגיקה</tile_logic>
+  <logic_gen>דור {n}</logic_gen>
+  <logic_none>לא נטען</logic_none>
+  <logic_loaded>נטען ב-{time}, {n} קלטים שוחזרו</logic_loaded>
+  <tile_config>תצורה</tile_config>
+  <cfg_pending>עדיין לא הוחלה</cfg_pending>
+  <cfg_applied>הוחלה ב-{time}</cfg_applied>
+  <col_controller>בקר</col_controller>
+  <col_inputs>קלטים שנמצאו</col_inputs>
+  <col_thumb>אגודל כעת</col_thumb>
+  <col_updates>עדכונים</col_updates>
+  <diag_left_untracked>שמאלי: לא במעקב</diag_left_untracked>
+  <diag_right_untracked>ימני: לא במעקב</diag_right_untracked>
+  <inputs_silent>שקט</inputs_silent>
+  <rate_idle>במנוחה</rate_idle>
+  <log_title>יומן SteamVR, שורות ancora</log_title>
+  <log_empty>אין עדיין שורות ancora ביומן של SteamVR.</log_empty>
+  <btn_copy>העתקת אבחון</btn_copy>
+  <btn_open_cfg>פתיחת קובץ התצורה</btn_open_cfg>
+  <btn_open_log>פתיחת יומן SteamVR</btn_open_log>
+  <note_saved>{what} נשמר</note_saved>
+  <what_anchoring>עיגון</what_anchoring>
+  <what_left_gate>שער אגודל שמאלי</what_left_gate>
+  <what_right_gate>שער אגודל ימני</what_right_gate>
+  <what_left_smoothing>החלקה שמאלית</what_left_smoothing>
+  <what_right_smoothing>החלקה ימנית</what_right_smoothing>
+  <what_left_deadzone>אזור מת שמאלי</what_left_deadzone>
+  <what_right_deadzone>אזור מת ימני</what_right_deadzone>
+  <what_language>שפה</what_language>
+  <note_copied>האבחון הועתק</note_copied>
+  <note_no_log>מיקום היומן של SteamVR לא ידוע</note_no_log>
+  <tray_open>פתיחת ancora</tray_open>
+  <tray_exit>יציאה</tray_exit>
+</language>

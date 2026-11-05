@@ -5,7 +5,7 @@
 ; entries. SteamVR registration runs steamvr.ps1, the same script install.ps1
 ; uses. SteamVR must be closed to install or uninstall.
 
-#define AppVersion "0.1.0"
+#define AppVersion "0.1.1"
 
 [Setup]
 AppId={{6AB13E94-DDD3-4AAB-B3FE-6965F0462422}
@@ -33,6 +33,31 @@ UninstallDisplayIcon={app}\ancora.exe
 UninstallDisplayName=ancora
 CloseApplications=yes
 RestartApplications=no
+; setup speaks the Windows display language when it has it (the panel's languages,
+; less toki pona and Persian, which Inno Setup has no official file for), and only
+; asks when it has not
+ShowLanguageDialog=auto
+LanguageDetectionMethod=uilanguage
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "german"; MessagesFile: "compiler:Languages\German.isl"
+Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "french"; MessagesFile: "compiler:Languages\French.isl"
+Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
+Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
+Name: "hebrew"; MessagesFile: "compiler:Languages\Hebrew.isl"
+Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
+Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
+Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
+Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
+
+; ancora's own setup messages in those languages (UTF-8 file with a BOM)
+#include "messages.iss"
 
 [Files]
 Source: "..\gui\bin\ancora.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -53,7 +78,7 @@ Type: files; Name: "{app}\driver\ancora\logic\ancora_logic_live*.dll"
 [Run]
 Filename: "powershell.exe"; \
   Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\steamvr.ps1"" register -Root ""{app}"""; \
-  StatusMsg: "Registering ancora with SteamVR..."; Flags: runhidden waituntilterminated
+  StatusMsg: "{cm:Registering}"; Flags: runhidden waituntilterminated
 
 [UninstallRun]
 Filename: "powershell.exe"; \
@@ -65,6 +90,33 @@ Filename: "powershell.exe"; \
 Type: filesandordirs; Name: "{app}"
 
 [Code]
+const
+  WM_CLOSE = $0010;
+
+{ A running panel holds ancora.exe open and only hides to the tray on a normal close.
+  WM_CLOSE with wParam 1 makes it exit (every version of the panel does this); a panel
+  that has not gone after 3 s is ended, so setup never stops on "files in use". }
+procedure ClosePanel();
+var
+  I, Code: Integer;
+begin
+  if FindWindowByClassName('ancora_panel') = 0 then Exit;
+  PostMessage(FindWindowByClassName('ancora_panel'), WM_CLOSE, 1, 0);
+  for I := 1 to 30 do
+  begin
+    if FindWindowByClassName('ancora_panel') = 0 then Exit;
+    Sleep(100);
+  end;
+  Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /IM ancora.exe', '', SW_HIDE, ewWaitUntilTerminated, Code);
+end;
+
+{ runs before setup checks for files in use }
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  ClosePanel();
+  Result := '';
+end;
+
 function SteamVRRunning(): Boolean;
 var
   Locator, Service, Procs: Variant;
@@ -79,7 +131,7 @@ function InitializeSetup(): Boolean;
 begin
   Result := True;
   while SteamVRRunning() do
-    if MsgBox('SteamVR is running. Close SteamVR, then press OK to continue.', mbInformation, MB_OKCANCEL) = IDCANCEL then
+    if MsgBox(CustomMessage('SteamVRRunning'), mbInformation, MB_OKCANCEL) = IDCANCEL then
     begin
       Result := False;
       Exit;
@@ -90,9 +142,10 @@ function InitializeUninstall(): Boolean;
 begin
   Result := True;
   while SteamVRRunning() do
-    if MsgBox('SteamVR is running. Close SteamVR, then press OK to uninstall ancora.', mbInformation, MB_OKCANCEL) = IDCANCEL then
+    if MsgBox(CustomMessage('SteamVRRunningUninstall'), mbInformation, MB_OKCANCEL) = IDCANCEL then
     begin
       Result := False;
       Exit;
     end;
+  ClosePanel();   { its files go next }
 end;

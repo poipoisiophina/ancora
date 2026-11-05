@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Korean. Machine drafted, needs a native review. See en.xml. -->
+<language code="ko" name="한국어" dir="ltr" font="Malgun Gothic">
+  <nav_status>상태</nav_status>
+  <nav_tune>조정</nav_tune>
+  <nav_diag>진단</nav_diag>
+  <rail_steamvr_on>SteamVR 실행 중</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR 꺼짐</rail_steamvr_off>
+  <rail_both>컨트롤러 2개</rail_both>
+  <rail_one>컨트롤러 1개</rail_one>
+  <rail_none>컨트롤러 없음</rail_none>
+  <lang_auto>자동 ({name})</lang_auto>
+  <lang_missing>{name}: 번역되지 않은 문구 {n}개, 영어로 표시</lang_missing>
+  <hint_back>뒤로</hint_back>
+  <hint_apply>적용</hint_apply>
+  <hint_select>선택</hint_select>
+  <hint_next>다음</hint_next>
+  <hand_left>왼쪽 컨트롤러</hand_left>
+  <hand_right>오른쪽 컨트롤러</hand_right>
+  <state_no_signal>신호 없음</state_no_signal>
+  <sub_no_signal>SteamVR을 시작하면 이 컨트롤러가 보입니다.</sub_no_signal>
+  <state_not_connected>연결 안 됨</state_not_connected>
+  <sub_wake>컨트롤러를 깨우면 스틱이 보입니다.</sub_wake>
+  <sub_silent>{n}초 동안 스틱 데이터가 없습니다. 배터리를 확인하거나 깨우세요.</sub_silent>
+  <state_not_corrected>보정 안 함</state_not_corrected>
+  <sub_unchanged>그대로 게임에 전달합니다.</sub_unchanged>
+  <state_anchored>드리프트 고정됨</state_anchored>
+  <sub_drifting>드리프트 {value}. 엄지가 떨어져 있어 게임에는 0.</sub_drifting>
+  <sub_thumb_off>엄지가 떨어져 있어 게임에는 0.</sub_thumb_off>
+  <state_in_deadzone>데드존 안</state_in_deadzone>
+  <sub_in_deadzone>{percent} 데드존 안이라 게임에는 0.</sub_in_deadzone>
+  <state_following>엄지 따라감</state_following>
+  <sub_past_deadzone>{percent} 데드존을 넘어 게임에는 비율 조정된 입력.</sub_past_deadzone>
+  <sub_as_is>그대로 게임에 전달합니다.</sub_as_is>
+  <read_reports>측정값</read_reports>
+  <read_games>게임 입력</read_games>
+  <read_thumb>엄지</read_thumb>
+  <thumb_no_sensor>센서 없음</thumb_no_sensor>
+  <thumb_on>스틱 위</thumb_on>
+  <thumb_off>뗌</thumb_off>
+  <set_gate>엄지 게이트</set_gate>
+  <set_smoothing>스무딩</set_smoothing>
+  <set_deadzone>데드존</set_deadzone>
+  <value_off>끔</value_off>
+  <value_ms>{n}ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>고정 켜짐</master_on>
+  <master_off>고정 꺼짐</master_off>
+  <tune_suggested>권장 {value}</tune_suggested>
+  <legend_rests>멈춘 위치</legend_rests>
+  <legend_suggested>권장 데드존</legend_suggested>
+  <step_rest>스틱에서 손 떼기</step_rest>
+  <step_rest_active>멈춘 위치를 기록 중입니다. 엄지를 떼고 있으세요.</step_rest_active>
+  <step_rest_done>정지 상태 {n}초 기록됨.</step_rest_done>
+  <step_flick>밀었다가 놓기</step_flick>
+  <step_flick_settle>{n}/{total}. 놓으세요. 멈추는 위치를 측정 중.</step_flick_settle>
+  <step_flick_release>{n}/{total}. 이제 놓으세요.</step_flick_release>
+  <step_flick_push>{n}/{total}. 끝까지 밀었다가 놓으세요.</step_flick_push>
+  <step_flick_done>{total}/{total}회 기록됨.</step_flick_done>
+  <step_review>확인 후 적용</step_review>
+  <res_peak>최대 드리프트</res_peak>
+  <res_typical>보통 드리프트</res_typical>
+  <res_direction>방향</res_direction>
+  <dir_none>없음</dir_none>
+  <dir_right>오른쪽</dir_right>
+  <dir_forward_right>앞 오른쪽</dir_forward_right>
+  <dir_forward>앞</dir_forward>
+  <dir_forward_left>앞 왼쪽</dir_forward_left>
+  <dir_left>왼쪽</dir_left>
+  <dir_back_left>뒤 왼쪽</dir_back_left>
+  <dir_back>뒤</dir_back>
+  <dir_back_right>뒤 오른쪽</dir_back_right>
+  <find_none>드리프트가 거의 없습니다. 데드존이 필요 없습니다.</find_none>
+  <find_gate_ok>놓을 때 엄지 센서가 꺼져 있었으므로 엄지 게이트만으로 이 드리프트를 막습니다.</find_gate_ok>
+  <find_gate_fail>놓을 때 엄지 센서가 켜져 있었으므로 엄지 게이트만으로는 막을 수 없습니다.</find_gate_fail>
+  <find_no_sensor>엄지 센서가 없어 데드존으로만 막을 수 있습니다.</find_no_sensor>
+  <find_creep>엄지를 스틱에 올려 두면 조금 움직일 수 있습니다. {value} 데드존이면 막을 수 있습니다.</find_creep>
+  <tune_intro>이 스틱의 드리프트를 측정하고 데드존을 권장합니다. 약 20초: 스틱에서 손을 뗀 다음 몇 번 밀었다가 놓으세요.</tune_intro>
+  <btn_start>측정 시작</btn_start>
+  <btn_apply_left>왼쪽에 {value} 적용</btn_apply_left>
+  <btn_apply_right>오른쪽에 {value} 적용</btn_apply_right>
+  <btn_restart>다시 시작</btn_restart>
+  <tile_driver>드라이버</tile_driver>
+  <drv_loaded>로드됨</drv_loaded>
+  <drv_registered>등록됨</drv_registered>
+  <drv_missing>설치 안 됨</drv_missing>
+  <drv_patched>입력 테이블 {n}개 패치됨</drv_patched>
+  <drv_not_seen>SteamVR 로그에 없음</drv_not_seen>
+  <tile_logic>로직</tile_logic>
+  <logic_gen>{n}세대</logic_gen>
+  <logic_none>로드 안 됨</logic_none>
+  <logic_loaded>{time} 로드, 입력 {n}개 재생</logic_loaded>
+  <tile_config>설정</tile_config>
+  <cfg_pending>아직 적용 안 됨</cfg_pending>
+  <cfg_applied>{time} 적용됨</cfg_applied>
+  <col_controller>컨트롤러</col_controller>
+  <col_inputs>찾은 입력</col_inputs>
+  <col_thumb>현재 엄지</col_thumb>
+  <col_updates>업데이트</col_updates>
+  <diag_left_untracked>왼쪽: 추적 안 됨</diag_left_untracked>
+  <diag_right_untracked>오른쪽: 추적 안 됨</diag_right_untracked>
+  <inputs_silent>응답 없음</inputs_silent>
+  <rate_idle>대기</rate_idle>
+  <log_title>SteamVR 로그, ancora 줄</log_title>
+  <log_empty>SteamVR 로그에 아직 ancora 줄이 없습니다.</log_empty>
+  <btn_copy>진단 복사</btn_copy>
+  <btn_open_cfg>설정 파일 열기</btn_open_cfg>
+  <btn_open_log>SteamVR 로그 열기</btn_open_log>
+  <note_saved>{what} 저장됨</note_saved>
+  <what_anchoring>고정</what_anchoring>
+  <what_left_gate>왼쪽 엄지 게이트</what_left_gate>
+  <what_right_gate>오른쪽 엄지 게이트</what_right_gate>
+  <what_left_smoothing>왼쪽 스무딩</what_left_smoothing>
+  <what_right_smoothing>오른쪽 스무딩</what_right_smoothing>
+  <what_left_deadzone>왼쪽 데드존</what_left_deadzone>
+  <what_right_deadzone>오른쪽 데드존</what_right_deadzone>
+  <what_language>언어</what_language>
+  <note_copied>진단 복사됨</note_copied>
+  <note_no_log>SteamVR 로그 위치를 알 수 없음</note_no_log>
+  <tray_open>ancora 열기</tray_open>
+  <tray_exit>종료</tray_exit>
+</language>

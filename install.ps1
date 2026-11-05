@@ -8,8 +8,12 @@
 #                                                    openvr_api.dll, manifest and bindings
 # Then registers it with SteamVR through steamvr.ps1. SteamVR must be closed.
 # For an installer exe instead, see package.bat.
-# Usage: powershell -ExecutionPolicy Bypass -File install.ps1
+# Usage: powershell -ExecutionPolicy Bypass -File install.ps1 [-PanelOnly]
+#   -PanelOnly   build, then swap only the panel (ancora.exe, ancora.vrmanifest) into an
+#                existing install; SteamVR may keep running, since it never loads the
+#                panel. A running panel is closed and started again with its arguments.
 
+param([switch]$PanelOnly)
 $ErrorActionPreference = 'Stop'
 
 $repo = $PSScriptRoot
@@ -18,6 +22,43 @@ $gui  = Join-Path $repo 'gui\bin'
 $root = Join-Path $env:LOCALAPPDATA 'ancora'
 $dest = Join-Path $root 'driver\ancora'
 $steamvr = Join-Path $repo 'steamvr.ps1'
+
+# a running panel locks ancora.exe and only hides to the tray on a normal close;
+# WM_CLOSE with wParam 1 makes it exit cleanly (tray icon removed). Ended after 3 s.
+# Returns the command line of the panel it closed, or $null.
+function Close-Panel {
+    $proc = Get-CimInstance Win32_Process -Filter "Name = 'ancora.exe'" | Select-Object -First 1
+    if (-not $proc) { return $null }
+    Add-Type -Namespace Ancora -Name Win -MemberDefinition @'
+[DllImport("user32.dll")] public static extern IntPtr FindWindow(string c, string t);
+[DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h, uint m, IntPtr w, IntPtr l);
+'@ -ErrorAction SilentlyContinue
+    $h = [Ancora.Win]::FindWindow('ancora_panel', [NullString]::Value)
+    if ($h -ne [IntPtr]::Zero) { [void][Ancora.Win]::PostMessage($h, 0x0010, [IntPtr]1, [IntPtr]::Zero) }
+    for ($i = 0; $i -lt 30 -and (Get-Process ancora -ErrorAction SilentlyContinue); $i++) { Start-Sleep -Milliseconds 100 }
+    Get-Process ancora -ErrorAction SilentlyContinue | Stop-Process -Force
+    return $proc.CommandLine
+}
+
+if ($PanelOnly) {
+    $installed = Join-Path $root 'ancora.exe'
+    if (-not (Test-Path $installed)) { throw "no install at $root, run install.ps1 without -PanelOnly first" }
+    Write-Host '== build'
+    & cmd /c "`"$repo\build_driver.bat`" all"
+    if ($LASTEXITCODE -ne 0) { throw 'build failed' }
+    Write-Host '== swap panel'
+    $cmd = Close-Panel
+    Copy-Item (Join-Path $gui 'ancora.exe'), (Join-Path $gui 'ancora.vrmanifest') $root -Force
+    if ($cmd) {
+        # the same arguments it ran with, such as --steamvr when SteamVR started it
+        $args0 = ''
+        if ($cmd -match '^\s*(?:"[^"]*"|\S+)\s*(.*)$') { $args0 = $Matches[1].Trim() }
+        if ($args0) { Start-Process $installed -ArgumentList $args0 } else { Start-Process $installed }
+        Write-Host "panel restarted $(if ($args0) { "with $args0" })"
+    }
+    Write-Host "panel swapped in $root"
+    exit 0
+}
 
 & powershell -NoProfile -ExecutionPolicy Bypass -File $steamvr check
 if ($LASTEXITCODE -ne 0) { throw 'SteamVR is running. Close it, then run install again.' }
@@ -39,7 +80,7 @@ $files = @{
 foreach ($f in $files.Values) { if (-not (Test-Path $f)) { throw "missing $f" } }
 
 Write-Host '== copy'
-Get-Process ancora -ErrorAction SilentlyContinue | Stop-Process -Force   # running panel locks ancora.exe
+[void](Close-Panel)
 New-Item -ItemType Directory -Force (Join-Path $dest 'bin\win64'), (Join-Path $dest 'logic') | Out-Null
 Copy-Item $files.drvman $dest -Force
 Copy-Item $files.loader (Join-Path $dest 'bin\win64') -Force

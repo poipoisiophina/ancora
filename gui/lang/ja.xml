@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Japanese. Machine drafted, needs a native review. See en.xml. -->
+<language code="ja" name="日本語" dir="ltr" font="Yu Gothic UI">
+  <nav_status>ステータス</nav_status>
+  <nav_tune>調整</nav_tune>
+  <nav_diag>診断</nav_diag>
+  <rail_steamvr_on>SteamVR 実行中</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR 停止中</rail_steamvr_off>
+  <rail_both>コントローラー 2 台</rail_both>
+  <rail_one>コントローラー 1 台</rail_one>
+  <rail_none>コントローラーなし</rail_none>
+  <lang_auto>自動 ({name})</lang_auto>
+  <lang_missing>{name}: 未翻訳 {n} 件、英語で表示</lang_missing>
+  <hint_back>戻る</hint_back>
+  <hint_apply>適用</hint_apply>
+  <hint_select>選択</hint_select>
+  <hint_next>次へ</hint_next>
+  <hand_left>左コントローラー</hand_left>
+  <hand_right>右コントローラー</hand_right>
+  <state_no_signal>信号なし</state_no_signal>
+  <sub_no_signal>SteamVR を起動するとこのコントローラーが表示されます。</sub_no_signal>
+  <state_not_connected>未接続</state_not_connected>
+  <sub_wake>コントローラーを起動するとスティックが表示されます。</sub_wake>
+  <sub_silent>{n} 秒間スティックのデータがありません。電池を確認するか起動してください。</sub_silent>
+  <state_not_corrected>補正なし</state_not_corrected>
+  <sub_unchanged>そのままゲームに渡します。</sub_unchanged>
+  <state_anchored>ドリフト固定中</state_anchored>
+  <sub_drifting>ドリフト {value}。親指が離れているのでゲームには 0。</sub_drifting>
+  <sub_thumb_off>親指が離れているのでゲームには 0。</sub_thumb_off>
+  <state_in_deadzone>デッドゾーン内</state_in_deadzone>
+  <sub_in_deadzone>{percent} のデッドゾーン内なのでゲームには 0。</sub_in_deadzone>
+  <state_following>親指に追従</state_following>
+  <sub_past_deadzone>{percent} のデッドゾーンを超え、ゲームには補正した入力。</sub_past_deadzone>
+  <sub_as_is>そのままゲームに渡します。</sub_as_is>
+  <read_reports>検出値</read_reports>
+  <read_games>ゲームへ</read_games>
+  <read_thumb>親指</read_thumb>
+  <thumb_no_sensor>センサーなし</thumb_no_sensor>
+  <thumb_on>スティック上</thumb_on>
+  <thumb_off>離れている</thumb_off>
+  <set_gate>親指ゲート</set_gate>
+  <set_smoothing>スムージング</set_smoothing>
+  <set_deadzone>デッドゾーン</set_deadzone>
+  <value_off>オフ</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>固定 オン</master_on>
+  <master_off>固定 オフ</master_off>
+  <tune_suggested>推奨 {value}</tune_suggested>
+  <legend_rests>静止位置</legend_rests>
+  <legend_suggested>推奨デッドゾーン</legend_suggested>
+  <step_rest>スティックから指を離す</step_rest>
+  <step_rest_active>静止位置を記録中です。親指は離したままにしてください。</step_rest_active>
+  <step_rest_done>静止を {n} 秒記録しました。</step_rest_done>
+  <step_flick>倒して離す</step_flick>
+  <step_flick_settle>{n} / {total}。離してください。止まる位置を測定中。</step_flick_settle>
+  <step_flick_release>{n} / {total}。今離してください。</step_flick_release>
+  <step_flick_push>{n} / {total}。いっぱいまで倒してから離してください。</step_flick_push>
+  <step_flick_done>{total} / {total} 回記録しました。</step_flick_done>
+  <step_review>確認して適用</step_review>
+  <res_peak>最大ドリフト</res_peak>
+  <res_typical>標準ドリフト</res_typical>
+  <res_direction>方向</res_direction>
+  <dir_none>なし</dir_none>
+  <dir_right>右</dir_right>
+  <dir_forward_right>右前</dir_forward_right>
+  <dir_forward>前</dir_forward>
+  <dir_forward_left>左前</dir_forward_left>
+  <dir_left>左</dir_left>
+  <dir_back_left>左後ろ</dir_back_left>
+  <dir_back>後ろ</dir_back>
+  <dir_back_right>右後ろ</dir_back_right>
+  <find_none>ドリフトはほとんどありません。デッドゾーンは不要です。</find_none>
+  <find_gate_ok>離したとき親指センサーはオフのままでした。親指ゲートだけでこのドリフトを止められます。</find_gate_ok>
+  <find_gate_fail>離したとき親指センサーがオンでした。親指ゲートだけでは止められません。</find_gate_fail>
+  <find_no_sensor>親指センサーがありません。デッドゾーンでのみ止められます。</find_no_sensor>
+  <find_creep>親指をスティックに乗せたままだと少し動くことがあります。デッドゾーン {value} で対応できます。</find_creep>
+  <tune_intro>このスティックのドリフトを測定し、デッドゾーンを提案します。約 20 秒: スティックから指を離し、何回か倒して離してください。</tune_intro>
+  <btn_start>測定開始</btn_start>
+  <btn_apply_left>左に {value} を適用</btn_apply_left>
+  <btn_apply_right>右に {value} を適用</btn_apply_right>
+  <btn_restart>やり直す</btn_restart>
+  <tile_driver>ドライバー</tile_driver>
+  <drv_loaded>読み込み済み</drv_loaded>
+  <drv_registered>登録済み</drv_registered>
+  <drv_missing>未インストール</drv_missing>
+  <drv_patched>入力テーブル {n} 個にパッチ</drv_patched>
+  <drv_not_seen>SteamVR ログに見つかりません</drv_not_seen>
+  <tile_logic>ロジック</tile_logic>
+  <logic_gen>世代 {n}</logic_gen>
+  <logic_none>未読み込み</logic_none>
+  <logic_loaded>{time} に読み込み、入力 {n} 個を再生</logic_loaded>
+  <tile_config>設定</tile_config>
+  <cfg_pending>未適用</cfg_pending>
+  <cfg_applied>{time} に適用</cfg_applied>
+  <col_controller>コントローラー</col_controller>
+  <col_inputs>検出した入力</col_inputs>
+  <col_thumb>親指</col_thumb>
+  <col_updates>更新</col_updates>
+  <diag_left_untracked>左: 未検出</diag_left_untracked>
+  <diag_right_untracked>右: 未検出</diag_right_untracked>
+  <inputs_silent>無応答</inputs_silent>
+  <rate_idle>待機</rate_idle>
+  <log_title>SteamVR ログ (ancora の行)</log_title>
+  <log_empty>SteamVR ログにまだ ancora の行がありません。</log_empty>
+  <btn_copy>診断をコピー</btn_copy>
+  <btn_open_cfg>設定ファイルを開く</btn_open_cfg>
+  <btn_open_log>SteamVR ログを開く</btn_open_log>
+  <note_saved>{what}を保存しました</note_saved>
+  <what_anchoring>固定</what_anchoring>
+  <what_left_gate>左の親指ゲート</what_left_gate>
+  <what_right_gate>右の親指ゲート</what_right_gate>
+  <what_left_smoothing>左のスムージング</what_left_smoothing>
+  <what_right_smoothing>右のスムージング</what_right_smoothing>
+  <what_left_deadzone>左のデッドゾーン</what_left_deadzone>
+  <what_right_deadzone>右のデッドゾーン</what_right_deadzone>
+  <what_language>言語</what_language>
+  <note_copied>診断をコピーしました</note_copied>
+  <note_no_log>SteamVR ログの場所が不明です</note_no_log>
+  <tray_open>ancora を開く</tray_open>
+  <tray_exit>終了</tray_exit>
+</language>

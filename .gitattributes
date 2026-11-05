@@ -11,3 +11,4 @@
 *.vrmanifest text
 *.vrdrivermanifest text
 *.md  text
+*.xml text

@@ -91,6 +91,18 @@ can send to whoever helps you.
 Tab or arrow keys move around, Enter selects, Left/Right change a slider,
 Esc goes back.
 
+### Language
+
+ancora speaks your Windows language when it has it. To pick another one,
+click the **globe** at the bottom left of the panel. It has VRChat's
+languages, English, Deutsch, Español, Français, Italiano, 日本語, 한국어,
+עברית, Português (Brasil), Polski, 简体中文, 繁體中文, Русский and
+toki pona, plus Українська, العربية and فارسی. Hebrew, Arabic and Persian turn the
+whole panel right to left.
+
+The translations were drafted by machine. If yours reads oddly, see
+"Translate ancora" below.
+
 ---
 
 ## Turn it off
@@ -170,5 +182,26 @@ Layout:
 - `driver/src/driver_ancora.cpp` fixed loader: hooks SteamVR's driver input calls.
 - `driver/src/ancora_logic.cpp` the behaviour, hot reloadable.
 - `gui/src/ancora_panel.cpp` the panel.
+- `gui/src/ancora_lang.h` panel text loading; `gui/lang/*.xml` one file per language.
 - `steamvr.ps1` SteamVR registration, used by the scripts and the installer.
-- `packaging/ancora.iss` installer script.
+- `packaging/ancora.iss` installer script; `packaging/messages.iss` its translated messages.
+
+### Translate ancora
+
+1. Copy `gui/lang/en.xml` to `<code>.xml`, where code is a language tag
+   such as `nl`, `pt-PT` or `ar`.
+2. Set `code`, `name` (the language's own name), `dir` (`ltr`, or `rtl` for
+   Arabic, Hebrew, Persian...) and `font` on the first line.
+3. Translate the text inside each element. Keep the element names and every
+   `{placeholder}`; you may move a placeholder within the sentence.
+4. To try it without building: put the file in a `lang` folder next to
+   `ancora.exe` and pick it from the globe menu. A file there replaces a
+   built-in language with the same code.
+5. To check it: `ancora.exe --screenshot shot.png --fake --page tune --lang <code>`
+   renders a page and lists any text that does not fit. `ancora.exe --selftest`
+   checks that every built-in language has every string with the right
+   placeholders. `--lang qps-ploc` (40 % longer text) and `--lang qps-plocm`
+   (the same, right to left) are pseudo languages for layout testing.
+
+`build_driver.bat all` builds every `gui/lang/*.xml` into `ancora.exe`.
+A string missing from a language shows in English, and Diagnostics says how many.

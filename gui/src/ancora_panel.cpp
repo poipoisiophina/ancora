@@ -7,12 +7,19 @@
 // when something changed, at most 30 times a second, and draws nothing while
 // hidden in the tray. Keyboard: Tab or arrows move focus, Enter or Space
 // selects, Left/Right adjust a focused slider, Esc goes back.
+// Text comes from XML language files (ancora_lang.h). A right to left language
+// mirrors the whole page: shapes through one transform, text by placing it at
+// the mirrored spot and laying it out right to left. The stick plots never
+// mirror, since their axes are physical directions.
 //
 // Usage:
 //   ancora.exe                    open the panel
 //   ancora.exe --tray             start hidden in the tray
 //   ancora.exe --steamvr          started by SteamVR: tray, exit when SteamVR exits
-//   ancora.exe --screenshot f.png [--fake] [--page status|tune|diag]   render one frame, exit
+//   ancora.exe --screenshot f.png [--fake] [--page status|tune|diag] [--lang code] [--kbd KLID]
+//                                 render one frame, exit (--kbd: key hints for another
+//                                 keyboard layout, such as 00000407 German)
+//                                 and list any text that does not fit its space
 //   ancora.exe --icon-png f.png   write the 16/32/48/256 px icons side by side, exit
 //   ancora.exe --icon-ico f.ico   write the app icon file that the build embeds, exit
 //   ancora.exe --selftest         check ini read/write and the tune math, exit code 0 = pass
@@ -36,6 +43,7 @@
 #include <vector>
 #include "../../driver/src/ancora_state.h"
 #include "../../driver/src/ancora_average.h"
+#include "ancora_lang.h"
 
 #pragma comment(lib, "d2d1")
 #pragma comment(lib, "dwrite")
@@ -67,7 +75,6 @@ const UINT kFrameMs = 33;                   // at most 30 redraws a second
 // ---- config (ancora.ini) ---------------------------------------------------------
 // ini keys per hand: <hand>, <hand>_touch_gate, <hand>_average_ms, <hand>_deadzone
 const wchar_t* kHandKey[2] = {L"left", L"right"};
-const wchar_t* kHandName[2] = {L"Left controller", L"Right controller"};
 
 struct HandConfig {
     bool  enable = true;
@@ -79,6 +86,7 @@ struct HandConfig {
 struct Config {
     bool enable = true;
     HandConfig hand[2] = {{true, true, 0.0f, 0}, {false, true, 0.0f, 0}};
+    std::wstring language = L"auto";   // panel only, the driver ignores it
     bool exists = false;
 };
 
@@ -105,6 +113,9 @@ Config read_config(const std::wstring& path) {
         if (h.average_ms < 0) h.average_ms = 0;
         if (h.average_ms > kMaxAverageMs) h.average_ms = kMaxAverageMs;
     }
+    wchar_t lang[32]{};
+    GetPrivateProfileStringW(L"ancora", L"language", L"auto", lang, 32, f);
+    c.language = lang_code_ok(lang) ? lang : L"auto";
     return c;
 }
 
@@ -142,9 +153,11 @@ void write_config_file(const std::wstring& path, const Config& c) {
              L"right=%d\r\n"
              L"right_touch_gate=%d\r\n"
              L"right_average_ms=%d\r\n"
-             L"right_deadzone=%.2f\r\n",
+             L"right_deadzone=%.2f\r\n"
+             L"; panel language: auto follows Windows, or a code such as de, ar, ja, zh-Hant\r\n"
+             L"language=%ls\r\n",
              c.enable, c.hand[0].enable, c.hand[0].touch_gate, c.hand[0].average_ms, c.hand[0].deadzone,
-             c.hand[1].enable, c.hand[1].touch_gate, c.hand[1].average_ms, c.hand[1].deadzone);
+             c.hand[1].enable, c.hand[1].touch_gate, c.hand[1].average_ms, c.hand[1].deadzone, c.language.c_str());
     std::string utf8;
     int n = WideCharToMultiByte(CP_UTF8, 0, text, -1, nullptr, 0, nullptr, nullptr);
     utf8.resize(n - 1);
@@ -305,7 +318,7 @@ struct Point { float x, y; };
 
 struct TuneResult {
     float peak = 0, typical = 0, suggested = 0;
-    const wchar_t* direction = L"none";
+    Str direction = S_dir_none;
     bool gate_ok = false;       // thumb sensor stayed off while the stick was let go
     bool has_sensor = false;
 };
@@ -328,8 +341,8 @@ TuneResult tune_compute(const std::vector<Point>& pts, int touch_on, int samples
     r.suggested = std::fmin(0.95f, std::ceil((r.peak + 0.03f) / 0.05f - 1e-4f) * 0.05f);
     if (std::fabs(sx) + std::fabs(sy) > 1e-3f) {
         float a = std::atan2(sy, sx) * 180.0f / 3.14159265f;   // 90 = forward (+y)
-        static const wchar_t* names[8] = {L"right", L"forward right", L"forward", L"forward left",
-                                          L"left", L"back left", L"back", L"back right"};
+        static const Str names[8] = {S_dir_right, S_dir_forward_right, S_dir_forward, S_dir_forward_left,
+                                     S_dir_left, S_dir_back_left, S_dir_back, S_dir_back_right};
         int k = (int)std::lround((a < 0 ? a + 360 : a) / 45.0f) % 8;
         r.direction = names[k];
     }
@@ -458,9 +471,50 @@ struct App {
     D2D1_RECT_F drag_track{};
     bool exiting = false, from_steamvr = false;
     NOTIFYICONDATAW nid{};
+
+    // language
+    std::vector<LangInfo> langs;    // available, sorted by code
+    Lang en, lang;                  // English (for missing strings) and the current one
+    std::wstring lang_setting;      // the ini value it was resolved from
+    bool rtl = false;               // page laid out right to left
+    bool mirror = false;            // the world transform is mirrored right now
+    D2D1_RECT_F lang_button{};
+    std::wstring key_esc = L"Esc", key_enter = L"Enter", key_tab = L"Tab";   // as the keyboard layout names them
+    std::vector<std::wstring> overflow;   // text that did not fit, for --screenshot
 };
 
 App g;
+
+// the current language's string, English when it has none
+const std::wstring& tr(Str k) { return g.lang.s[k].empty() ? g.en.s[k] : g.lang.s[k]; }
+
+// keep a value or a Latin name in its own left to right run inside right to left text,
+// so "0.45", "%LOCALAPPDATA%\..." or "Quest3 (Left)" are not reordered. It uses the
+// LRE/PDF embedding marks: DirectWrite on Windows 10/11 ignores the newer LRI/PDI isolates.
+// The RLM before each value stops two values joined by ", " from merging into one
+// run; none after it, so a unit such as "%" stays on the value's own side.
+std::wstring iso(const std::wstring& v) {
+    return g.rtl ? std::wstring(L"\x200f\x202a") + v + L"\x202c" : v;
+}
+
+// fills {name} placeholders; values are isolated, so they keep their own direction
+std::wstring sub(const std::wstring& s, std::initializer_list<std::pair<const wchar_t*, std::wstring>> vals) {
+    std::wstring out = s;
+    for (auto& [name, v] : vals) {
+        std::wstring ph = std::wstring(L"{") + name + L"}", put = iso(v);
+        for (size_t p = out.find(ph); p != std::wstring::npos; p = out.find(ph, p + put.size()))
+            out.replace(p, ph.size(), put);
+    }
+    return out;
+}
+
+void apply_language(const std::wstring& setting);
+
+std::wstring num(double v, int decimals) {
+    wchar_t buf[32];
+    swprintf(buf, 32, L"%.*f", decimals, v);
+    return buf;
+}
 
 void note(const std::wstring& s) { g.status_note = s; g.note_until = GetTickCount64() + 2000; }
 
@@ -484,7 +538,7 @@ void trace(const char* f, ...) {
 
 // ---- focusable regions -------------------------------------------------------------------
 enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_AVERAGE, ID_SLIDER,
-          ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG };
+          ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG };
 struct Region { D2D1_RECT_F r; Id id; int hand; };
 std::vector<Region> g_regions;     // rebuilt every frame, in focus order
 Id g_focus = ID_NAV_STATUS;
@@ -496,29 +550,103 @@ bool focused(Id id, int hand = 0) { return g_focus_visible && g_focus == id && g
 void region(D2D1_RECT_F r, Id id, int hand = 0) { g_regions.push_back({r, id, hand}); }
 
 // ---- drawing helpers -----------------------------------------------------------------
-IDWriteTextFormat* make_format(float size, DWRITE_FONT_WEIGHT w, const wchar_t* family = L"Segoe UI") {
+// ui text uses the language's font and direction; mono is for numbers and log
+// lines and always reads left to right
+IDWriteTextFormat* make_format(float size, DWRITE_FONT_WEIGHT w, bool mono = false) {
     IDWriteTextFormat* f = nullptr;
-    g.dw->CreateTextFormat(family, nullptr, w, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, size, L"en-us", &f);
+    const wchar_t* locale = lang_code_ok(g.lang.info.code) && g.lang.info.code.rfind(L"qps-", 0) != 0
+                                ? g.lang.info.code.c_str() : L"en-us";
+    g.dw->CreateTextFormat(mono ? L"Consolas" : g.lang.info.font.c_str(), nullptr, w, DWRITE_FONT_STYLE_NORMAL,
+                           DWRITE_FONT_STRETCH_NORMAL, size, locale, &f);
     f->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+    f->SetReadingDirection(g.rtl && !mono ? DWRITE_READING_DIRECTION_RIGHT_TO_LEFT : DWRITE_READING_DIRECTION_LEFT_TO_RIGHT);
     return f;
 }
 
-void text(ID2D1RenderTarget* t, const std::wstring& s, IDWriteTextFormat* f, float x, float y, uint32_t c,
-          float w = 800, DWRITE_TEXT_ALIGNMENT al = DWRITE_TEXT_ALIGNMENT_LEADING) {
-    f->SetTextAlignment(al);
-    g.br->SetColor(rgb(c));
-    t->DrawText(s.c_str(), (UINT32)s.size(), f, D2D1::RectF(x, y, x + w, y + 60), g.br);
+bool mono_format(IDWriteTextFormat* f) { return f == g.f_mono || f == g.f_mono_big; }
+
+const D2D1_MATRIX_3X2_F kMirror = {-1, 0, 0, 1, kW, 0};
+
+// draws a layout at layout position x (left edge of a box w wide); in a mirrored
+// page the box moves to its mirror image and the text is drawn unmirrored there
+void draw_layout(ID2D1RenderTarget* t, IDWriteTextLayout* lay, float x, float y, float w) {
+    if (g.mirror) {
+        t->SetTransform(D2D1::Matrix3x2F::Identity());
+        t->DrawTextLayout(D2D1::Point2F(kW - x - w, y), lay, g.br);
+        t->SetTransform(kMirror);
+    } else {
+        t->DrawTextLayout(D2D1::Point2F(x, y), lay, g.br);
+    }
 }
 
-// wrapped paragraph inside width w
-void para(ID2D1RenderTarget* t, const std::wstring& s, IDWriteTextFormat* f, float x, float y, float w, uint32_t c) {
+void note_overflow(const std::wstring& s, float need, float have) {
+    wchar_t buf[48];
+    swprintf(buf, 48, L"  (needs %.0f, has %.0f)", need, have);
+    if (g.overflow.size() < 200) g.overflow.push_back(s + buf);
+}
+
+// one line of text; w is the space it may use: text wider than that shrinks to
+// fit, down to 75 %, and what still does not fit is listed for --screenshot
+void text(ID2D1RenderTarget* t, const std::wstring& s, IDWriteTextFormat* f, float x, float y, uint32_t c,
+          float w = 800, DWRITE_TEXT_ALIGNMENT al = DWRITE_TEXT_ALIGNMENT_LEADING) {
     IDWriteTextLayout* lay = nullptr;
-    g.dw->CreateTextLayout(s.c_str(), (UINT32)s.size(), f, w, 200, &lay);
+    if (FAILED(g.dw->CreateTextLayout(s.c_str(), (UINT32)s.size(), f, w, 60, &lay))) return;
+    // left to right text in a mirrored page keeps to the mirrored side of its box
+    if (g.mirror && mono_format(f) && al != DWRITE_TEXT_ALIGNMENT_CENTER)
+        al = al == DWRITE_TEXT_ALIGNMENT_LEADING ? DWRITE_TEXT_ALIGNMENT_TRAILING : DWRITE_TEXT_ALIGNMENT_LEADING;
+    lay->SetTextAlignment(al);
+    DWRITE_TEXT_METRICS m{};
+    lay->GetMetrics(&m);
+    float dy = 0;
+    if (m.widthIncludingTrailingWhitespace > w + 0.5f) {
+        float size = f->GetFontSize(), k = std::fmax(0.75f, w / m.widthIncludingTrailingWhitespace);
+        lay->SetFontSize(size * k, {0, (UINT32)s.size()});
+        dy = size * (1 - k) * 0.6f;   // keep the shrunk line on the same middle
+        if (k <= 0.75f) {
+            lay->GetMetrics(&m);
+            if (m.widthIncludingTrailingWhitespace > w + 0.5f) note_overflow(s, m.widthIncludingTrailingWhitespace, w);
+        }
+    }
+    g.br->SetColor(rgb(c));
+    draw_layout(t, lay, x, y + dy, w);
+    lay->Release();
+}
+
+// wrapped paragraph inside width w and, when given, height h (it shrinks to fit that)
+void para(ID2D1RenderTarget* t, const std::wstring& s, IDWriteTextFormat* f, float x, float y, float w, uint32_t c,
+          float h = 0) {
+    IDWriteTextLayout* lay = nullptr;
+    if (FAILED(g.dw->CreateTextLayout(s.c_str(), (UINT32)s.size(), f, w, 400, &lay))) return;
     lay->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP);
     lay->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+    if (h > 0) {
+        DWRITE_TEXT_METRICS m{};
+        float size = f->GetFontSize();
+        for (float k = 1.0f; ; k -= 0.05f) {
+            lay->GetMetrics(&m);
+            if (m.height <= h + 0.5f) break;
+            if (k < 0.8f) { note_overflow(s, m.height, h); break; }
+            lay->SetFontSize(size * (k - 0.05f), {0, (UINT32)s.size()});
+        }
+    }
     g.br->SetColor(rgb(c));
-    t->DrawTextLayout(D2D1::Point2F(x, y), lay, g.br);
+    draw_layout(t, lay, x, y, w);
     lay->Release();
+}
+
+// stick plots show physical directions, so they never mirror: physical(cx) returns
+// where the plot centre goes and drops the mirror until unphysical()
+float physical(ID2D1RenderTarget* t, float cx) {
+    if (!g.mirror) return cx;
+    g.mirror = false;
+    t->SetTransform(D2D1::Matrix3x2F::Identity());
+    return kW - cx;
+}
+
+void unphysical(ID2D1RenderTarget* t) {
+    if (!g.rtl) return;
+    g.mirror = true;
+    t->SetTransform(kMirror);
 }
 
 float measure(const std::wstring& s, IDWriteTextFormat* f) {
@@ -589,7 +717,7 @@ void draw_switch(ID2D1RenderTarget* t, float x, float y, bool on) {
 
 void draw_button(ID2D1RenderTarget* t, D2D1_RECT_F r, const std::wstring& s, bool primary, Id id, int hand = 0) {
     fill_round(t, r, 12, primary ? kOut : kCard);
-    text(t, s, g.f_h2, r.left, r.top + (r.bottom - r.top - 24) / 2, primary ? kBg : kText, r.right - r.left,
+    text(t, s, g.f_h2, r.left + 12, r.top + (r.bottom - r.top - 24) / 2, primary ? kBg : kText, r.right - r.left - 24,
          DWRITE_TEXT_ALIGNMENT_CENTER);
     if (focused(id, hand)) ring(t, r, 12);
     region(r, id, hand);
@@ -640,17 +768,30 @@ void draw_nav(ID2D1RenderTarget* t, uint64_t now) {
     draw_mark(t, 48, 46, 19);
     text(t, L"ancora", g.f_logo, 78, 30, kText);
 
-    const wchar_t* names[3] = {L"Status", L"Tune", L"Diagnostics"};
+    const Str names[3] = {S_nav_status, S_nav_tune, S_nav_diag};
     Id ids[3] = {ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG};
     for (int i = 0; i < 3; ++i) {
         D2D1_RECT_F r = {16, 98 + i * 62.0f, kNavW - 16, 154 + i * 62.0f};
         bool sel = g.page == (Page)i;
         if (sel) fill_round(t, r, 12, kSel);
         nav_icon(t, i, r.left + 16, r.top + 17, sel ? kWhite : kMuted);
-        text(t, names[i], g.f_nav, r.left + 52, r.top + 15, sel ? kWhite : kMuted);
+        text(t, tr(names[i]), g.f_nav, r.left + 52, r.top + 15, sel ? kWhite : kMuted, r.right - r.left - 64);
         if (focused(ids[i])) ring(t, r, 12);
         region(r, ids[i]);
     }
+
+    // language button: globe and the language's own name, opens the language menu
+    D2D1_RECT_F lb = {16, kH - 152, kNavW - 16, kH - 116};
+    g.lang_button = lb;
+    float gx = lb.left + 27, gy = (lb.top + lb.bottom) / 2;
+    circle(t, gx, gy, 8, kDim, 1, false, 1.4f);
+    D2D1_ELLIPSE meridian = D2D1::Ellipse(D2D1::Point2F(gx, gy), 3.6f, 8);
+    g.br->SetColor(rgb(kDim));
+    t->DrawEllipse(meridian, g.br, 1.2f);
+    line(t, gx - 8, gy, gx + 8, gy, kDim, 1.2f);
+    text(t, g.lang.info.name, g.f_small, lb.left + 46, lb.top + 9, kMuted, lb.right - lb.left - 58);
+    if (focused(ID_LANG)) ring(t, lb, 10);
+    region(lb, ID_LANG);
 
     // live summary at the bottom of the rail
     D2D1_RECT_F box = {16, kH - 104, kNavW - 16, kH - 20};
@@ -658,14 +799,36 @@ void draw_nav(ID2D1RenderTarget* t, uint64_t now) {
     bool live = live_now(now);
     int found = 0;
     for (int i = 0; i < 2; ++i) found += live && connected(g_live.snap.hand[i], now);
+    float bw = box.right - box.left - 44;
     circle(t, box.left + 20, box.top + 25, 4, g.steamvr ? kOut : kDim);
-    text(t, g.steamvr ? L"SteamVR running" : L"SteamVR off", g.f_small, box.left + 32, box.top + 15, kMuted);
+    text(t, tr(g.steamvr ? S_rail_steamvr_on : S_rail_steamvr_off), g.f_small, box.left + 32, box.top + 15, kMuted, bw);
     circle(t, box.left + 20, box.top + 57, 4, found == 2 ? kOut : found ? kBrass : kDim);
-    text(t, found == 2 ? L"Both controllers" : found == 1 ? L"One controller" : L"No controllers", g.f_small,
-         box.left + 32, box.top + 47, kMuted);
+    text(t, tr(found == 2 ? S_rail_both : found == 1 ? S_rail_one : S_rail_none), g.f_small,
+         box.left + 32, box.top + 47, kMuted, bw);
 }
 
-void key_hint(ID2D1RenderTarget* t, float& x, float y, const wchar_t* key, const wchar_t* what) {
+// a key's name as the active keyboard layout prints it, from its scan code:
+// "Enter" on a US layout, "Eingabe" on a German one, "Entrée" on a French one.
+// Layouts return names in capitals ("ESC", "EINGABE"); shown as "Esc", "Eingabe".
+std::wstring key_name(UINT scan, const wchar_t* fallback) {
+    wchar_t buf[32]{};
+    int n = GetKeyNameTextW((LONG)(scan << 16), buf, 32);
+    if (n <= 0) return fallback;
+    std::wstring s(buf, (size_t)n);
+    bool caps = true;
+    for (wchar_t c : s) if (IsCharLowerW(c)) caps = false;
+    if (caps && s.size() > 1) CharLowerBuffW(&s[1], (DWORD)(s.size() - 1));
+    return s;
+}
+
+// on start and whenever the keyboard layout changes (WM_INPUTLANGCHANGE)
+void read_key_names() {
+    g.key_esc = key_name(0x01, L"Esc");
+    g.key_tab = key_name(0x0F, L"Tab");
+    g.key_enter = key_name(0x1C, L"Enter");
+}
+
+void key_hint(ID2D1RenderTarget* t, float& x, float y, const std::wstring& key, const std::wstring& what) {
     // drawn right to left: x is the right edge, moved left past this hint
     float tw = measure(what, g.f_body), kw = measure(key, g.f_label) + 16;
     x -= tw;
@@ -680,11 +843,11 @@ void draw_footer(ID2D1RenderTarget* t) {
     g.br->SetColor(rgb(kNav));
     t->FillRectangle(D2D1::RectF(kNavW, kH - kFootH, kW, kH), g.br);
     float x = kW - 36, y = kH - kFootH + 14;
-    key_hint(t, x, y, L"Esc", L"Back");
-    if (g.page == PAGE_TUNE && g_tune.stage == TUNE_REVIEW) key_hint(t, x, y, L"Enter", L"Apply");
-    else key_hint(t, x, y, L"Enter", L"Select");
-    key_hint(t, x, y, L"Tab", L"Next");
-    if (GetTickCount64() < g.note_until) text(t, g.status_note, g.f_body, kNavW + 32, y + 4, kOut, 400);
+    key_hint(t, x, y, g.key_esc, tr(S_hint_back));
+    key_hint(t, x, y, g.key_enter, tr(g.page == PAGE_TUNE && g_tune.stage == TUNE_REVIEW ? S_hint_apply : S_hint_select));
+    key_hint(t, x, y, g.key_tab, tr(S_hint_next));
+    if (GetTickCount64() < g.note_until)
+        text(t, g.status_note, g.f_body, kNavW + 32, y + 4, kOut, std::fmin(400.0f, x - kNavW - 40));
 }
 
 // ---- status page ----------------------------------------------------------------------------
@@ -698,19 +861,19 @@ HandView describe_hand(int i, uint64_t now) {
     const AncoraHandState& h = s.hand[i];
     bool live = live_now(now);
     float m = std::sqrt(h.raw_x * h.raw_x + h.raw_y * h.raw_y);
-    if (!live) return {L"No signal", L"Start SteamVR to see this controller.", kDim};
-    if ((h.tracked & 3) != 3 || !h.last_update_ms) return {L"Not connected", L"Wake the controller to see its stick.", kWarn};
+    if (!live) return {tr(S_state_no_signal), tr(S_sub_no_signal), kDim};
+    if ((h.tracked & 3) != 3 || !h.last_update_ms) return {tr(S_state_not_connected), tr(S_sub_wake), kWarn};
     if (!connected(h, now))
-        return {L"Not connected", fmt1(L"No stick data for %.0f s. Check its battery or wake it.",
-                                       (now - h.last_update_ms) / 1000.0), kWarn};
-    if (!s.enable || !h.enable) return {L"Not corrected", L"Passed to games unchanged.", kMuted};
+        return {tr(S_state_not_connected), sub(tr(S_sub_silent), {{L"n", num((now - h.last_update_ms) / 1000.0, 0)}}), kWarn};
+    if (!s.enable || !h.enable) return {tr(S_state_not_corrected), tr(S_sub_unchanged), kMuted};
     if (h.touch_gate && (h.tracked & 4) && !h.touch)
-        return {L"Drift anchored", m > 0.02f ? fmt1(L"Drifting %.2f. Thumb off, so games get 0.", m)
-                                             : std::wstring(L"Thumb off, so games get 0."), kOut};
+        return {tr(S_state_anchored), m > 0.02f ? sub(tr(S_sub_drifting), {{L"value", num(m, 2)}}) : tr(S_sub_thumb_off),
+                kOut};
+    std::wstring pct = sub(tr(S_value_percent), {{L"n", num(h.deadzone * 100, 0)}});
     if (h.deadzone > 0 && m < h.deadzone)
-        return {L"In deadzone", fmt1(L"Inside the %.0f%% deadzone, so games get 0.", h.deadzone * 100), kOut};
-    return {L"Following thumb", h.deadzone > 0 ? fmt1(L"Past the %.0f%% deadzone, games get a scaled push.", h.deadzone * 100)
-                                               : std::wstring(L"Passed to games as is."), kBrass};
+        return {tr(S_state_in_deadzone), sub(tr(S_sub_in_deadzone), {{L"percent", pct}}), kOut};
+    return {tr(S_state_following), h.deadzone > 0 ? sub(tr(S_sub_past_deadzone), {{L"percent", pct}}) : tr(S_sub_as_is),
+            kBrass};
 }
 
 void draw_trail(ID2D1RenderTarget* t, int i, float cx, float cy, float R, uint64_t now) {
@@ -725,11 +888,12 @@ void draw_trail(ID2D1RenderTarget* t, int i, float cx, float cy, float R, uint64
 }
 
 // one settings row: label, slider (fraction 0..1) and value
-void draw_slider(ID2D1RenderTarget* t, D2D1_RECT_F r, const wchar_t* label, const std::wstring& val, bool active,
-                 float fraction, Id id, int hand) {
-    text(t, label, g.f_body, r.left + 14, r.top + 15, kText);
-    text(t, val, g.f_mono, r.right - 74, r.top + 16, active ? kText : kMuted, 60, DWRITE_TEXT_ALIGNMENT_TRAILING);
-    float x0 = r.left + 110, x1 = r.right - 88, y = r.top + 26;
+// label_w: the widest label in the group, so the tracks line up
+void draw_slider(ID2D1RenderTarget* t, D2D1_RECT_F r, const std::wstring& label, const std::wstring& val, bool active,
+                 float fraction, Id id, int hand, float label_w) {
+    float x0 = r.left + std::fmax(110.0f, std::fmin(label_w + 30, 190.0f)), x1 = r.right - 88, y = r.top + 26;
+    text(t, label, g.f_body, r.left + 14, r.top + 15, kText, x0 - r.left - 26);
+    text(t, val, g.f_body, r.right - 80, r.top + 15, active ? kText : kMuted, 66, DWRITE_TEXT_ALIGNMENT_TRAILING);
     line(t, x0, y, x1, y, kGrid, 4);
     float kx = x0 + (x1 - x0) * fraction;
     line(t, x0, y, kx, y, kOut, 4);
@@ -746,14 +910,14 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     const HandConfig& hc = g.cfg.hand[i];
     bool live = live_now(now), tracked = live && connected(h, now);
 
-    text(t, kHandName[i], g.f_h2, x0 + 22, c.top + 18, kText);
+    text(t, tr(i ? S_hand_right : S_hand_left), g.f_h2, x0 + 22, c.top + 18, kText, 470 - 44 - 46 - 16);
     D2D1_RECT_F sw = {x0 + 470 - 22 - 46, c.top + 18, x0 + 470 - 22, c.top + 44};
     draw_switch(t, sw.left, sw.top, hc.enable);
     if (focused(ID_CORRECT, i)) ring(t, sw, 13);
     region(sw, ID_CORRECT, i);
 
     // stick
-    float R = 82, cx = x0 + 22 + R, cy = c.top + 62 + R;
+    float R = 82, cx = physical(t, x0 + 22 + R), cy = c.top + 62 + R;
     draw_target(t, cx, cy, R, (live && h.enable && g_live.snap.enable) ? h.deadzone : 0, false);
     draw_trail(t, i, cx, cy, R, now);
     if (tracked) {
@@ -761,48 +925,51 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
         circle(t, cx + h.out_x * R, cy - h.out_y * R, 15, kOut, 0.18f);
         circle(t, cx + h.out_x * R, cy - h.out_y * R, 8, kOut);
     }
+    unphysical(t);
 
     HandView v = describe_hand(i, now);
-    text(t, v.word, g.f_big, x0 + 210, c.top + 92, v.color, 250);
-    para(t, v.sub, g.f_body, x0 + 210, c.top + 134, 240, kMuted);
+    text(t, v.word, g.f_big, x0 + 210, c.top + 92, v.color, 240);
+    para(t, v.sub, g.f_body, x0 + 210, c.top + 134, 240, kMuted, 100);
 
     // readouts
     float ry = c.top + 246, bw = (470 - 44 - 16) / 3.0f;
-    const wchar_t* lab[3] = {L"Reports", L"Games get", L"Thumb"};
+    const Str lab[3] = {S_read_reports, S_read_games, S_read_thumb};
     for (int k = 0; k < 3; ++k) {
         D2D1_RECT_F b = {x0 + 22 + k * (bw + 8), ry, x0 + 22 + k * (bw + 8) + bw, ry + 54};
         fill_round(t, b, 10, kWell);
-        text(t, lab[k], g.f_small, b.left + 12, b.top + 7, kDim);
-        if (!tracked) { text(t, L"--", g.f_mono, b.left + 12, b.top + 26, kDim); continue; }
-        if (k == 0) text(t, fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y), g.f_mono, b.left + 12, b.top + 26, kRawText);
-        if (k == 1) text(t, fmt2(L"%+.2f %+.2f", h.out_x, h.out_y), g.f_mono, b.left + 12, b.top + 26, kOut);
-        if (k == 2) text(t, !(h.tracked & 4) ? L"no sensor" : h.touch ? L"on stick" : L"off", g.f_body, b.left + 12,
-                         b.top + 25, h.touch ? kBrass : kMuted);
+        text(t, tr(lab[k]), g.f_small, b.left + 12, b.top + 7, kDim, bw - 24);
+        if (!tracked) { text(t, L"--", g.f_mono, b.left + 12, b.top + 26, kDim, bw - 24); continue; }
+        if (k == 0) text(t, fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y), g.f_mono, b.left + 12, b.top + 26, kRawText, bw - 24);
+        if (k == 1) text(t, fmt2(L"%+.2f %+.2f", h.out_x, h.out_y), g.f_mono, b.left + 12, b.top + 26, kOut, bw - 24);
+        if (k == 2) text(t, tr(!(h.tracked & 4) ? S_thumb_no_sensor : h.touch ? S_thumb_on : S_thumb_off), g.f_body,
+                         b.left + 12, b.top + 25, h.touch ? kBrass : kMuted, bw - 24);
     }
 
     // per hand settings
     D2D1_RECT_F well = {x0 + 22, ry + 70, x0 + 470 - 22, ry + 70 + 156};
     fill_round(t, well, 12, kWell);
     D2D1_RECT_F gate = {well.left, well.top, well.right, well.top + 52};
-    text(t, L"Thumb gate", g.f_body, gate.left + 14, gate.top + 15, kText);
+    text(t, tr(S_set_gate), g.f_body, gate.left + 14, gate.top + 15, kText, gate.right - gate.left - 90);
     draw_switch(t, gate.right - 14 - 46, gate.top + 13, hc.touch_gate);
     if (focused(ID_GATE, i)) ring(t, gate, 12);
     region(gate, ID_GATE, i);
     line(t, well.left, well.top + 52, well.right, well.top + 52, kLine);
 
-    draw_slider(t, {well.left, well.top + 52, well.right, well.top + 104}, L"Smoothing",
-                hc.average_ms > 0 ? fmt1(L"%.0f ms", hc.average_ms) : std::wstring(L"off"), hc.average_ms > 0,
-                hc.average_ms / (float)kMaxAverageMs, ID_AVERAGE, i);
+    float label_w = std::fmax(measure(tr(S_set_smoothing), g.f_body), measure(tr(S_set_deadzone), g.f_body));
+    draw_slider(t, {well.left, well.top + 52, well.right, well.top + 104}, tr(S_set_smoothing),
+                hc.average_ms > 0 ? sub(tr(S_value_ms), {{L"n", std::to_wstring(hc.average_ms)}}) : tr(S_value_off),
+                hc.average_ms > 0, hc.average_ms / (float)kMaxAverageMs, ID_AVERAGE, i, label_w);
     line(t, well.left, well.top + 104, well.right, well.top + 104, kLine);
-    draw_slider(t, {well.left, well.top + 104, well.right, well.bottom}, L"Deadzone",
-                hc.deadzone > 0 ? fmt1(L"%.0f%%", hc.deadzone * 100) : std::wstring(L"off"), hc.deadzone > 0,
-                hc.deadzone / 0.95f, ID_SLIDER, i);
+    draw_slider(t, {well.left, well.top + 104, well.right, well.bottom}, tr(S_set_deadzone),
+                // the whole "31%" as one left to right run, so the sign keeps to its number
+                hc.deadzone > 0 ? iso(sub(tr(S_value_percent), {{L"n", num(hc.deadzone * 100, 0)}})) : tr(S_value_off),
+                hc.deadzone > 0, hc.deadzone / 0.95f, ID_SLIDER, i, label_w);
 }
 
 void draw_status(ID2D1RenderTarget* t, uint64_t now) {
-    text(t, L"Status", g.f_title, 292, 24, kText);
+    text(t, tr(S_nav_status), g.f_title, 292, 24, kText, 400);
     // master switch pill
-    std::wstring label = g.cfg.enable ? L"Anchoring on" : L"Anchoring off";
+    std::wstring label = tr(g.cfg.enable ? S_master_on : S_master_off);
     float w = measure(label, g.f_h2) + 46 + 44;
     D2D1_RECT_F r = {kW - 32 - w, 22, kW - 32, 66};
     fill_round(t, r, 22, kCard);
@@ -814,15 +981,17 @@ void draw_status(ID2D1RenderTarget* t, uint64_t now) {
 }
 
 // ---- tune page ---------------------------------------------------------------------------------
-void draw_step(ID2D1RenderTarget* t, D2D1_RECT_F r, int n, int state, const wchar_t* title, const std::wstring& sub,
+void draw_step(ID2D1RenderTarget* t, D2D1_RECT_F r, int n, int state, const std::wstring& title, const std::wstring& sub,
                float progress) {
     // state: 0 waiting, 1 active, 2 done
     fill_round(t, r, 14, state == 1 ? kSel : kCard);
     float cx = r.left + 30, cy = r.top + 28;
     if (state == 2) {
         circle(t, cx, cy, 14, kOkWell);
-        line(t, cx - 6, cy, cx - 2, cy + 4, kOut, 2.2f);
-        line(t, cx - 2, cy + 4, cx + 6, cy - 4, kOut, 2.2f);
+        float kx = physical(t, cx);   // a check mark reads the same in every direction
+        line(t, kx - 6, cy, kx - 2, cy + 4, kOut, 2.2f);
+        line(t, kx - 2, cy + 4, kx + 6, cy - 4, kOut, 2.2f);
+        unphysical(t);
     } else if (state == 1) {
         circle(t, cx, cy, 14, kOut);
         text(t, std::to_wstring(n), g.f_label, cx - 14, cy - 9, kBg, 28, DWRITE_TEXT_ALIGNMENT_CENTER);
@@ -830,8 +999,9 @@ void draw_step(ID2D1RenderTarget* t, D2D1_RECT_F r, int n, int state, const wcha
         circle(t, cx, cy, 13, 0x3A4552, 1, false, 1.5f);
         text(t, std::to_wstring(n), g.f_label, cx - 14, cy - 9, kDim, 28, DWRITE_TEXT_ALIGNMENT_CENTER);
     }
-    text(t, title, g.f_h2, r.left + 58, r.top + (sub.empty() ? 16 : 8), state == 0 ? kMuted : kText);
-    if (!sub.empty()) text(t, sub, g.f_small, r.left + 58, r.top + 32, kMuted, r.right - r.left - 70);
+    float tw = r.right - r.left - 70 - (state == 1 && progress >= 0 ? 160 : 0);
+    text(t, title, g.f_h2, r.left + 58, r.top + (sub.empty() ? 16 : 8), state == 0 ? kMuted : kText, tw);
+    if (!sub.empty()) text(t, sub, g.f_small, r.left + 58, r.top + 32, kMuted, tw);
     if (state == 1 && progress >= 0) {
         D2D1_RECT_F bar = {r.right - 150, r.top + 25, r.right - 20, r.top + 31};
         fill_round(t, bar, 3, kBg);
@@ -840,7 +1010,7 @@ void draw_step(ID2D1RenderTarget* t, D2D1_RECT_F r, int n, int state, const wcha
 }
 
 void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
-    text(t, L"Tune", g.f_title, 292, 24, kText);
+    text(t, tr(S_nav_tune), g.f_title, 292, 24, kText, 400);
     // hand selector
     D2D1_RECT_F seg = {kW - 32 - 320, 22, kW - 32, 66};
     fill_round(t, seg, 12, kCard);
@@ -848,8 +1018,8 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
         D2D1_RECT_F b = {seg.left + 4 + i * 156.0f, seg.top + 4, seg.left + 160 + i * 156.0f, seg.bottom - 4};
         bool sel = g_tune.hand == i;
         if (sel) fill_round(t, b, 9, kGrid);
-        text(t, kHandName[i], g.f_body, b.left, b.top + 9, sel ? kWhite : kMuted, b.right - b.left,
-             DWRITE_TEXT_ALIGNMENT_CENTER);
+        text(t, tr(i ? S_hand_right : S_hand_left), g.f_body, b.left + 6, b.top + 9, sel ? kWhite : kMuted,
+             b.right - b.left - 12, DWRITE_TEXT_ALIGNMENT_CENTER);
         if (focused(ID_TUNE_HAND, i)) ring(t, b, 9);
         region(b, ID_TUNE_HAND, i);
     }
@@ -857,38 +1027,48 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
     // measurement target
     D2D1_RECT_F left = {292, 84, 672, kH - kFootH - 24};
     fill_round(t, left, 18, kCard);
-    float R = 150, cx = (left.left + left.right) / 2, cy = (left.top + left.bottom - 40) / 2;
+    float R = 150, lcx = (left.left + left.right) / 2, cy = (left.top + left.bottom - 40) / 2;
     bool review = g_tune.stage == TUNE_REVIEW;
+    float cx = physical(t, lcx);
     draw_target(t, cx, cy, R, review ? g_tune.result.suggested : 0, true);
     for (const Point& p : g_tune.pts) circle(t, cx + p.x * R, cy - p.y * R, 3, kRaw, 0.8f);
     const AncoraHandState& h = g_live.snap.hand[g_tune.hand];
     if (live_now(now) && connected(h, now) && !review)
         circle(t, cx + h.raw_x * R, cy - h.raw_y * R, 7, kRaw, 1, false, 2);
+    unphysical(t);
     if (review && g_tune.result.suggested > 0)
-        text(t, fmt1(L"suggested %.2f", g_tune.result.suggested), g.f_small, cx - 100,
+        text(t, sub(tr(S_tune_suggested), {{L"value", num(g_tune.result.suggested, 2)}}), g.f_small, lcx - 100,
              cy + R * g_tune.result.suggested + 6, kOut, 200, DWRITE_TEXT_ALIGNMENT_CENTER);
+    // legend, centred under the plot
     float ly = left.bottom - 34;
-    circle(t, left.left + 60, ly + 9, 4.5f, kRaw);
-    text(t, L"Where it rests", g.f_small, left.left + 72, ly, kMuted);
-    line(t, left.left + 200, ly + 9, left.left + 214, ly + 9, kOut, 2);
-    text(t, L"Suggested deadzone", g.f_small, left.left + 222, ly, kMuted);
+    float w1 = measure(tr(S_legend_rests), g.f_small), w2 = measure(tr(S_legend_suggested), g.f_small);
+    float avail = left.right - left.left - 40 - 12 - 22 - 24;
+    float k = w1 + w2 > avail ? avail / (w1 + w2) : 1.0f;
+    w1 *= k; w2 *= k;
+    float lx = lcx - (12 + w1 + 24 + 22 + w2) / 2;
+    circle(t, lx + 4.5f, ly + 9, 4.5f, kRaw);
+    text(t, tr(S_legend_rests), g.f_small, lx + 12, ly, kMuted, w1 + 1);
+    lx += 12 + w1 + 24;
+    line(t, lx, ly + 9, lx + 14, ly + 9, kOut, 2);
+    text(t, tr(S_legend_suggested), g.f_small, lx + 22, ly, kMuted, w2 + 1);
 
     // steps
     float x0 = 692, x1 = kW - 32, y = 84;
     int st = g_tune.stage;
     float rest_p = st == TUNE_REST ? std::fmin(1.0f, (now - g_tune.t0) / (float)kRestMs) : -1;
-    draw_step(t, {x0, y, x1, y + 56}, 1, st == TUNE_REST ? 1 : st > TUNE_REST ? 2 : 0, L"Let go of the stick",
-              st == TUNE_REST ? L"Recording where it rests, keep your thumb off." :
-              st > TUNE_REST ? L"5 s of rest recorded." : L"", rest_p);
+    draw_step(t, {x0, y, x1, y + 56}, 1, st == TUNE_REST ? 1 : st > TUNE_REST ? 2 : 0, tr(S_step_rest),
+              st == TUNE_REST ? tr(S_step_rest_active) :
+              st > TUNE_REST ? sub(tr(S_step_rest_done), {{L"n", std::to_wstring(kRestMs / 1000)}}) : L"", rest_p);
     y += 64;
-    draw_step(t, {x0, y, x1, y + 56}, 2, st == TUNE_FLICK ? 1 : st > TUNE_FLICK ? 2 : 0, L"Flick it and let go",
-              st == TUNE_FLICK ? (g_tune.armed && g_tune.release_t ? fmt1(L"%.0f of 6. Let go, measuring where it settles.", g_tune.flicks)
-                                  : g_tune.armed ? fmt1(L"%.0f of 6. Now let go.", g_tune.flicks)
-                                  : fmt1(L"%.0f of 6. Push it all the way, then let go.", g_tune.flicks)) :
-              st > TUNE_FLICK ? L"6 of 6 flicks recorded." : L"",
+    std::wstring n = std::to_wstring(g_tune.flicks), total = std::to_wstring(kFlicks);
+    draw_step(t, {x0, y, x1, y + 56}, 2, st == TUNE_FLICK ? 1 : st > TUNE_FLICK ? 2 : 0, tr(S_step_flick),
+              st == TUNE_FLICK ? sub(tr(g_tune.armed && g_tune.release_t ? S_step_flick_settle
+                                        : g_tune.armed ? S_step_flick_release : S_step_flick_push),
+                                     {{L"n", n}, {L"total", total}}) :
+              st > TUNE_FLICK ? sub(tr(S_step_flick_done), {{L"total", total}}) : L"",
               st == TUNE_FLICK ? g_tune.flicks / (float)kFlicks : -1);
     y += 64;
-    draw_step(t, {x0, y, x1, y + 56}, 3, review ? 1 : 0, L"Review and apply", L"", -1);
+    draw_step(t, {x0, y, x1, y + 56}, 3, review ? 1 : 0, tr(S_step_review), L"", -1);
     y += 72;
 
     // results and findings
@@ -897,105 +1077,127 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
         D2D1_RECT_F box = {x0, y, x1, y + 168};
         fill_round(t, box, 14, kCard);
         float cw = (x1 - x0 - 32) / 3;
-        text(t, fmt1(L"%.2f", r.peak), g.f_mono_big, x0 + 16, y + 12, kRawText);
-        text(t, L"peak drift", g.f_small, x0 + 16, y + 46, kMuted);
-        text(t, fmt1(L"%.2f", r.typical), g.f_mono_big, x0 + 16 + cw, y + 12, kText);
-        text(t, L"typical drift", g.f_small, x0 + 16 + cw, y + 46, kMuted);
-        text(t, r.direction, g.f_big, x0 + 16 + 2 * cw, y + 12, kText, cw);
-        text(t, L"direction", g.f_small, x0 + 16 + 2 * cw, y + 46, kMuted);
+        text(t, fmt1(L"%.2f", r.peak), g.f_mono_big, x0 + 16, y + 12, kRawText, cw - 8);
+        text(t, tr(S_res_peak), g.f_small, x0 + 16, y + 46, kMuted, cw - 8);
+        text(t, fmt1(L"%.2f", r.typical), g.f_mono_big, x0 + 16 + cw, y + 12, kText, cw - 8);
+        text(t, tr(S_res_typical), g.f_small, x0 + 16 + cw, y + 46, kMuted, cw - 8);
+        text(t, tr(r.direction), g.f_big, x0 + 16 + 2 * cw, y + 12, kText, cw);
+        text(t, tr(S_res_direction), g.f_small, x0 + 16 + 2 * cw, y + 46, kMuted, cw);
         float fy = y + 76;
         if (r.peak < 0.03f) {
-            text(t, L"\u2713", g.f_h2, x0 + 16, fy, kOut);
-            para(t, L"Barely any drift measured. No deadzone needed.", g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText);
+            text(t, L"\u2713", g.f_h2, x0 + 16, fy, kOut, 20);
+            para(t, tr(S_find_none), g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText, 84);
         } else {
-            text(t, r.gate_ok ? L"\u2713" : L"!", g.f_h2, x0 + 16, fy, r.gate_ok ? kOut : kBrass);
-            para(t, r.gate_ok ? L"Thumb sensor stayed off while you let go, so the thumb gate already stops this drift."
-                              : r.has_sensor ? L"Thumb sensor read on while you let go, so the thumb gate alone cannot stop it."
-                                             : L"No thumb sensor found, so only a deadzone can stop it.",
-                 g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText);
-            text(t, L"!", g.f_h2, x0 + 16, fy + 46, kBrass);
-            para(t, fmt1(L"With your thumb resting on the stick it can still creep. A %.2f deadzone covers that.",
-                         r.suggested), g.f_body, x0 + 40, fy + 48, x1 - x0 - 56, kText);
+            text(t, r.gate_ok ? L"\u2713" : L"!", g.f_h2, x0 + 16, fy, r.gate_ok ? kOut : kBrass, 20);
+            para(t, tr(r.gate_ok ? S_find_gate_ok : r.has_sensor ? S_find_gate_fail : S_find_no_sensor),
+                 g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText, 42);
+            text(t, L"!", g.f_h2, x0 + 16, fy + 46, kBrass, 20);
+            para(t, sub(tr(S_find_creep), {{L"value", num(r.suggested, 2)}}), g.f_body, x0 + 40, fy + 48,
+                 x1 - x0 - 56, kText, 42);
         }
     } else if (st == TUNE_IDLE) {
-        para(t, L"Measures how this stick drifts and suggests a deadzone. Takes about 20 seconds: let go of the stick, "
-                L"then flick it a few times.", g.f_body, x0 + 4, y, x1 - x0 - 8, kMuted);
+        para(t, tr(S_tune_intro), g.f_body, x0 + 4, y, x1 - x0 - 8, kMuted, 120);
     }
 
     // actions
-    float by = kH - kFootH - 24 - 48, bx = x1;
-    auto button_right = [&](const std::wstring& s, bool primary, Id id) {
-        float w = measure(s, g.f_h2) + 44;
-        draw_button(t, {bx - w, by, bx, by + 48}, s, primary, id);
-        bx -= w + 10;
-    };
-    if (st == TUNE_IDLE) button_right(L"Start measuring", true, ID_TUNE_START);
+    // buttons right to left in the steps column; long labels shrink to keep them inside it
+    struct Btn { std::wstring s; bool primary; Id id; };
+    std::vector<Btn> btns;
+    if (st == TUNE_IDLE) btns.push_back({tr(S_btn_start), true, ID_TUNE_START});
     else if (review && g_tune.result.peak >= 0.03f)
-        button_right(fmt1(L"Apply %.2f deadzone to ", g_tune.result.suggested) + (g_tune.hand ? L"right" : L"left"),
-                     true, ID_TUNE_APPLY);
-    if (st != TUNE_IDLE) button_right(L"Start over", false, ID_TUNE_RESET);
+        btns.push_back({sub(tr(g_tune.hand ? S_btn_apply_right : S_btn_apply_left), {{L"value", num(g_tune.result.suggested, 2)}}),
+                        true, ID_TUNE_APPLY});
+    if (st != TUNE_IDLE) btns.push_back({tr(S_btn_restart), false, ID_TUNE_RESET});
+    float need = 0;
+    for (auto& b : btns) need += measure(b.s, g.f_h2) + 44;
+    float room = x1 - x0 - 10 * (btns.size() - 1.0f), fit = need > room ? room / need : 1.0f;
+    float by = kH - kFootH - 24 - 48, bx = x1;
+    for (auto& b : btns) {
+        float w = (measure(b.s, g.f_h2) + 44) * fit;
+        draw_button(t, {bx - w, by, bx, by + 48}, b.s, b.primary, b.id);
+        bx -= w + 10;
+    }
 }
 
 // ---- diagnostics page ---------------------------------------------------------------------
 void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
-    text(t, L"Diagnostics", g.f_title, 292, 24, kText);
+    text(t, tr(S_nav_diag), g.f_title, 292, 24, kText, 400);
     float x0 = 292, x1 = kW - 32, y = 84, tw = (x1 - x0 - 24) / 3;
     const LogFacts& lf = g.log;
-    struct Tile { const wchar_t* head; std::wstring main, sub; };
+    struct Tile { Str head; std::wstring main, sub; };
     Tile tiles[3] = {
-        {L"Driver", g.registered ? (lf.tables > 0 ? L"Loaded" : L"Registered") : L"Not installed",
-         lf.tables > 0 ? fmt1(L"%.0f input tables patched", lf.tables) : std::wstring(L"not seen in the SteamVR log")},
-        {L"Logic", lf.generation > 0 ? fmt1(L"Generation %.0f", lf.generation) : std::wstring(L"Not loaded"),
-         lf.generation > 0 ? L"loaded " + lf.gen_time + fmt1(L", %.0f inputs replayed", lf.replayed) : std::wstring(L"")},
-        {L"Config", lf.config_time.empty() ? std::wstring(L"Not applied yet") : L"Applied " + lf.config_time,
-         L"%LOCALAPPDATA%\\ancora\\ancora.ini"}};
+        {S_tile_driver, tr(g.registered ? (lf.tables > 0 ? S_drv_loaded : S_drv_registered) : S_drv_missing),
+         lf.tables > 0 ? sub(tr(S_drv_patched), {{L"n", std::to_wstring(lf.tables)}}) : tr(S_drv_not_seen)},
+        {S_tile_logic, lf.generation > 0 ? sub(tr(S_logic_gen), {{L"n", std::to_wstring(lf.generation)}}) : tr(S_logic_none),
+         lf.generation > 0 ? sub(tr(S_logic_loaded), {{L"time", lf.gen_time}, {L"n", std::to_wstring(lf.replayed)}})
+                           : std::wstring()},
+        {S_tile_config, lf.config_time.empty() ? tr(S_cfg_pending) : sub(tr(S_cfg_applied), {{L"time", lf.config_time}}),
+         iso(L"%LOCALAPPDATA%\\ancora\\ancora.ini")}};
     for (int k = 0; k < 3; ++k) {
         D2D1_RECT_F b = {x0 + k * (tw + 12), y, x0 + k * (tw + 12) + tw, y + 80};
         fill_round(t, b, 14, kCard);
-        text(t, tiles[k].head, g.f_small, b.left + 16, b.top + 12, kMuted);
-        text(t, tiles[k].main, g.f_h2, b.left + 16, b.top + 30, kText, tw - 24);
-        text(t, tiles[k].sub, g.f_small, b.left + 16, b.top + 56, kMuted, tw - 24);
+        text(t, tr(tiles[k].head), g.f_small, b.left + 16, b.top + 12, kMuted, tw - 32);
+        text(t, tiles[k].main, g.f_h2, b.left + 16, b.top + 30, kText, tw - 32);
+        text(t, tiles[k].sub, g.f_small, b.left + 16, b.top + 56, kMuted, tw - 32);
     }
     y += 96;
 
     // controller table
     D2D1_RECT_F tb = {x0, y, x1, y + 136};
     fill_round(t, tb, 14, kCard);
-    float cols[6] = {x0 + 16, x0 + 260, x0 + 400, x0 + 510, x0 + 660, x1 - 110};
-    const wchar_t* heads[6] = {L"Controller", L"Inputs found", L"Thumb now", L"Reports", L"Games get", L"Updates"};
-    for (int k = 0; k < 6; ++k) text(t, heads[k], g.f_small, cols[k], y + 12, kMuted, k == 5 ? 94.0f : 200.0f,
-                                     k == 5 ? DWRITE_TEXT_ALIGNMENT_TRAILING : DWRITE_TEXT_ALIGNMENT_LEADING);
+    float cols[7] = {x0 + 16, x0 + 260, x0 + 400, x0 + 510, x0 + 660, x1 - 110, x1 - 16};
+    const Str heads[6] = {S_col_controller, S_col_inputs, S_col_thumb, S_read_reports, S_read_games, S_col_updates};
+    for (int k = 0; k < 5; ++k) text(t, tr(heads[k]), g.f_small, cols[k], y + 12, kMuted, cols[k + 1] - cols[k] - 12);
+    text(t, tr(heads[5]), g.f_small, cols[5] - 20, y + 12, kMuted, 114, DWRITE_TEXT_ALIGNMENT_TRAILING);
     bool live = live_now(now);
     for (int i = 0; i < 2; ++i) {
         float ry = y + 40 + i * 46;
         line(t, x0, ry, x1, ry, kLine);
         const AncoraHandState& h = g_live.snap.hand[i];
         bool tracked = live && connected(h, now);
-        text(t, live && h.model[0] ? widen(h.model) : std::wstring(i ? L"Right: not tracked" : L"Left: not tracked"),
-             g.f_body, cols[0], ry + 13, live && h.model[0] ? kText : kDim, 236);
-        std::wstring inputs = live ? std::wstring(h.tracked & 1 ? L"x " : L"") + (h.tracked & 2 ? L"y " : L"") +
-                                         (h.tracked & 4 ? L"touch" : L"")
-                                   : L"--";
-        if (live && (h.tracked & 3) == 3 && !tracked) { inputs = L"silent"; }
-        text(t, inputs, g.f_mono, cols[1], ry + 14, tracked ? kOut : live && (h.tracked & 3) == 3 ? kWarn : kDim);
-        text(t, !tracked ? L"--" : !(h.tracked & 4) ? L"no sensor" : h.touch ? L"on stick" : L"off", g.f_body, cols[2],
-             ry + 13, tracked && h.touch ? kBrass : kMuted);
-        text(t, tracked ? fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y) : L"--", g.f_mono, cols[3], ry + 14, kRawText);
-        text(t, tracked ? fmt2(L"%+.2f %+.2f", h.out_x, h.out_y) : L"--", g.f_mono, cols[4], ry + 14, kOut);
-        std::wstring rate = !live ? L"--" : g_live.rate[i] < 1 ? L"idle" : fmt1(L"%.0f/s", g_live.rate[i]);
-        text(t, rate, g.f_mono, cols[5], ry + 14, kText, 94, DWRITE_TEXT_ALIGNMENT_TRAILING);
+        text(t, live && h.model[0] ? iso(widen(h.model)) : tr(i ? S_diag_right_untracked : S_diag_left_untracked),
+             g.f_body, cols[0], ry + 13, live && h.model[0] ? kText : kDim, cols[1] - cols[0] - 12);
+        bool silent = live && (h.tracked & 3) == 3 && !tracked;
+        uint32_t ic = tracked ? kOut : silent ? kWarn : kDim;
+        if (silent) {
+            text(t, tr(S_inputs_silent), g.f_body, cols[1], ry + 13, ic, cols[2] - cols[1] - 12);
+        } else {
+            std::wstring inputs = live ? std::wstring(h.tracked & 1 ? L"x " : L"") + (h.tracked & 2 ? L"y " : L"") +
+                                             (h.tracked & 4 ? L"touch" : L"")
+                                       : L"--";
+            text(t, inputs, g.f_mono, cols[1], ry + 14, ic, cols[2] - cols[1] - 12);
+        }
+        if (!tracked) text(t, L"--", g.f_mono, cols[2], ry + 14, kMuted, cols[3] - cols[2] - 12);
+        else text(t, tr(!(h.tracked & 4) ? S_thumb_no_sensor : h.touch ? S_thumb_on : S_thumb_off), g.f_body, cols[2],
+                  ry + 13, h.touch ? kBrass : kMuted, cols[3] - cols[2] - 12);
+        text(t, tracked ? fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y) : L"--", g.f_mono, cols[3], ry + 14, kRawText,
+             cols[4] - cols[3] - 12);
+        text(t, tracked ? fmt2(L"%+.2f %+.2f", h.out_x, h.out_y) : L"--", g.f_mono, cols[4], ry + 14, kOut,
+             cols[5] - cols[4] - 12);
+        if (live && g_live.rate[i] < 1) text(t, tr(S_rate_idle), g.f_body, cols[5] - 20, ry + 13, kText, 114,
+                                             DWRITE_TEXT_ALIGNMENT_TRAILING);
+        else text(t, live ? fmt1(L"%.0f/s", g_live.rate[i]) : L"--", g.f_mono, cols[5] - 20, ry + 14, kText, 114,
+                  DWRITE_TEXT_ALIGNMENT_TRAILING);
     }
     y += 152;
 
-    // log tail
+    // log tail: SteamVR's own lines, left to right in every language
     D2D1_RECT_F lb = {x0, y, x1, kH - kFootH - 24 - 64};
     fill_round(t, lb, 14, kNav);
-    text(t, L"SteamVR log, ancora lines", g.f_small, lb.left + 16, lb.top + 10, kMuted);
+    float hw = lb.right - lb.left - 32;
+    int missing = g.lang.missing();
+    if (missing && g.lang.info.code != L"en") {
+        // untranslated strings are shown in English; say so where people look for problems
+        std::wstring m = sub(tr(S_lang_missing), {{L"name", g.lang.info.name}, {L"n", std::to_wstring(missing)}});
+        text(t, m, g.f_small, lb.left + 16, lb.top + 10, kWarn, hw, DWRITE_TEXT_ALIGNMENT_TRAILING);
+        hw = hw - std::fmin(hw * 0.6f, measure(m, g.f_small)) - 16;
+    }
+    text(t, tr(S_log_title), g.f_small, lb.left + 16, lb.top + 10, kMuted, hw);
     size_t n = lf.lines.size(), rows = (size_t)((lb.bottom - lb.top - 36) / 19), first = n > rows ? n - rows : 0;
     t->PushAxisAlignedClip(D2D1::RectF(lb.left + 8, lb.top + 30, lb.right - 8, lb.bottom - 6), D2D1_ANTIALIAS_MODE_ALIASED);
     float ly = lb.top + 32;
     for (size_t k = first; k < n; ++k, ly += 19) text(t, lf.lines[k], g.f_mono, lb.left + 16, ly, kMuted, 3000);
-    if (!n) text(t, L"No ancora lines in the SteamVR log yet.", g.f_body, lb.left + 16, ly, kDim);
+    if (!n) text(t, tr(S_log_empty), g.f_body, lb.left + 16, ly, kDim, lb.right - lb.left - 32);
     t->PopAxisAlignedClip();
 
     // actions
@@ -1005,20 +1207,26 @@ void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
         draw_button(t, {bx, by, bx + w, by + 48}, s, false, id);
         bx += w + 10;
     };
-    button_left(L"Copy diagnostics", ID_COPY);
-    button_left(L"Open config file", ID_OPEN_CFG);
-    button_left(L"Open SteamVR log", ID_OPEN_LOG);
+    button_left(tr(S_btn_copy), ID_COPY);
+    button_left(tr(S_btn_open_cfg), ID_OPEN_CFG);
+    button_left(tr(S_btn_open_log), ID_OPEN_LOG);
 }
 
 void draw(ID2D1RenderTarget* t) {
     uint64_t now = g_fake ? g_live.snap.tick_ms : GetTickCount64();
     g_regions.clear();
+    g.overflow.clear();
+    t->SetTransform(D2D1::Matrix3x2F::Identity());
     t->Clear(rgb(kBg));
+    g.mirror = g.rtl;
+    if (g.rtl) t->SetTransform(kMirror);
     draw_nav(t, now);
     if (g.page == PAGE_STATUS) draw_status(t, now);
     if (g.page == PAGE_TUNE) draw_tune(t, now);
     if (g.page == PAGE_DIAG) draw_diag(t, now);
     draw_footer(t);
+    g.mirror = false;
+    t->SetTransform(D2D1::Matrix3x2F::Identity());
 }
 
 // ---- data refresh ------------------------------------------------------------------------------
@@ -1084,6 +1292,7 @@ void refresh_slow() {
     if (CompareFileTime(&ft, &g.ini_time) != 0 && g.drag_hand < 0) {
         g.ini_time = ft;
         g.cfg = read_config(g_ini);   // picks up hand edits
+        if (g.cfg.language != g.lang_setting && g.dw) apply_language(g.cfg.language);
     }
     refresh_log();
     uint64_t now = GetTickCount64();
@@ -1100,13 +1309,15 @@ void refresh_slow() {
 }
 
 // ---- actions ---------------------------------------------------------------------------------------
+void apply_language(const std::wstring& setting);
+void language_menu();
 void ensure_file() {
     if (GetFileAttributesW(g_ini.c_str()) == INVALID_FILE_ATTRIBUTES) write_config_file(g_ini, g.cfg);
 }
 
 void saved(const std::wstring& what) {
     g.ini_time = file_time(g_ini);
-    note(what + L" saved");
+    note(sub(tr(S_note_saved), {{L"what", what}}));
 }
 
 void set_deadzone(int hand, float v) {
@@ -1122,7 +1333,7 @@ void set_average(int hand, float ms) {
 void commit_average(int hand) {
     ensure_file();
     write_average(g_ini, hand, g.cfg.hand[hand].average_ms);
-    saved(hand ? L"Right smoothing" : L"Left smoothing");
+    saved(tr(hand ? S_what_right_smoothing : S_what_left_smoothing));
 }
 
 // slider position (0..1) to the dragged setting
@@ -1134,13 +1345,15 @@ void set_dragged(float fraction) {
 void commit_deadzone(int hand) {
     ensure_file();
     write_deadzone(g_ini, hand, g.cfg.hand[hand].deadzone);
-    saved(hand ? L"Right deadzone" : L"Left deadzone");
+    saved(tr(hand ? S_what_right_deadzone : S_what_left_deadzone));
 }
 
 void copy_diagnostics() {
     std::wstring d = L"ancora diagnostics\r\nconfig: " + g_ini + L"\r\nlog: " + g.log_path + L"\r\n";
     d += g.steamvr ? L"SteamVR running\r\n" : L"SteamVR off\r\n";
     d += g.registered ? L"driver registered\r\n" : L"driver not registered\r\n";
+    d += L"language " + g.lang.info.code + L" (setting " + g.cfg.language + L"), " +
+         std::to_wstring(g.lang.missing()) + L" strings missing" + (g.lang.error.empty() ? std::wstring() : L", " + g.lang.error) + L"\r\n";
     for (int i = 0; i < 2; ++i) {
         const AncoraHandState& h = g_live.snap.hand[i];
         d += std::wstring(kHandKey[i]) + L": " + widen(h.model) +
@@ -1154,7 +1367,7 @@ void copy_diagnostics() {
         GlobalUnlock(mem);
         SetClipboardData(CF_UNICODETEXT, mem);
         CloseClipboard();
-        note(L"Diagnostics copied");
+        note(tr(S_note_copied));
     }
 }
 
@@ -1167,19 +1380,19 @@ void activate(Id id, int hand) {
         ensure_file();
         g.cfg.enable = !g.cfg.enable;
         write_bool(g_ini, L"enable", g.cfg.enable);
-        saved(L"Anchoring");
+        saved(tr(S_what_anchoring));
         break;
     case ID_CORRECT:
         ensure_file();
         g.cfg.hand[hand].enable = !g.cfg.hand[hand].enable;
         write_bool(g_ini, kHandKey[hand], g.cfg.hand[hand].enable);
-        saved(hand ? L"Right controller" : L"Left controller");
+        saved(tr(hand ? S_hand_right : S_hand_left));
         break;
     case ID_GATE:
         ensure_file();
         g.cfg.hand[hand].touch_gate = !g.cfg.hand[hand].touch_gate;
         write_bool(g_ini, hand_key(hand, L"_touch_gate"), g.cfg.hand[hand].touch_gate);
-        saved(hand ? L"Right thumb gate" : L"Left thumb gate");
+        saved(tr(hand ? S_what_right_gate : S_what_left_gate));
         break;
     case ID_TUNE_HAND:  if (g_tune.hand != hand) tune_reset(hand); break;
     case ID_TUNE_START: tune_start(); break;
@@ -1188,10 +1401,11 @@ void activate(Id id, int hand) {
         set_deadzone(g_tune.hand, g_tune.result.suggested);
         commit_deadzone(g_tune.hand);
         break;
+    case ID_LANG:     language_menu(); break;
     case ID_COPY:     copy_diagnostics(); break;
     case ID_OPEN_CFG: ensure_file(); ShellExecuteW(g.hwnd, L"open", L"notepad.exe", g_ini.c_str(), nullptr, SW_SHOW); break;
     case ID_OPEN_LOG:
-        if (g.log_path.empty()) note(L"SteamVR log location unknown");
+        if (g.log_path.empty()) note(tr(S_note_no_log));
         else ShellExecuteW(g.hwnd, L"open", L"notepad.exe", g.log_path.c_str(), nullptr, SW_SHOW);
         break;
     default: break;
@@ -1272,6 +1486,38 @@ void hide_panel() {
 
 void redraw() { InvalidateRect(g.hwnd, nullptr, FALSE); }
 
+// language menu under the rail button: Automatic, then every language by its own name
+void language_menu() {
+    g.langs = lang_list();
+    HMENU menu = CreatePopupMenu();
+    UINT mf = MF_STRING | (g.rtl ? MFT_RIGHTORDER | MFT_RIGHTJUSTIFY : 0);
+    std::wstring auto_code = lang_resolve(g.langs, L"auto"), auto_name = auto_code;
+    for (auto& li : g.langs) if (li.code == auto_code) auto_name = li.name;
+    bool is_auto = _wcsicmp(g.cfg.language.c_str(), L"auto") == 0;
+    AppendMenuW(menu, mf | (is_auto ? MF_CHECKED : 0), 1000, sub(tr(S_lang_auto), {{L"name", auto_name}}).c_str());
+    AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    for (size_t i = 0; i < g.langs.size(); ++i) {
+        bool cur = !is_auto && _wcsicmp(g.langs[i].code.c_str(), g.lang.info.code.c_str()) == 0;
+        AppendMenuW(menu, mf | (cur ? MF_CHECKED : 0), 1001 + (UINT)i, g.langs[i].name.c_str());
+    }
+    // open above the button, which sits low in the rail
+    float sc = ui_scale();
+    // the button's outer edge: left in a left to right page, right when mirrored
+    float edge = g.rtl ? kW - g.lang_button.left : g.lang_button.left;
+    POINT pt = {(LONG)(edge * sc), (LONG)(g.lang_button.top * sc)};
+    ClientToScreen(g.hwnd, &pt);
+    UINT flags = TPM_RETURNCMD | TPM_BOTTOMALIGN | (g.rtl ? TPM_RIGHTALIGN | TPM_LAYOUTRTL : TPM_LEFTALIGN);
+    int cmd = TrackPopupMenu(menu, flags, pt.x, pt.y, 0, g.hwnd, nullptr);
+    DestroyMenu(menu);
+    if (cmd < 1000) return;
+    std::wstring pick = cmd == 1000 ? L"auto" : g.langs[cmd - 1001].code;
+    ensure_file();
+    write_key(g_ini, L"language", pick);
+    g.cfg.language = pick;
+    apply_language(pick);
+    saved(tr(S_what_language));
+}
+
 LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     switch (m) {
     case WM_TIMER:
@@ -1297,6 +1543,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     }
     case WM_MOUSEMOVE: {
         float x = GET_X_LPARAM(lp) / ui_scale(), y = GET_Y_LPARAM(lp) / ui_scale();
+        if (g.rtl) x = kW - x;
         if (g.drag_hand >= 0) {
             set_dragged((x - g.drag_track.left) / (g.drag_track.right - g.drag_track.left));
             redraw();
@@ -1307,6 +1554,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     }
     case WM_LBUTTONDOWN: {
         float x = GET_X_LPARAM(lp) / ui_scale(), y = GET_Y_LPARAM(lp) / ui_scale();
+        if (g.rtl) x = kW - x;
         const Region* r = hit_at(x, y);
         trace("down %.0f,%.0f id=%d hand=%d", x, y, r ? (int)r->id : 0, r ? r->hand : -1);
         g_focus_visible = false;
@@ -1344,14 +1592,15 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         else if (wp == VK_DOWN) move_focus(1);
         else if (wp == VK_UP) move_focus(-1);
         else if (wp == VK_LEFT || wp == VK_RIGHT) {
+            bool more = (wp == VK_RIGHT) != g.rtl;
             if (g_focus == ID_SLIDER) {
-                set_deadzone(g_focus_hand, g.cfg.hand[g_focus_hand].deadzone + (wp == VK_RIGHT ? 0.05f : -0.05f));
+                set_deadzone(g_focus_hand, g.cfg.hand[g_focus_hand].deadzone + (more ? 0.05f : -0.05f));
                 commit_deadzone(g_focus_hand);
             } else if (g_focus == ID_AVERAGE) {
-                set_average(g_focus_hand, g.cfg.hand[g_focus_hand].average_ms + (wp == VK_RIGHT ? 25.0f : -25.0f));
+                set_average(g_focus_hand, g.cfg.hand[g_focus_hand].average_ms + (more ? 25.0f : -25.0f));
                 commit_average(g_focus_hand);
             } else {
-                move_focus(wp == VK_RIGHT ? 1 : -1);
+                move_focus(more ? 1 : -1);
             }
         } else if (wp == VK_RETURN || wp == VK_SPACE) {
             if (g_focus != ID_SLIDER && g_focus != ID_AVERAGE) activate(g_focus, g_focus_hand);
@@ -1362,23 +1611,36 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         redraw();
         return 0;
     }
+    case WM_INPUTLANGCHANGE:   // keyboard layout switched (Win+Space): key hints follow it
+        read_key_names();
+        redraw();
+        break;                 // DefWindowProc passes it on to child windows
     case WM_TRAY:
         if (LOWORD(lp) == WM_LBUTTONUP) { IsWindowVisible(h) ? hide_panel() : show_panel(); }
         if (LOWORD(lp) == WM_RBUTTONUP) {
             HMENU menu = CreatePopupMenu();
-            AppendMenuW(menu, MF_STRING, 1, L"Open ancora");
-            AppendMenuW(menu, MF_STRING, 2, L"Exit");
+            UINT mf = MF_STRING | (g.rtl ? MFT_RIGHTORDER | MFT_RIGHTJUSTIFY : 0);
+            AppendMenuW(menu, mf, 1, tr(S_tray_open).c_str());
+            AppendMenuW(menu, mf, 2, tr(S_tray_exit).c_str());
             POINT pt; GetCursorPos(&pt);
             SetForegroundWindow(h);
-            int cmd = TrackPopupMenu(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON, pt.x, pt.y, 0, h, nullptr);
+            int cmd = TrackPopupMenu(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | (g.rtl ? TPM_LAYOUTRTL : 0), pt.x, pt.y, 0, h, nullptr);
             DestroyMenu(menu);
             if (cmd == 1) show_panel();
             if (cmd == 2) { g.exiting = true; DestroyWindow(h); }
         }
         return 0;
     case WM_CLOSE:
+        // wParam 1: really exit (SteamVR quit, or the installer closing a running panel)
         if (wp == 1 || g.exiting) { DestroyWindow(h); return 0; }
         hide_panel();   // close button keeps ancora in the tray
+        return 0;
+    // logoff, shutdown, and installers through the Restart Manager (ENDSESSION_CLOSEAPP):
+    // agree, then exit, so the files are free and no stale tray icon is left behind
+    case WM_QUERYENDSESSION:
+        return TRUE;
+    case WM_ENDSESSION:
+        if (wp) { g.exiting = true; DestroyWindow(h); }
         return 0;
     case WM_DESTROY:
         Shell_NotifyIconW(NIM_DELETE, &g.nid);
@@ -1388,13 +1650,25 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     return DefWindowProcW(h, m, wp, lp);
 }
 
-void create_resources() {
-    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &g.d2d);
-    DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&g.dw);
-    float dashes[2] = {3, 3};
-    g.d2d->CreateStrokeStyle(D2D1::StrokeStyleProperties(D2D1_CAP_STYLE_FLAT, D2D1_CAP_STYLE_FLAT, D2D1_CAP_STYLE_FLAT,
-                                                         D2D1_LINE_JOIN_MITER, 10, D2D1_DASH_STYLE_CUSTOM, 0),
-                             dashes, 2, &g.dash);
+// ---- language -------------------------------------------------------------------------------
+Lang load_lang(const std::wstring& code) {
+    Lang l;
+    if (code == L"qps-ploc" || code == L"qps-plocm") { lang_pseudo(l, g.en, code == L"qps-plocm"); return l; }
+    for (auto& li : g.langs)
+        if (_wcsicmp(li.code.c_str(), code.c_str()) == 0) {
+            l.info = li;
+            lang_parse(lang_bytes(li), l.info, &l);
+            return l;
+        }
+    l.info.code = code;
+    l.error = L"no language file";
+    return l;
+}
+
+void make_formats() {
+    IDWriteTextFormat** all[] = {&g.f_title, &g.f_logo, &g.f_nav, &g.f_h2, &g.f_big, &g.f_body,
+                                 &g.f_small, &g.f_label, &g.f_mono, &g.f_mono_big};
+    for (auto f : all) if (*f) { (*f)->Release(); *f = nullptr; }
     g.f_title    = make_format(28, DWRITE_FONT_WEIGHT_BOLD);
     g.f_logo     = make_format(24, DWRITE_FONT_WEIGHT_BOLD);
     g.f_nav      = make_format(17, DWRITE_FONT_WEIGHT_SEMI_BOLD);
@@ -1403,8 +1677,36 @@ void create_resources() {
     g.f_body     = make_format(15, DWRITE_FONT_WEIGHT_NORMAL);
     g.f_small    = make_format(13, DWRITE_FONT_WEIGHT_NORMAL);
     g.f_label    = make_format(13, DWRITE_FONT_WEIGHT_SEMI_BOLD);
-    g.f_mono     = make_format(14, DWRITE_FONT_WEIGHT_NORMAL, L"Consolas");
-    g.f_mono_big = make_format(26, DWRITE_FONT_WEIGHT_NORMAL, L"Consolas");
+    g.f_mono     = make_format(14, DWRITE_FONT_WEIGHT_NORMAL, true);
+    g.f_mono_big = make_format(26, DWRITE_FONT_WEIGHT_NORMAL, true);
+}
+
+// setting: "auto" or a language code, as in the ini; also reloads the files, so an
+// edited or new file in the lang folder shows on the next pick from the menu
+void apply_language(const std::wstring& setting) {
+    if (g.en.info.code.empty()) {
+        g.en = load_lang(L"en");
+        for (int k = 0; k < S_COUNT; ++k)   // no English file at all: show the keys
+            if (g.en.s[k].empty()) g.en.s[k] = widen(kStrKey[k]);
+    }
+    std::wstring code = lang_resolve(g.langs, setting);
+    g.lang = code == L"en" ? g.en : load_lang(code);
+    g.lang_setting = setting;
+    g.rtl = g.lang.info.rtl;
+    make_formats();
+    trace("language %ls -> %ls rtl=%d missing=%d", setting.c_str(), code.c_str(), (int)g.rtl, g.lang.missing());
+}
+
+void create_resources() {
+    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &g.d2d);
+    DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&g.dw);
+    float dashes[2] = {3, 3};
+    g.d2d->CreateStrokeStyle(D2D1::StrokeStyleProperties(D2D1_CAP_STYLE_FLAT, D2D1_CAP_STYLE_FLAT, D2D1_CAP_STYLE_FLAT,
+                                                         D2D1_LINE_JOIN_MITER, 10, D2D1_DASH_STYLE_CUSTOM, 0),
+                             dashes, 2, &g.dash);
+    g.langs = lang_list();
+    apply_language(L"auto");
+    read_key_names();
 }
 
 // anchor mark rendered to an HICON of px by px; used for the window, taskbar and tray
@@ -1480,9 +1782,29 @@ bool save_png(IWICImagingFactory* wic, IWICBitmap* bmp, UINT W, UINT H, const st
 }
 
 // ---- screenshot (self test) --------------------------------------------------------------------
-int screenshot(const std::wstring& out, const std::wstring& page) {
+// --kbd: render the key hints for another keyboard layout (a KLID such as 00000407,
+// German). Active for this thread only; a layout the user did not have is unloaded again.
+struct KbdOverride {
+    HKL hkl = nullptr;
+    bool loaded = false;
+    explicit KbdOverride(const std::wstring& klid) {
+        if (klid.empty()) return;
+        HKL before[64];
+        int n = GetKeyboardLayoutList(64, before);
+        hkl = LoadKeyboardLayoutW(klid.c_str(), KLF_NOTELLSHELL);
+        if (!hkl) return;
+        loaded = std::find(before, before + n, hkl) == before + n;
+        ActivateKeyboardLayout(hkl, 0);
+    }
+    ~KbdOverride() { if (loaded) UnloadKeyboardLayout(hkl); }
+};
+
+int screenshot(const std::wstring& out, const std::wstring& page, const std::wstring& lang, const std::wstring& kbd) {
+    KbdOverride layout(kbd);
     create_resources();
     g.cfg = read_config(g_ini);
+    g.ini_time = file_time(g_ini);   // refresh_slow below must not re-read it and undo --lang
+    apply_language(lang.empty() ? g.cfg.language : lang);
     g.page = page == L"tune" ? PAGE_TUNE : page == L"diag" ? PAGE_DIAG : PAGE_STATUS;
     if (g_fake) {
         g.cfg.enable = true; g.cfg.hand[0] = {true, true, 0.0f, 0}; g.cfg.hand[1] = {true, false, 0.20f, 100};
@@ -1508,7 +1830,7 @@ int screenshot(const std::wstring& out, const std::wstring& page) {
         g_tune.result = tune_compute(g_tune.pts, 0, 300, true);
         g_tune.stage = TUNE_REVIEW;
         g_tune.flicks = kFlicks;
-        note(L"Right deadzone saved");
+        saved(tr(S_what_right_deadzone));
         g.note_until = ~0ull;
     } else {
         refresh_slow();
@@ -1528,7 +1850,20 @@ int screenshot(const std::wstring& out, const std::wstring& page) {
     draw(rt);
     HRESULT hr = rt->EndDraw();
     bool ok = save_png(wic, bmp, W, H, out);
-    std::wprintf(L"screenshot %ls (%ux%u) draw hr=0x%08lx\n", out.c_str(), W, H, (unsigned long)hr);
+    std::wprintf(L"screenshot %ls (%ux%u) language %ls draw hr=0x%08lx\n", out.c_str(), W, H,
+                 g.lang.info.code.c_str(), (unsigned long)hr);
+    if (!g.lang.error.empty()) std::wprintf(L"language error: %ls\n", g.lang.error.c_str());
+    {
+        std::wstring k = L"keys: " + g.key_tab + L" / " + g.key_enter + L" / " + g.key_esc;
+        std::string u(WideCharToMultiByte(CP_UTF8, 0, k.c_str(), (int)k.size(), nullptr, 0, nullptr, nullptr), 0);
+        WideCharToMultiByte(CP_UTF8, 0, k.c_str(), (int)k.size(), u.data(), (int)u.size(), nullptr, nullptr);
+        std::printf("%s\n", u.c_str());
+    }
+    for (auto& o : g.overflow) {   // console output is UTF-8, so any script prints
+        std::string u(WideCharToMultiByte(CP_UTF8, 0, o.c_str(), (int)o.size(), nullptr, 0, nullptr, nullptr), 0);
+        WideCharToMultiByte(CP_UTF8, 0, o.c_str(), (int)o.size(), u.data(), (int)u.size(), nullptr, nullptr);
+        std::printf("overflow: %s\n", u.c_str());
+    }
     return SUCCEEDED(hr) && ok ? 0 : 1;
 }
 
@@ -1685,7 +2020,7 @@ int selftest() {
     TuneResult r = tune_compute(pts, 0, 100, true);
     check(std::fabs(r.peak - 0.41f) < 1e-3, "tune peak is the largest resting magnitude");
     check(std::fabs(r.suggested - 0.45f) < 1e-4, "tune suggests peak plus margin rounded up to 5 %");
-    check(std::wcscmp(r.direction, L"forward") == 0, "tune direction of forward drift is forward");
+    check(r.direction == S_dir_forward, "tune direction of forward drift is forward");
     check(r.gate_ok, "tune: thumb never on while let go -> gate alone stops it");
     check(!tune_compute(pts, 30, 100, true).gate_ok, "tune: thumb on 30 % of the time -> gate not enough");
     check(!tune_compute(pts, 0, 100, false).gate_ok, "tune: no touch sensor -> gate not enough");
@@ -1729,10 +2064,58 @@ int selftest() {
             tune_feed(0.12f + noise(), 0.36f + k * 0.0015f + noise(), false, true, now);
     }
     check(g_tune.stage == TUNE_REVIEW && g_tune.flicks == kFlicks, "tune finishes all flicks on a stick that never centers");
-    check(g_tune.result.peak > 0.3f && g_tune.result.peak < 0.5f && std::wcscmp(g_tune.result.direction, L"forward") == 0,
+    check(g_tune.result.peak > 0.3f && g_tune.result.peak < 0.5f && g_tune.result.direction == S_dir_forward,
           "tune result on the drifting stick: peak about 0.4, forward");
     check(g_tune.result.gate_ok, "tune: thumb was off after every release -> gate alone stops it");
     tune_reset(0);
+
+    // languages: every shipped file parses, has every key and no others, and keeps
+    // the English placeholders; English itself is complete
+    g.langs = lang_list();
+    check(g.langs.size() >= 2, "language files are embedded");
+    g.en = load_lang(L"en");
+    check(g.en.error.empty() && g.en.missing() == 0 && g.en.unknown.empty(), "English has every string");
+    auto u8 = [](const std::wstring& w) {
+        std::string u(WideCharToMultiByte(CP_UTF8, 0, w.c_str(), (int)w.size(), nullptr, 0, nullptr, nullptr), 0);
+        WideCharToMultiByte(CP_UTF8, 0, w.c_str(), (int)w.size(), u.data(), (int)u.size(), nullptr, nullptr);
+        return u;
+    };
+    for (auto& li : g.langs) {
+        Lang l = load_lang(li.code);
+        std::string code = u8(li.code), why;
+        if (!l.error.empty()) why += " error: " + u8(l.error);
+        for (int k = 0; k < S_COUNT; ++k) {
+            if (l.s[k].empty()) why += std::string(" missing ") + kStrKey[k];
+            else if (lang_placeholders(l.s[k]) != lang_placeholders(g.en.s[k]))
+                why += std::string(" placeholders ") + kStrKey[k];
+        }
+        for (auto& x : l.unknown) why += " unknown " + u8(x);
+        std::string what = "language " + code + " (" + u8(li.name) + (li.rtl ? ", rtl" : "") + ") complete" + why;
+        check(why.empty(), what.c_str());
+    }
+    std::vector<LangInfo> fake(5);
+    const wchar_t* codes[5] = {L"en", L"pt-BR", L"zh-Hans", L"zh-Hant", L"he"};
+    for (int k = 0; k < 5; ++k) fake[k].code = codes[k];
+    check(lang_match(fake, L"pt-PT") == L"pt-BR", "Windows pt-PT picks pt-BR");
+    check(lang_match(fake, L"zh-CN") == L"zh-Hans" && lang_match(fake, L"zh-TW") == L"zh-Hant" &&
+          lang_match(fake, L"zh-HK") == L"zh-Hant" && lang_match(fake, L"zh-Hans-SG") == L"zh-Hans",
+          "Windows Chinese variants pick simplified or traditional");
+    check(lang_match(fake, L"he-IL") == L"he" && lang_match(fake, L"xx-YY").empty(), "region tags fall back to the language");
+    check(lang_resolve(fake, L"he") == L"he" && lang_resolve(fake, L"qps-plocm") == L"qps-plocm", "explicit setting wins");
+    g.rtl = false;
+    check(sub(L"{n} of {total}, {n}", {{L"n", L"2"}, {L"total", L"6"}}) == L"2 of 6, 2", "placeholders fill every use");
+    g.rtl = true;
+    std::wstring isod = sub(L"x {v}", {{L"v", L"0.45"}});
+    check(isod == std::wstring(L"x \x200f\x202a") + L"0.45" + L"\x202c", "rtl embeds filled values");
+    g.rtl = false;
+    Lang ps;
+    lang_pseudo(ps, g.en, true);
+    check(ps.info.rtl && ps.missing() == 0 && lang_placeholders(ps.s[S_step_flick_push]) ==
+          lang_placeholders(g.en.s[S_step_flick_push]), "pseudo mirrored language keeps placeholders");
+    std::string bad = "<?xml version=\"1.0\"?><!DOCTYPE x [<!ENTITY a \"aaaa\">]><language code=\"x\"><nav_tune>&a;</nav_tune></language>";
+    LangInfo bi;
+    Lang bl;
+    check(!lang_parse(bad, bi, &bl), "a language file with a DTD is refused");
     std::printf("%d failure(s)\n", fails);
     return fails ? 1 : 0;
 }
@@ -1769,7 +2152,8 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
         attach_console();
         g_fake = has(L"--fake") != 0;
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-        return screenshot(arg_after(L"--screenshot", L"ancora.png"), arg_after(L"--page", L"status"));
+        return screenshot(arg_after(L"--screenshot", L"ancora.png"), arg_after(L"--page", L"status"),
+                          arg_after(L"--lang", L""), arg_after(L"--kbd", L""));
     }
 
     // one panel at a time: a second launch just shows the first
@@ -1786,6 +2170,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     create_resources();
     g.cfg = read_config(g_ini);
     g.ini_time = file_time(g_ini);
+    apply_language(g.cfg.language);
     g.from_steamvr = has(L"--steamvr") != 0;
     bool start_hidden = g.from_steamvr || has(L"--tray");
 

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, toki pona. Machine drafted, needs a review by a speaker. See en.xml.
+     Words used: ilo luka = controller, palisa = stick, luka = thumb, tawa ike = drift,
+     ma moli = deadzone, musi = games, soto / teje = left / right. -->
+<language code="tok" name="toki pona" dir="ltr" font="Segoe UI">
+  <nav_status>lon</nav_status>
+  <nav_tune>ante</nav_tune>
+  <nav_diag>lukin insa</nav_diag>
+  <rail_steamvr_on>SteamVR li pali</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR li lape</rail_steamvr_off>
+  <rail_both>ilo luka tu</rail_both>
+  <rail_one>ilo luka wan</rail_one>
+  <rail_none>ilo luka ala</rail_none>
+  <lang_auto>nasin ilo ({name})</lang_auto>
+  <lang_missing>{name}: toki {n} li ante ala, ona li lon toki Inli</lang_missing>
+  <hint_back>monsi</hint_back>
+  <hint_apply>o kepeken</hint_apply>
+  <hint_select>o pana</hint_select>
+  <hint_next>sinpin</hint_next>
+  <hand_left>ilo luka soto</hand_left>
+  <hand_right>ilo luka teje</hand_right>
+  <state_no_signal>sona ala</state_no_signal>
+  <sub_no_signal>o open e SteamVR la sina lukin e ilo ni.</sub_no_signal>
+  <state_not_connected>linja ala</state_not_connected>
+  <sub_wake>o pini e lape ilo la sina lukin e palisa.</sub_wake>
+  <sub_silent>tenpo {n} la palisa li toki ala. o lukin e wawa ilo anu o pini e lape ona.</sub_silent>
+  <state_not_corrected>pona ala</state_not_corrected>
+  <sub_unchanged>musi li kama jo e ona sama.</sub_unchanged>
+  <state_anchored>tawa ike li awen</state_anchored>
+  <sub_drifting>tawa ike {value}. luka li weka, la musi li jo e 0.</sub_drifting>
+  <sub_thumb_off>luka li weka, la musi li jo e 0.</sub_thumb_off>
+  <state_in_deadzone>lon ma moli</state_in_deadzone>
+  <sub_in_deadzone>ona li lon insa ma moli {percent}, la musi li jo e 0.</sub_in_deadzone>
+  <state_following>ona li kute e luka</state_following>
+  <sub_past_deadzone>ona li weka tan ma moli {percent}, la musi li jo e tawa lili.</sub_past_deadzone>
+  <sub_as_is>musi li kama jo e ona sama.</sub_as_is>
+  <read_reports>ilo li toki</read_reports>
+  <read_games>musi li jo</read_games>
+  <read_thumb>luka</read_thumb>
+  <thumb_no_sensor>ilo pilin ala</thumb_no_sensor>
+  <thumb_on>lon palisa</thumb_on>
+  <thumb_off>weka</thumb_off>
+  <set_gate>lupa luka</set_gate>
+  <set_smoothing>tawa suwi</set_smoothing>
+  <set_deadzone>ma moli</set_deadzone>
+  <value_off>ala</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>awen li open</master_on>
+  <master_off>awen li pini</master_off>
+  <tune_suggested>pona {value}</tune_suggested>
+  <legend_rests>ona li awen lon ni</legend_rests>
+  <legend_suggested>ma moli pona</legend_suggested>
+  <step_rest>o weka e luka tan palisa</step_rest>
+  <step_rest_active>mi sitelen e ma awen. o weka e luka.</step_rest_active>
+  <step_rest_done>mi sitelen e awen lon tenpo {n}.</step_rest_done>
+  <step_flick>o tawa e ona o weka</step_flick>
+  <step_flick_settle>{n} tan {total}. o weka. mi lukin e ma awen.</step_flick_settle>
+  <step_flick_release>{n} tan {total}. o weka lon tenpo ni.</step_flick_release>
+  <step_flick_push>{n} tan {total}. o tawa e ona ale, o weka.</step_flick_push>
+  <step_flick_done>mi sitelen e tawa {total} tan {total}.</step_flick_done>
+  <step_review>o lukin o kepeken</step_review>
+  <res_peak>tawa ike suli</res_peak>
+  <res_typical>tawa ike meso</res_typical>
+  <res_direction>nasin</res_direction>
+  <dir_none>ala</dir_none>
+  <dir_right>teje</dir_right>
+  <dir_forward_right>sinpin teje</dir_forward_right>
+  <dir_forward>sinpin</dir_forward>
+  <dir_forward_left>sinpin soto</dir_forward_left>
+  <dir_left>soto</dir_left>
+  <dir_back_left>monsi soto</dir_back_left>
+  <dir_back>monsi</dir_back>
+  <dir_back_right>monsi teje</dir_back_right>
+  <find_none>tawa ike li lili mute. ma moli li wile ala.</find_none>
+  <find_gate_ok>sina weka la ilo pilin luka li pilin ala. lupa luka li awen e tawa ike ni.</find_gate_ok>
+  <find_gate_fail>sina weka la ilo pilin luka li pilin. lupa luka taso li ken ala awen e ona.</find_gate_fail>
+  <find_no_sensor>ilo pilin luka li lon ala. ma moli taso li ken awen e ona.</find_no_sensor>
+  <find_creep>luka li lon palisa la ona li ken tawa lili. ma moli {value} li pona e ni.</find_creep>
+  <tune_intro>ilo ni li lukin e tawa ike palisa, li pana e ma moli pona. tenpo li lili: o weka e luka tan palisa, o tawa e ona o weka mute.</tune_intro>
+  <btn_start>o open e lukin</btn_start>
+  <btn_apply_left>o pana e {value} tawa soto</btn_apply_left>
+  <btn_apply_right>o pana e {value} tawa teje</btn_apply_right>
+  <btn_restart>o open sin</btn_restart>
+  <tile_driver>ilo anpa</tile_driver>
+  <drv_loaded>ona li lon</drv_loaded>
+  <drv_registered>nimi ona li lon</drv_registered>
+  <drv_missing>ona li lon ala</drv_missing>
+  <drv_patched>lipu pana {n} li ante</drv_patched>
+  <drv_not_seen>lipu SteamVR li toki ala e ona</drv_not_seen>
+  <tile_logic>nasin</tile_logic>
+  <logic_gen>nanpa {n}</logic_gen>
+  <logic_none>ona li lon ala</logic_none>
+  <logic_loaded>ona li kama lon {time}, pana {n} li kama sin</logic_loaded>
+  <tile_config>lipu nasin</tile_config>
+  <cfg_pending>ona li kama ala</cfg_pending>
+  <cfg_applied>ona li kama lon {time}</cfg_applied>
+  <col_controller>ilo luka</col_controller>
+  <col_inputs>pana lon</col_inputs>
+  <col_thumb>luka lon tenpo ni</col_thumb>
+  <col_updates>sin</col_updates>
+  <diag_left_untracked>soto: lukin ala</diag_left_untracked>
+  <diag_right_untracked>teje: lukin ala</diag_right_untracked>
+  <inputs_silent>kalama ala</inputs_silent>
+  <rate_idle>awen</rate_idle>
+  <log_title>lipu SteamVR, linja ancora</log_title>
+  <log_empty>linja ancora li lon ala lipu SteamVR.</log_empty>
+  <btn_copy>o sama e lukin insa</btn_copy>
+  <btn_open_cfg>o open e lipu nasin</btn_open_cfg>
+  <btn_open_log>o open e lipu SteamVR</btn_open_log>
+  <note_saved>{what} li awen</note_saved>
+  <what_anchoring>awen</what_anchoring>
+  <what_left_gate>lupa luka soto</what_left_gate>
+  <what_right_gate>lupa luka teje</what_right_gate>
+  <what_left_smoothing>tawa suwi soto</what_left_smoothing>
+  <what_right_smoothing>tawa suwi teje</what_right_smoothing>
+  <what_left_deadzone>ma moli soto</what_left_deadzone>
+  <what_right_deadzone>ma moli teje</what_right_deadzone>
+  <what_language>toki</what_language>
+  <note_copied>lukin insa li sama</note_copied>
+  <note_no_log>mi sona ala e ma pi lipu SteamVR</note_no_log>
+  <tray_open>o open e ancora</tray_open>
+  <tray_exit>o pini</tray_exit>
+</language>

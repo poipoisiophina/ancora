@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Italian. Machine drafted, needs a native review. See en.xml. -->
+<language code="it" name="Italiano" dir="ltr" font="Segoe UI">
+  <nav_status>Stato</nav_status>
+  <nav_tune>Taratura</nav_tune>
+  <nav_diag>Diagnostica</nav_diag>
+  <rail_steamvr_on>SteamVR attivo</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR spento</rail_steamvr_off>
+  <rail_both>Entrambi i controller</rail_both>
+  <rail_one>Un controller</rail_one>
+  <rail_none>Nessun controller</rail_none>
+  <lang_auto>Automatico ({name})</lang_auto>
+  <lang_missing>{name}: {n} testi non tradotti, mostrati in inglese</lang_missing>
+  <hint_back>Indietro</hint_back>
+  <hint_apply>Applica</hint_apply>
+  <hint_select>Seleziona</hint_select>
+  <hint_next>Avanti</hint_next>
+  <hand_left>Controller sinistro</hand_left>
+  <hand_right>Controller destro</hand_right>
+  <state_no_signal>Nessun segnale</state_no_signal>
+  <sub_no_signal>Avvia SteamVR per vedere questo controller.</sub_no_signal>
+  <state_not_connected>Non connesso</state_not_connected>
+  <sub_wake>Riattiva il controller per vedere la sua levetta.</sub_wake>
+  <sub_silent>Nessun dato dalla levetta da {n} s. Controlla la batteria o riattivalo.</sub_silent>
+  <state_not_corrected>Non corretto</state_not_corrected>
+  <sub_unchanged>Passato ai giochi senza modifiche.</sub_unchanged>
+  <state_anchored>Deriva ancorata</state_anchored>
+  <sub_drifting>Deriva di {value}. Pollice sollevato, i giochi ricevono 0.</sub_drifting>
+  <sub_thumb_off>Pollice sollevato, i giochi ricevono 0.</sub_thumb_off>
+  <state_in_deadzone>Nella zona morta</state_in_deadzone>
+  <sub_in_deadzone>Dentro la zona morta del {percent}, i giochi ricevono 0.</sub_in_deadzone>
+  <state_following>Segue il pollice</state_following>
+  <sub_past_deadzone>Oltre la zona morta del {percent}, i giochi ricevono una spinta in scala.</sub_past_deadzone>
+  <sub_as_is>Passato ai giochi così com'è.</sub_as_is>
+  <read_reports>Rileva</read_reports>
+  <read_games>Ai giochi</read_games>
+  <read_thumb>Pollice</read_thumb>
+  <thumb_no_sensor>nessun sensore</thumb_no_sensor>
+  <thumb_on>sulla levetta</thumb_on>
+  <thumb_off>sollevato</thumb_off>
+  <set_gate>Blocco pollice</set_gate>
+  <set_smoothing>Levigatura</set_smoothing>
+  <set_deadzone>Zona morta</set_deadzone>
+  <value_off>off</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Ancoraggio attivo</master_on>
+  <master_off>Ancoraggio spento</master_off>
+  <tune_suggested>consigliato {value}</tune_suggested>
+  <legend_rests>Punto di riposo</legend_rests>
+  <legend_suggested>Zona morta consigliata</legend_suggested>
+  <step_rest>Lascia la levetta</step_rest>
+  <step_rest_active>Misuro il punto di riposo, tieni il pollice sollevato.</step_rest_active>
+  <step_rest_done>{n} s di riposo misurati.</step_rest_done>
+  <step_flick>Spingila e lasciala</step_flick>
+  <step_flick_settle>{n} di {total}. Lascia, misuro dove si ferma.</step_flick_settle>
+  <step_flick_release>{n} di {total}. Ora lascia.</step_flick_release>
+  <step_flick_push>{n} di {total}. Spingi fino in fondo, poi lascia.</step_flick_push>
+  <step_flick_done>{total} spinte su {total} misurate.</step_flick_done>
+  <step_review>Controlla e applica</step_review>
+  <res_peak>deriva massima</res_peak>
+  <res_typical>deriva tipica</res_typical>
+  <res_direction>direzione</res_direction>
+  <dir_none>nessuna</dir_none>
+  <dir_right>destra</dir_right>
+  <dir_forward_right>avanti destra</dir_forward_right>
+  <dir_forward>avanti</dir_forward>
+  <dir_forward_left>avanti sinistra</dir_forward_left>
+  <dir_left>sinistra</dir_left>
+  <dir_back_left>indietro sinistra</dir_back_left>
+  <dir_back>indietro</dir_back>
+  <dir_back_right>indietro destra</dir_back_right>
+  <find_none>Quasi nessuna deriva misurata. Zona morta non necessaria.</find_none>
+  <find_gate_ok>Il sensore del pollice è rimasto spento quando hai lasciato, quindi il blocco pollice ferma già questa deriva.</find_gate_ok>
+  <find_gate_fail>Il sensore del pollice ha rilevato contatto quando hai lasciato, quindi il blocco pollice da solo non basta.</find_gate_fail>
+  <find_no_sensor>Nessun sensore del pollice, solo una zona morta può fermarla.</find_no_sensor>
+  <find_creep>Con il pollice appoggiato sulla levetta può ancora scivolare. Una zona morta di {value} lo copre.</find_creep>
+  <tune_intro>Misura come deriva questa levetta e consiglia una zona morta. Circa 20 secondi: lascia la levetta, poi spingila e lasciala alcune volte.</tune_intro>
+  <btn_start>Avvia misura</btn_start>
+  <btn_apply_left>Applica {value} a sinistra</btn_apply_left>
+  <btn_apply_right>Applica {value} a destra</btn_apply_right>
+  <btn_restart>Ricomincia</btn_restart>
+  <tile_driver>Driver</tile_driver>
+  <drv_loaded>Caricato</drv_loaded>
+  <drv_registered>Registrato</drv_registered>
+  <drv_missing>Non installato</drv_missing>
+  <drv_patched>{n} tabelle di input modificate</drv_patched>
+  <drv_not_seen>non presente nel log di SteamVR</drv_not_seen>
+  <tile_logic>Logica</tile_logic>
+  <logic_gen>Generazione {n}</logic_gen>
+  <logic_none>Non caricata</logic_none>
+  <logic_loaded>caricata {time}, {n} input riprodotti</logic_loaded>
+  <tile_config>Configurazione</tile_config>
+  <cfg_pending>Non ancora applicata</cfg_pending>
+  <cfg_applied>Applicata {time}</cfg_applied>
+  <col_controller>Controller</col_controller>
+  <col_inputs>Input trovati</col_inputs>
+  <col_thumb>Pollice ora</col_thumb>
+  <col_updates>Letture</col_updates>
+  <diag_left_untracked>Sinistro: non rilevato</diag_left_untracked>
+  <diag_right_untracked>Destro: non rilevato</diag_right_untracked>
+  <inputs_silent>muto</inputs_silent>
+  <rate_idle>fermo</rate_idle>
+  <log_title>Log di SteamVR, righe di ancora</log_title>
+  <log_empty>Ancora nessuna riga di ancora nel log di SteamVR.</log_empty>
+  <btn_copy>Copia diagnostica</btn_copy>
+  <btn_open_cfg>Apri configurazione</btn_open_cfg>
+  <btn_open_log>Apri log di SteamVR</btn_open_log>
+  <note_saved>{what}: salvato</note_saved>
+  <what_anchoring>Ancoraggio</what_anchoring>
+  <what_left_gate>Blocco pollice sinistro</what_left_gate>
+  <what_right_gate>Blocco pollice destro</what_right_gate>
+  <what_left_smoothing>Levigatura sinistra</what_left_smoothing>
+  <what_right_smoothing>Levigatura destra</what_right_smoothing>
+  <what_left_deadzone>Zona morta sinistra</what_left_deadzone>
+  <what_right_deadzone>Zona morta destra</what_right_deadzone>
+  <what_language>Lingua</what_language>
+  <note_copied>Diagnostica copiata</note_copied>
+  <note_no_log>Posizione del log di SteamVR sconosciuta</note_no_log>
+  <tray_open>Apri ancora</tray_open>
+  <tray_exit>Esci</tray_exit>
+</language>

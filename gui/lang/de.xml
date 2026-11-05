@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, German. Machine drafted, needs a native review. See en.xml. -->
+<language code="de" name="Deutsch" dir="ltr" font="Segoe UI">
+  <nav_status>Status</nav_status>
+  <nav_tune>Abstimmen</nav_tune>
+  <nav_diag>Diagnose</nav_diag>
+  <rail_steamvr_on>SteamVR läuft</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR aus</rail_steamvr_off>
+  <rail_both>Beide Controller</rail_both>
+  <rail_one>Ein Controller</rail_one>
+  <rail_none>Keine Controller</rail_none>
+  <lang_auto>Automatisch ({name})</lang_auto>
+  <lang_missing>{name}: {n} Texte nicht übersetzt, auf Englisch angezeigt</lang_missing>
+  <hint_back>Zurück</hint_back>
+  <hint_apply>Übernehmen</hint_apply>
+  <hint_select>Auswählen</hint_select>
+  <hint_next>Weiter</hint_next>
+  <hand_left>Linker Controller</hand_left>
+  <hand_right>Rechter Controller</hand_right>
+  <state_no_signal>Kein Signal</state_no_signal>
+  <sub_no_signal>Starte SteamVR, um diesen Controller zu sehen.</sub_no_signal>
+  <state_not_connected>Nicht verbunden</state_not_connected>
+  <sub_wake>Wecke den Controller, um seinen Stick zu sehen.</sub_wake>
+  <sub_silent>Seit {n} s keine Stickdaten. Batterie prüfen oder Controller wecken.</sub_silent>
+  <state_not_corrected>Nicht korrigiert</state_not_corrected>
+  <sub_unchanged>Unverändert an Spiele weitergegeben.</sub_unchanged>
+  <state_anchored>Drift verankert</state_anchored>
+  <sub_drifting>Drift {value}. Daumen weg, Spiele erhalten 0.</sub_drifting>
+  <sub_thumb_off>Daumen weg, Spiele erhalten 0.</sub_thumb_off>
+  <state_in_deadzone>In der Totzone</state_in_deadzone>
+  <sub_in_deadzone>Innerhalb der Totzone von {percent}, Spiele erhalten 0.</sub_in_deadzone>
+  <state_following>Folgt dem Daumen</state_following>
+  <sub_past_deadzone>Außerhalb der Totzone von {percent}, Spiele erhalten einen skalierten Ausschlag.</sub_past_deadzone>
+  <sub_as_is>Unverändert an Spiele weitergegeben.</sub_as_is>
+  <read_reports>Meldet</read_reports>
+  <read_games>Spiele erhalten</read_games>
+  <read_thumb>Daumen</read_thumb>
+  <thumb_no_sensor>kein Sensor</thumb_no_sensor>
+  <thumb_on>auf dem Stick</thumb_on>
+  <thumb_off>weg</thumb_off>
+  <set_gate>Daumensperre</set_gate>
+  <set_smoothing>Glättung</set_smoothing>
+  <set_deadzone>Totzone</set_deadzone>
+  <value_off>aus</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Verankerung an</master_on>
+  <master_off>Verankerung aus</master_off>
+  <tune_suggested>empfohlen {value}</tune_suggested>
+  <legend_rests>Ruheposition</legend_rests>
+  <legend_suggested>Empfohlene Totzone</legend_suggested>
+  <step_rest>Stick loslassen</step_rest>
+  <step_rest_active>Ruheposition wird gemessen, Daumen weglassen.</step_rest_active>
+  <step_rest_done>{n} s Ruhe gemessen.</step_rest_done>
+  <step_flick>Antippen und loslassen</step_flick>
+  <step_flick_settle>{n} von {total}. Loslassen, Endposition wird gemessen.</step_flick_settle>
+  <step_flick_release>{n} von {total}. Jetzt loslassen.</step_flick_release>
+  <step_flick_push>{n} von {total}. Ganz durchdrücken, dann loslassen.</step_flick_push>
+  <step_flick_done>{total} von {total} Ausschlägen gemessen.</step_flick_done>
+  <step_review>Prüfen und übernehmen</step_review>
+  <res_peak>max. Drift</res_peak>
+  <res_typical>typische Drift</res_typical>
+  <res_direction>Richtung</res_direction>
+  <dir_none>keine</dir_none>
+  <dir_right>rechts</dir_right>
+  <dir_forward_right>vorne rechts</dir_forward_right>
+  <dir_forward>vorne</dir_forward>
+  <dir_forward_left>vorne links</dir_forward_left>
+  <dir_left>links</dir_left>
+  <dir_back_left>hinten links</dir_back_left>
+  <dir_back>hinten</dir_back>
+  <dir_back_right>hinten rechts</dir_back_right>
+  <find_none>Kaum Drift gemessen. Keine Totzone nötig.</find_none>
+  <find_gate_ok>Der Daumensensor blieb beim Loslassen aus, die Daumensperre stoppt diese Drift also schon.</find_gate_ok>
+  <find_gate_fail>Der Daumensensor meldete beim Loslassen Berührung, die Daumensperre allein reicht nicht.</find_gate_fail>
+  <find_no_sensor>Kein Daumensensor gefunden, nur eine Totzone kann die Drift stoppen.</find_no_sensor>
+  <find_creep>Mit dem Daumen auf dem Stick kann er noch kriechen. Eine Totzone von {value} deckt das ab.</find_creep>
+  <tune_intro>Misst, wie dieser Stick driftet, und schlägt eine Totzone vor. Dauert etwa 20 Sekunden: Stick loslassen, dann ein paarmal antippen und loslassen.</tune_intro>
+  <btn_start>Messung starten</btn_start>
+  <btn_apply_left>{value} links übernehmen</btn_apply_left>
+  <btn_apply_right>{value} rechts übernehmen</btn_apply_right>
+  <btn_restart>Neu beginnen</btn_restart>
+  <tile_driver>Treiber</tile_driver>
+  <drv_loaded>Geladen</drv_loaded>
+  <drv_registered>Registriert</drv_registered>
+  <drv_missing>Nicht installiert</drv_missing>
+  <drv_patched>{n} Eingabetabellen gepatcht</drv_patched>
+  <drv_not_seen>nicht im SteamVR-Log</drv_not_seen>
+  <tile_logic>Logik</tile_logic>
+  <logic_gen>Generation {n}</logic_gen>
+  <logic_none>Nicht geladen</logic_none>
+  <logic_loaded>geladen {time}, {n} Eingaben wiederholt</logic_loaded>
+  <tile_config>Konfiguration</tile_config>
+  <cfg_pending>Noch nicht angewendet</cfg_pending>
+  <cfg_applied>Angewendet {time}</cfg_applied>
+  <col_controller>Controller</col_controller>
+  <col_inputs>Eingaben</col_inputs>
+  <col_thumb>Daumen jetzt</col_thumb>
+  <col_updates>Updates</col_updates>
+  <diag_left_untracked>Links: nicht erfasst</diag_left_untracked>
+  <diag_right_untracked>Rechts: nicht erfasst</diag_right_untracked>
+  <inputs_silent>stumm</inputs_silent>
+  <rate_idle>ruhig</rate_idle>
+  <log_title>SteamVR-Log, ancora-Zeilen</log_title>
+  <log_empty>Noch keine ancora-Zeilen im SteamVR-Log.</log_empty>
+  <btn_copy>Diagnose kopieren</btn_copy>
+  <btn_open_cfg>Konfiguration öffnen</btn_open_cfg>
+  <btn_open_log>SteamVR-Log öffnen</btn_open_log>
+  <note_saved>{what} gespeichert</note_saved>
+  <what_anchoring>Verankerung</what_anchoring>
+  <what_left_gate>Daumensperre links</what_left_gate>
+  <what_right_gate>Daumensperre rechts</what_right_gate>
+  <what_left_smoothing>Glättung links</what_left_smoothing>
+  <what_right_smoothing>Glättung rechts</what_right_smoothing>
+  <what_left_deadzone>Totzone links</what_left_deadzone>
+  <what_right_deadzone>Totzone rechts</what_right_deadzone>
+  <what_language>Sprache</what_language>
+  <note_copied>Diagnose kopiert</note_copied>
+  <note_no_log>Ort des SteamVR-Logs unbekannt</note_no_log>
+  <tray_open>ancora öffnen</tray_open>
+  <tray_exit>Beenden</tray_exit>
+</language>

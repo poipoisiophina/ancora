@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Polish. Machine drafted, needs a native review. See en.xml. -->
+<language code="pl" name="Polski" dir="ltr" font="Segoe UI">
+  <nav_status>Stan</nav_status>
+  <nav_tune>Strojenie</nav_tune>
+  <nav_diag>Diagnostyka</nav_diag>
+  <rail_steamvr_on>SteamVR działa</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR wyłączony</rail_steamvr_off>
+  <rail_both>Oba kontrolery</rail_both>
+  <rail_one>Jeden kontroler</rail_one>
+  <rail_none>Brak kontrolerów</rail_none>
+  <lang_auto>Automatycznie ({name})</lang_auto>
+  <lang_missing>{name}: nieprzetłumaczone teksty: {n}, pokazane po angielsku</lang_missing>
+  <hint_back>Wstecz</hint_back>
+  <hint_apply>Zastosuj</hint_apply>
+  <hint_select>Wybierz</hint_select>
+  <hint_next>Dalej</hint_next>
+  <hand_left>Lewy kontroler</hand_left>
+  <hand_right>Prawy kontroler</hand_right>
+  <state_no_signal>Brak sygnału</state_no_signal>
+  <sub_no_signal>Uruchom SteamVR, aby zobaczyć ten kontroler.</sub_no_signal>
+  <state_not_connected>Niepołączony</state_not_connected>
+  <sub_wake>Wybudź kontroler, aby zobaczyć jego gałkę.</sub_wake>
+  <sub_silent>Brak danych z gałki od {n} s. Sprawdź baterię lub wybudź kontroler.</sub_silent>
+  <state_not_corrected>Bez korekty</state_not_corrected>
+  <sub_unchanged>Przekazywane do gier bez zmian.</sub_unchanged>
+  <state_anchored>Dryf zakotwiczony</state_anchored>
+  <sub_drifting>Dryf {value}. Kciuk zdjęty, gry dostają 0.</sub_drifting>
+  <sub_thumb_off>Kciuk zdjęty, gry dostają 0.</sub_thumb_off>
+  <state_in_deadzone>W martwej strefie</state_in_deadzone>
+  <sub_in_deadzone>W martwej strefie {percent}, gry dostają 0.</sub_in_deadzone>
+  <state_following>Podąża za kciukiem</state_following>
+  <sub_past_deadzone>Poza martwą strefą {percent}, gry dostają przeskalowane wychylenie.</sub_past_deadzone>
+  <sub_as_is>Przekazywane do gier bez zmian.</sub_as_is>
+  <read_reports>Odczyt</read_reports>
+  <read_games>Gry dostają</read_games>
+  <read_thumb>Kciuk</read_thumb>
+  <thumb_no_sensor>brak czujnika</thumb_no_sensor>
+  <thumb_on>na gałce</thumb_on>
+  <thumb_off>zdjęty</thumb_off>
+  <set_gate>Blokada kciuka</set_gate>
+  <set_smoothing>Wygładzanie</set_smoothing>
+  <set_deadzone>Martwa strefa</set_deadzone>
+  <value_off>wył.</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Kotwiczenie wł.</master_on>
+  <master_off>Kotwiczenie wył.</master_off>
+  <tune_suggested>sugerowane {value}</tune_suggested>
+  <legend_rests>Punkt spoczynku</legend_rests>
+  <legend_suggested>Sugerowana martwa strefa</legend_suggested>
+  <step_rest>Puść gałkę</step_rest>
+  <step_rest_active>Mierzę punkt spoczynku, nie dotykaj gałki.</step_rest_active>
+  <step_rest_done>Zmierzono {n} s spoczynku.</step_rest_done>
+  <step_flick>Wychyl i puść</step_flick>
+  <step_flick_settle>{n} z {total}. Puść, mierzę, gdzie się zatrzyma.</step_flick_settle>
+  <step_flick_release>{n} z {total}. Teraz puść.</step_flick_release>
+  <step_flick_push>{n} z {total}. Wychyl do końca, potem puść.</step_flick_push>
+  <step_flick_done>Zmierzono {total} z {total} wychyleń.</step_flick_done>
+  <step_review>Sprawdź i zastosuj</step_review>
+  <res_peak>dryf maks.</res_peak>
+  <res_typical>dryf typowy</res_typical>
+  <res_direction>kierunek</res_direction>
+  <dir_none>brak</dir_none>
+  <dir_right>w prawo</dir_right>
+  <dir_forward_right>przód w prawo</dir_forward_right>
+  <dir_forward>przód</dir_forward>
+  <dir_forward_left>przód w lewo</dir_forward_left>
+  <dir_left>w lewo</dir_left>
+  <dir_back_left>tył w lewo</dir_back_left>
+  <dir_back>tył</dir_back>
+  <dir_back_right>tył w prawo</dir_back_right>
+  <find_none>Prawie brak dryfu. Martwa strefa niepotrzebna.</find_none>
+  <find_gate_ok>Czujnik kciuka był wyłączony po puszczeniu, więc blokada kciuka już zatrzymuje ten dryf.</find_gate_ok>
+  <find_gate_fail>Czujnik kciuka wykrywał dotyk po puszczeniu, więc sama blokada kciuka nie wystarczy.</find_gate_fail>
+  <find_no_sensor>Nie znaleziono czujnika kciuka, tylko martwa strefa może to zatrzymać.</find_no_sensor>
+  <find_creep>Z kciukiem opartym na gałce wciąż może się przesuwać. Martwa strefa {value} to pokrywa.</find_creep>
+  <tune_intro>Mierzy dryf tej gałki i sugeruje martwą strefę. Trwa około 20 sekund: puść gałkę, potem kilka razy wychyl ją i puść.</tune_intro>
+  <btn_start>Zacznij pomiar</btn_start>
+  <btn_apply_left>Zastosuj {value} do lewego</btn_apply_left>
+  <btn_apply_right>Zastosuj {value} do prawego</btn_apply_right>
+  <btn_restart>Od nowa</btn_restart>
+  <tile_driver>Sterownik</tile_driver>
+  <drv_loaded>Załadowany</drv_loaded>
+  <drv_registered>Zarejestrowany</drv_registered>
+  <drv_missing>Niezainstalowany</drv_missing>
+  <drv_patched>Zmienione tablice wejść: {n}</drv_patched>
+  <drv_not_seen>brak w logu SteamVR</drv_not_seen>
+  <tile_logic>Logika</tile_logic>
+  <logic_gen>Generacja {n}</logic_gen>
+  <logic_none>Niezaładowana</logic_none>
+  <logic_loaded>załadowana {time}, odtworzone wejścia: {n}</logic_loaded>
+  <tile_config>Konfiguracja</tile_config>
+  <cfg_pending>Jeszcze nie zastosowana</cfg_pending>
+  <cfg_applied>Zastosowana {time}</cfg_applied>
+  <col_controller>Kontroler</col_controller>
+  <col_inputs>Wejścia</col_inputs>
+  <col_thumb>Kciuk teraz</col_thumb>
+  <col_updates>Odczyty</col_updates>
+  <diag_left_untracked>Lewy: nie śledzony</diag_left_untracked>
+  <diag_right_untracked>Prawy: nie śledzony</diag_right_untracked>
+  <inputs_silent>milczy</inputs_silent>
+  <rate_idle>bezczynny</rate_idle>
+  <log_title>Log SteamVR, wiersze ancora</log_title>
+  <log_empty>Brak jeszcze wierszy ancora w logu SteamVR.</log_empty>
+  <btn_copy>Kopiuj diagnostykę</btn_copy>
+  <btn_open_cfg>Otwórz konfigurację</btn_open_cfg>
+  <btn_open_log>Otwórz log SteamVR</btn_open_log>
+  <note_saved>Zapisano: {what}</note_saved>
+  <what_anchoring>kotwiczenie</what_anchoring>
+  <what_left_gate>lewa blokada kciuka</what_left_gate>
+  <what_right_gate>prawa blokada kciuka</what_right_gate>
+  <what_left_smoothing>lewe wygładzanie</what_left_smoothing>
+  <what_right_smoothing>prawe wygładzanie</what_right_smoothing>
+  <what_left_deadzone>lewa martwa strefa</what_left_deadzone>
+  <what_right_deadzone>prawa martwa strefa</what_right_deadzone>
+  <what_language>język</what_language>
+  <note_copied>Skopiowano diagnostykę</note_copied>
+  <note_no_log>Nieznane położenie logu SteamVR</note_no_log>
+  <tray_open>Otwórz ancora</tray_open>
+  <tray_exit>Zakończ</tray_exit>
+</language>
