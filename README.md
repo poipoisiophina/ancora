@@ -26,7 +26,7 @@ Nothing else. No extra runtimes, no admin rights.
 ## Install
 
 1. **Close SteamVR** completely.
-2. Run **`ancora-setup-0.1.0.exe`**.
+2. Run PreRelease **`ancora-setup-0.1.1.exe`**.
    - If Windows says "Windows protected your PC", click **More info**, then
      **Run anyway**. (This happens because the installer is not signed with a
      paid certificate.)
