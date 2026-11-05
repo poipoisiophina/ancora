@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include "../../driver/src/ancora_state.h"
+#include "../../driver/src/ancora_average.h"
 
 #pragma comment(lib, "d2d1")
 #pragma comment(lib, "dwrite")
@@ -55,7 +56,7 @@ const uint32_t kGrid = 0x2A3644, kLine = 0x22303D;
 const uint32_t kText = 0xE6EDF3, kMuted = 0xA9B6C2, kDim = 0x8B98A5, kRaw = 0xFF6B5A, kRawText = 0xFF8A7C;
 const uint32_t kOut = 0x3DDC97, kOkWell = 0x12241D, kBrass = 0xF5C451, kWarn = 0xFF9F43, kWhite = 0xFFFFFF;
 
-const float kW = 1280, kH = 610;            // layout size in DIPs
+const float kW = 1280, kH = 662;            // layout size in DIPs
 const float kNavW = 260, kFootH = 56;
 const int kTrail = 120;                     // raw trail points per stick
 const uint64_t kTrailMs = 2000;
@@ -64,7 +65,7 @@ const UINT kTimerFrame = 1, kTimerSlow = 2;
 const UINT kFrameMs = 33;                   // at most 30 redraws a second
 
 // ---- config (ancora.ini) ---------------------------------------------------------
-// ini keys per hand: <hand>, <hand>_touch_gate, <hand>_deadzone
+// ini keys per hand: <hand>, <hand>_touch_gate, <hand>_average_ms, <hand>_deadzone
 const wchar_t* kHandKey[2] = {L"left", L"right"};
 const wchar_t* kHandName[2] = {L"Left controller", L"Right controller"};
 
@@ -72,11 +73,12 @@ struct HandConfig {
     bool  enable = true;
     bool  touch_gate = true;
     float deadzone = 0.0f;
+    int   average_ms = 0;
 };
 
 struct Config {
     bool enable = true;
-    HandConfig hand[2] = {{true, true, 0.0f}, {false, true, 0.0f}};
+    HandConfig hand[2] = {{true, true, 0.0f, 0}, {false, true, 0.0f, 0}};
     bool exists = false;
 };
 
@@ -99,6 +101,9 @@ Config read_config(const std::wstring& path) {
         h.deadzone = (float)_wtof(buf);
         if (!(h.deadzone >= 0.0f)) h.deadzone = 0.0f;
         if (h.deadzone > 0.95f) h.deadzone = 0.95f;
+        h.average_ms = GetPrivateProfileIntW(L"ancora", hand_key(i, L"_average_ms").c_str(), 0, f);
+        if (h.average_ms < 0) h.average_ms = 0;
+        if (h.average_ms > kMaxAverageMs) h.average_ms = kMaxAverageMs;
     }
     return c;
 }
@@ -108,6 +113,10 @@ void write_key(const std::wstring& path, const std::wstring& key, const std::wst
 }
 
 void write_bool(const std::wstring& path, const std::wstring& key, bool v) { write_key(path, key, v ? L"1" : L"0"); }
+
+void write_average(const std::wstring& path, int hand, int ms) {
+    write_key(path, hand_key(hand, L"_average_ms"), std::to_wstring(ms));
+}
 
 void write_deadzone(const std::wstring& path, int hand, float v) {
     wchar_t buf[16];
@@ -124,15 +133,18 @@ void write_config_file(const std::wstring& path, const Config& c) {
              L"; master switch, 0 = pass all input through unchanged\r\n"
              L"enable=%d\r\n"
              L"; per hand: correct the stick (1 = on), thumb gate (thumb off the cap -> 0,0),\r\n"
+             L"; moving average for a shaky stick (0..300 ms, 0 = off, adds lag),\r\n"
              L"; radial deadzone while touched (0..0.95, 0 = off)\r\n"
              L"left=%d\r\n"
              L"left_touch_gate=%d\r\n"
+             L"left_average_ms=%d\r\n"
              L"left_deadzone=%.2f\r\n"
              L"right=%d\r\n"
              L"right_touch_gate=%d\r\n"
+             L"right_average_ms=%d\r\n"
              L"right_deadzone=%.2f\r\n",
-             c.enable, c.hand[0].enable, c.hand[0].touch_gate, c.hand[0].deadzone,
-             c.hand[1].enable, c.hand[1].touch_gate, c.hand[1].deadzone);
+             c.enable, c.hand[0].enable, c.hand[0].touch_gate, c.hand[0].average_ms, c.hand[0].deadzone,
+             c.hand[1].enable, c.hand[1].touch_gate, c.hand[1].average_ms, c.hand[1].deadzone);
     std::string utf8;
     int n = WideCharToMultiByte(CP_UTF8, 0, text, -1, nullptr, 0, nullptr, nullptr);
     utf8.resize(n - 1);
@@ -279,7 +291,7 @@ void fake_state(uint64_t now) {
     strcpy_s(l.model, "Oculus Quest3 (Left Controller)");
     l.last_update_ms = now;
     AncoraHandState& r = s.hand[1];
-    r.enable = 1; r.touch_gate = 0; r.deadzone = 0.20f;
+    r.enable = 1; r.touch_gate = 0; r.deadzone = 0.20f; r.average_ms = 100;
     r.raw_x = 0.62f * std::cos(t * 0.4f + 0.9f); r.raw_y = 0.62f * std::sin(t * 0.4f + 0.9f);
     r.out_x = r.raw_x * 0.775f; r.out_y = r.raw_y * 0.775f;   // (0.62 - 0.20) / 0.80 / 0.62
     r.touch = 1; r.tracked = 7; r.gated = 0; r.updates = (uint32_t)(t * 500);
@@ -441,7 +453,8 @@ struct App {
     std::wstring status_note;       // short feedback such as "saved"
     uint64_t note_until = 0;
     bool steamvr = false, registered = false;
-    int drag_hand = -1;             // deadzone slider being dragged
+    int drag_hand = -1;             // per hand slider being dragged
+    bool drag_average = false;      // that slider is the average, else the deadzone
     D2D1_RECT_F drag_track{};
     bool exiting = false, from_steamvr = false;
     NOTIFYICONDATAW nid{};
@@ -470,7 +483,7 @@ void trace(const char* f, ...) {
 }
 
 // ---- focusable regions -------------------------------------------------------------------
-enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_SLIDER,
+enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_AVERAGE, ID_SLIDER,
           ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG };
 struct Region { D2D1_RECT_F r; Id id; int hand; };
 std::vector<Region> g_regions;     // rebuilt every frame, in focus order
@@ -711,6 +724,20 @@ void draw_trail(ID2D1RenderTarget* t, int i, float cx, float cy, float R, uint64
     }
 }
 
+// one settings row: label, slider (fraction 0..1) and value
+void draw_slider(ID2D1RenderTarget* t, D2D1_RECT_F r, const wchar_t* label, const std::wstring& val, bool active,
+                 float fraction, Id id, int hand) {
+    text(t, label, g.f_body, r.left + 14, r.top + 15, kText);
+    text(t, val, g.f_mono, r.right - 74, r.top + 16, active ? kText : kMuted, 60, DWRITE_TEXT_ALIGNMENT_TRAILING);
+    float x0 = r.left + 110, x1 = r.right - 88, y = r.top + 26;
+    line(t, x0, y, x1, y, kGrid, 4);
+    float kx = x0 + (x1 - x0) * fraction;
+    line(t, x0, y, kx, y, kOut, 4);
+    circle(t, kx, y, 9, kText);
+    if (focused(id, hand)) ring(t, r, 12);
+    region({x0 - 12, r.top, x1 + 12, r.bottom}, id, hand);
+}
+
 void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     float x0 = 292 + i * 486.0f;
     D2D1_RECT_F c = {x0, 84, x0 + 470, kH - kFootH - 24};
@@ -754,7 +781,7 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     }
 
     // per hand settings
-    D2D1_RECT_F well = {x0 + 22, ry + 70, x0 + 470 - 22, ry + 70 + 104};
+    D2D1_RECT_F well = {x0 + 22, ry + 70, x0 + 470 - 22, ry + 70 + 156};
     fill_round(t, well, 12, kWell);
     D2D1_RECT_F gate = {well.left, well.top, well.right, well.top + 52};
     text(t, L"Thumb gate", g.f_body, gate.left + 14, gate.top + 15, kText);
@@ -763,18 +790,13 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     region(gate, ID_GATE, i);
     line(t, well.left, well.top + 52, well.right, well.top + 52, kLine);
 
-    D2D1_RECT_F dzr = {well.left, well.top + 52, well.right, well.bottom};
-    text(t, L"Deadzone", g.f_body, dzr.left + 14, dzr.top + 15, kText);
-    std::wstring val = hc.deadzone > 0 ? fmt1(L"%.0f%%", hc.deadzone * 100) : std::wstring(L"off");
-    text(t, val, g.f_mono, dzr.right - 64, dzr.top + 16, hc.deadzone > 0 ? kText : kMuted, 50,
-         DWRITE_TEXT_ALIGNMENT_TRAILING);
-    D2D1_RECT_F track = {dzr.left + 110, dzr.top + 26, dzr.right - 78, dzr.top + 26};
-    line(t, track.left, track.top, track.right, track.top, kGrid, 4);
-    float kx = track.left + (track.right - track.left) * (hc.deadzone / 0.95f);
-    line(t, track.left, track.top, kx, track.top, kOut, 4);
-    circle(t, kx, track.top, 9, kText);
-    if (focused(ID_SLIDER, i)) ring(t, dzr, 12);
-    region({track.left - 12, dzr.top, track.right + 12, dzr.bottom}, ID_SLIDER, i);
+    draw_slider(t, {well.left, well.top + 52, well.right, well.top + 104}, L"Smoothing",
+                hc.average_ms > 0 ? fmt1(L"%.0f ms", hc.average_ms) : std::wstring(L"off"), hc.average_ms > 0,
+                hc.average_ms / (float)kMaxAverageMs, ID_AVERAGE, i);
+    line(t, well.left, well.top + 104, well.right, well.top + 104, kLine);
+    draw_slider(t, {well.left, well.top + 104, well.right, well.bottom}, L"Deadzone",
+                hc.deadzone > 0 ? fmt1(L"%.0f%%", hc.deadzone * 100) : std::wstring(L"off"), hc.deadzone > 0,
+                hc.deadzone / 0.95f, ID_SLIDER, i);
 }
 
 void draw_status(ID2D1RenderTarget* t, uint64_t now) {
@@ -1092,6 +1114,23 @@ void set_deadzone(int hand, float v) {
     g.cfg.hand[hand].deadzone = v;
 }
 
+void set_average(int hand, float ms) {
+    int v = (int)std::lround(std::fmax(0.0f, std::fmin((float)kMaxAverageMs, ms)) / 5.0f) * 5;
+    g.cfg.hand[hand].average_ms = v;
+}
+
+void commit_average(int hand) {
+    ensure_file();
+    write_average(g_ini, hand, g.cfg.hand[hand].average_ms);
+    saved(hand ? L"Right smoothing" : L"Left smoothing");
+}
+
+// slider position (0..1) to the dragged setting
+void set_dragged(float fraction) {
+    if (g.drag_average) set_average(g.drag_hand, fraction * kMaxAverageMs);
+    else set_deadzone(g.drag_hand, fraction * 0.95f);
+}
+
 void commit_deadzone(int hand) {
     ensure_file();
     write_deadzone(g_ini, hand, g.cfg.hand[hand].deadzone);
@@ -1259,7 +1298,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     case WM_MOUSEMOVE: {
         float x = GET_X_LPARAM(lp) / ui_scale(), y = GET_Y_LPARAM(lp) / ui_scale();
         if (g.drag_hand >= 0) {
-            set_deadzone(g.drag_hand, (x - g.drag_track.left) / (g.drag_track.right - g.drag_track.left) * 0.95f);
+            set_dragged((x - g.drag_track.left) / (g.drag_track.right - g.drag_track.left));
             redraw();
             return 0;
         }
@@ -1274,11 +1313,12 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         if (r) {
             g_focus = r->id;
             g_focus_hand = r->hand;
-            if (r->id == ID_SLIDER) {
+            if (r->id == ID_SLIDER || r->id == ID_AVERAGE) {
                 g.drag_hand = r->hand;
+                g.drag_average = r->id == ID_AVERAGE;
                 g.drag_track = {r->r.left + 12, r->r.top, r->r.right - 12, r->r.bottom};
                 SetCapture(h);
-                set_deadzone(r->hand, (x - g.drag_track.left) / (g.drag_track.right - g.drag_track.left) * 0.95f);
+                set_dragged((x - g.drag_track.left) / (g.drag_track.right - g.drag_track.left));
             } else {
                 activate(r->id, r->hand);
             }
@@ -1291,7 +1331,8 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
             int hand = g.drag_hand;
             g.drag_hand = -1;
             ReleaseCapture();
-            commit_deadzone(hand);
+            if (g.drag_average) commit_average(hand);
+            else commit_deadzone(hand);
             redraw();
         }
         return 0;
@@ -1306,11 +1347,14 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
             if (g_focus == ID_SLIDER) {
                 set_deadzone(g_focus_hand, g.cfg.hand[g_focus_hand].deadzone + (wp == VK_RIGHT ? 0.05f : -0.05f));
                 commit_deadzone(g_focus_hand);
+            } else if (g_focus == ID_AVERAGE) {
+                set_average(g_focus_hand, g.cfg.hand[g_focus_hand].average_ms + (wp == VK_RIGHT ? 25.0f : -25.0f));
+                commit_average(g_focus_hand);
             } else {
                 move_focus(wp == VK_RIGHT ? 1 : -1);
             }
         } else if (wp == VK_RETURN || wp == VK_SPACE) {
-            if (g_focus != ID_SLIDER) activate(g_focus, g_focus_hand);
+            if (g_focus != ID_SLIDER && g_focus != ID_AVERAGE) activate(g_focus, g_focus_hand);
         } else if (wp == VK_ESCAPE) {
             if (g.page != PAGE_STATUS) { g.page = PAGE_STATUS; g_focus = ID_NAV_STATUS; g_focus_hand = 0; }
             else hide_panel();
@@ -1441,7 +1485,7 @@ int screenshot(const std::wstring& out, const std::wstring& page) {
     g.cfg = read_config(g_ini);
     g.page = page == L"tune" ? PAGE_TUNE : page == L"diag" ? PAGE_DIAG : PAGE_STATUS;
     if (g_fake) {
-        g.cfg.enable = true; g.cfg.hand[0] = {true, true, 0.0f}; g.cfg.hand[1] = {true, false, 0.20f};
+        g.cfg.enable = true; g.cfg.hand[0] = {true, true, 0.0f, 0}; g.cfg.hand[1] = {true, false, 0.20f, 100};
         g.steamvr = true; g.registered = true;
         uint64_t base = 50000;
         for (int k = 0; k < 60; ++k) {   // two seconds of history at 30 Hz
@@ -1608,11 +1652,16 @@ int selftest() {
     check(!c.exists && !c.enable && c.hand[0].enable && !c.hand[1].enable && c.hand[0].touch_gate &&
           c.hand[1].touch_gate && c.hand[0].deadzone == 0 && c.hand[1].deadzone == 0,
           "missing file reads safe defaults (disabled)");
-    Config d; d.enable = true; d.hand[1] = {true, false, 0.2f};
+    Config d; d.enable = true; d.hand[1] = {true, false, 0.2f, 120};
     write_config_file(p, d);
     c = read_config(p);
     check(c.exists && c.enable && c.hand[1].enable && !c.hand[1].touch_gate && std::fabs(c.hand[1].deadzone - 0.2f) < 1e-4 &&
+          c.hand[1].average_ms == 120 && c.hand[0].average_ms == 0 &&
           c.hand[0].touch_gate && c.hand[0].deadzone == 0, "full file write and read back, hands independent");
+    write_key(p, L"right_average_ms", L"5000");
+    check(read_config(p).hand[1].average_ms == kMaxAverageMs, "out of range average clamps to 300 ms");
+    write_key(p, L"right_average_ms", L"-5");
+    check(read_config(p).hand[1].average_ms == 0, "negative average reads as off");
     write_bool(p, L"left_touch_gate", false);
     write_deadzone(p, 0, 0.35f);
     c = read_config(p);
@@ -1641,6 +1690,28 @@ int selftest() {
     check(!tune_compute(pts, 30, 100, true).gate_ok, "tune: thumb on 30 % of the time -> gate not enough");
     check(!tune_compute(pts, 0, 100, false).gate_ok, "tune: no touch sensor -> gate not enough");
     check(tune_compute({{0.0f, 0.95f}}, 0, 10, true).suggested <= 0.95f, "tune suggestion never above 0.95");
+
+    // moving average: window in time, not in update count
+    static StickAverage av;
+    for (int k = 0; k <= 1000; ++k) av.add(k <= 500 ? 0.0f : 1.0f, 0.5f, (double)k, 100.0);
+    check(std::fabs(av.avg_x() - 1.0f) < 1e-4 && std::fabs(av.avg_y() - 0.5f) < 1e-4, "average settles on a steady value");
+    av.reset();
+    for (int k = 0; k <= 500; ++k) av.add(0.0f, 0.0f, (double)k, 100.0);
+    for (int k = 501; k <= 550; ++k) av.add(1.0f, 0.0f, (double)k, 100.0);
+    check(av.avg_x() > 0.4f && av.avg_x() < 0.6f, "average is about half way, half a window after a step");
+    float fast, slow;
+    av.reset();
+    for (int k = 0; k <= 500; ++k) av.add(k > 450 ? 1.0f : 0.0f, 0, k * 1.0, 100.0);
+    fast = av.avg_x();
+    av.reset();
+    for (int k = 0; k <= 50; ++k) av.add(k > 45 ? 1.0f : 0.0f, 0, k * 10.0, 100.0);
+    slow = av.avg_x();
+    check(std::fabs(fast - slow) < 0.1f, "same result at 1000 and 100 updates per second");
+    av.reset();
+    for (int k = 0; k <= 200; ++k) av.add(((k / 3) & 1) ? 0.6f : 0.4f, 0, k * 1.0, 100.0);
+    check(std::fabs(av.avg_x() - 0.5f) < 0.03f, "average removes fast jitter");
+    av.reset();
+    check(av.count == 0 && av.avg_x() == 0.0f, "reset empties the average");
 
     // tune run on a simulated stick that never centers: it creeps forward and jitters
     // every frame, and after each flick it settles off center, never still

@@ -63,6 +63,9 @@ Each card has:
 - **Deadzone**: only needed if your stick drifts even while your thumb rests
   on it. Leave it **off** unless you need it. Higher numbers mean you must push
   the stick further before you move.
+- **Smoothing**: steadies a stick that shakes while your thumb is on it. It does
+  not fix drift, and higher numbers add lag to your movement. Leave it **off**
+  unless your stick shakes.
 
 **Anchoring on** (top right) turns ancora on or off for everything.
 

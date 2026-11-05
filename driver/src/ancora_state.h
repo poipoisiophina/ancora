@@ -7,7 +7,7 @@
 
 #define ANCORA_STATE_NAME    "Local\\ancora_state_v1"
 #define ANCORA_STATE_MAGIC   0x41434F52u   // "ACOR"
-#define ANCORA_STATE_VERSION 3
+#define ANCORA_STATE_VERSION 4
 #define ANCORA_STATE_BYTES   4096          // section size; the struct must fit
 
 struct AncoraHandState {
@@ -15,6 +15,7 @@ struct AncoraHandState {
     uint32_t enable;            // correct this stick
     uint32_t touch_gate;        // thumb off the cap -> 0,0
     float    deadzone;          // radial, 0 = off
+    uint32_t average_ms;        // moving average window, 0 = off
     // live values
     float    raw_x, raw_y;      // what the controller reports
     float    out_x, out_y;      // what games receive

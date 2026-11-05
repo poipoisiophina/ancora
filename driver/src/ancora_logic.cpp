@@ -1,8 +1,8 @@
 // ancora_logic.cpp
 // Hot swappable ancora behaviour, loaded by driver_ancora.dll. Tracks each
 // hand's /input/joystick/{x,y,touch} components and rewrites stick values per
-// ancora.ini: touch gate (thumb off the cap -> 0,0) and an optional radial
-// deadzone. Publishes live state to shared memory for the ancora panel.
+// ancora.ini, in this order: touch gate (thumb off the cap -> 0,0), optional
+// moving average, optional radial deadzone. Publishes live state to shared memory for the ancora panel.
 // Rebuild this dll while SteamVR runs; the loader swaps it in.
 
 #include <openvr_driver.h>
@@ -15,6 +15,7 @@
 #include <string>
 #include "ancora_host_api.h"
 #include "ancora_state.h"
+#include "ancora_average.h"
 
 using namespace vr;
 
@@ -28,6 +29,7 @@ struct Config {
     bool  hand[2]       = {true, false};   // correct this stick at all
     bool  touch_gate[2] = {true, true};
     float deadzone[2]   = {0.0f, 0.0f};
+    int   average_ms[2] = {0, 0};          // moving average window, 0 = off
 };
 
 struct Stick {
@@ -36,6 +38,7 @@ struct Stick {
     bool  touch = false;
     void* iface = nullptr;
     uint64_t last_ms = 0;               // last update from the controller driver
+    StickAverage avg;
 };
 
 const char* kHand[2] = {"left", "right"};
@@ -73,11 +76,32 @@ int hand_of(uint64_t c) {
     return -1;
 }
 
+// no touch component found -> never gate on touch, so the stick cannot lock
+bool gate_closed(const Stick& s, int i) { return g_cfg.touch_gate[i] && s.ht && !s.touch; }
+
+// GetTickCount64 steps every 15 ms or so, too coarse for this window
+double now_precise_ms() {
+    static const double ms_per_tick = [] { LARGE_INTEGER f; QueryPerformanceFrequency(&f); return 1000.0 / f.QuadPart; }();
+    LARGE_INTEGER c;
+    QueryPerformanceCounter(&c);
+    return c.QuadPart * ms_per_tick;
+}
+
+// feed the current raw position to the average; emptied while it is unused, so
+// old positions never leak in when the gate opens; g_mu held
+void update_average(Stick& s, int i) {
+    if (!g_cfg.enable || !g_cfg.hand[i] || g_cfg.average_ms[i] <= 0 || gate_closed(s, i)) {
+        s.avg.reset();
+        return;
+    }
+    s.avg.add(s.raw_x, s.raw_y, now_precise_ms(), g_cfg.average_ms[i]);
+}
+
 float output(const Stick& s, int i, bool want_x) {
     float x = s.raw_x, y = s.raw_y;
     if (g_cfg.enable && g_cfg.hand[i]) {
-        // no touch component found -> never gate on touch, so the stick cannot lock
-        if (g_cfg.touch_gate[i] && s.ht && !s.touch) return 0.0f;
+        if (gate_closed(s, i)) return 0.0f;
+        if (s.avg.count) { x = s.avg.avg_x(); y = s.avg.avg_y(); }
         float m = std::sqrt(x * x + y * y);
         float dz = g_cfg.deadzone[i];
         if (dz > 0.0f && dz < 1.0f) {
@@ -102,6 +126,7 @@ void publish() {
         h.enable = g_cfg.hand[i];
         h.touch_gate = g_cfg.touch_gate[i];
         h.deadzone = g_cfg.deadzone[i];
+        h.average_ms = (uint32_t)g_cfg.average_ms[i];
         h.raw_x = s.raw_x; h.raw_y = s.raw_y;
         h.out_x = output(s, i, true); h.out_y = output(s, i, false);
         h.touch = s.touch;
@@ -172,15 +197,18 @@ void load_config(bool force) {
         std::string k = kHand[i];
         c.touch_gate[i] = GetPrivateProfileIntA("ancora", (k + "_touch_gate").c_str(), 1, f) != 0;
         c.deadzone[i]   = read_deadzone(f, (k + "_deadzone").c_str());
+        int ms = GetPrivateProfileIntA("ancora", (k + "_average_ms").c_str(), 0, f);
+        c.average_ms[i] = ms < 0 ? 0 : ms > kMaxAverageMs ? kMaxAverageMs : ms;
     }
     std::lock_guard<std::mutex> lk(g_mu);
     g_cfg = c;
-    repush(0, 0); repush(1, 0);
+    for (int i = 0; i < 2; ++i) { update_average(g_s[i], i); repush(i, 0); }
     publish();
-    char line[160];
+    char line[200];
     std::snprintf(line, sizeof(line),
-                  "config enable=%d left=%d gate=%d dz=%.2f right=%d gate=%d dz=%.2f",
-                  c.enable, c.hand[0], c.touch_gate[0], c.deadzone[0], c.hand[1], c.touch_gate[1], c.deadzone[1]);
+                  "config enable=%d left=%d gate=%d avg=%dms dz=%.2f right=%d gate=%d avg=%dms dz=%.2f",
+                  c.enable, c.hand[0], c.touch_gate[0], c.average_ms[0], c.deadzone[0],
+                  c.hand[1], c.touch_gate[1], c.average_ms[1], c.deadzone[1]);
     log(line);
 }
 
@@ -210,6 +238,7 @@ void on_bool(void*, uint64_t h, bool* v, double dt) {
         g_s[i].last_ms = GetTickCount64();
         if (*v != g_s[i].touch) {
             g_s[i].touch = *v;
+            update_average(g_s[i], i);
             repush(i, dt);
             publish();
         }
@@ -223,6 +252,7 @@ void on_scalar(void*, uint64_t h, float* v, double) {
         if (!is_x && !is_y) continue;
         std::lock_guard<std::mutex> lk(g_mu);
         (is_x ? s.raw_x : s.raw_y) = *v;
+        update_average(s, i);
         *v = output(s, i, is_x);
         ++g_updates[i];
         s.last_ms = GetTickCount64();
@@ -231,6 +261,12 @@ void on_scalar(void*, uint64_t h, float* v, double) {
 }
 
 void on_frame() {
+    // keep the average moving when a driver only sends changes: a stick that
+    // stopped must still settle on its real position
+    for (int i = 0; i < 2; ++i) {
+        std::lock_guard<std::mutex> lk(g_mu);
+        if (g_s[i].avg.count) { update_average(g_s[i], i); repush(i, 0); }
+    }
     uint64_t now = GetTickCount64();
     if (now - g_last_check >= kConfigPollMs) {
         g_last_check = now;
@@ -245,7 +281,7 @@ void shutdown() {
     // hand the sticks back unfiltered so nothing stays parked at 0
     std::lock_guard<std::mutex> lk(g_mu);
     g_cfg.enable = false;
-    repush(0, 0); repush(1, 0);
+    for (int i = 0; i < 2; ++i) { g_s[i].avg.reset(); repush(i, 0); }
     publish();
     close_state();
     log("logic shutdown");
