@@ -27,8 +27,8 @@
 //                                 SteamVR side of an install (ancora_steamvr.h), exit code
 //                                 0 = done, 1 = SteamVR running or failed. --root is the
 //                                 install folder (default %LOCALAPPDATA%\ancora), Steam
-//                                 file backups go to --backup-dir (default "backup" next
-//                                 to ancora.exe)
+//                                 file backups go to --backup-dir (default
+//                                 %TEMP%\ancora-backup, which outlives an uninstall)
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -54,6 +54,8 @@
 #include "../../driver/src/ancora_state.h"
 #include "../../driver/src/ancora_average.h"
 #include "../../driver/src/ancora_edge.h"
+#include "../../driver/src/ancora_config.h"
+#include "../../driver/src/ancora_ini_io.h"
 #include "ancora_lang.h"
 #include "ancora_steamvr.h"
 // written by build_driver.bat from AppVersion in packaging\ancora.iss
@@ -93,62 +95,39 @@ const UINT kTimerFrame = 1, kTimerSlow = 2;
 const UINT kFrameMs = 33;                   // at most 30 redraws a second
 
 // ---- config (ancora.ini) ---------------------------------------------------------
-// ini keys per hand: <hand>, <hand>_touch_gate, <hand>_average_ms, <hand>_deadzone, <hand>_edge
+// defaults, reading and key writes are shared with the driver (ancora_config.h,
+// ancora_ini_io.h): every write is one locked read, edit, atomic swap
 const wchar_t* kHandKey[2] = {L"left", L"right"};
 
-struct HandConfig {
-    bool  enable = true;
-    bool  touch_gate = true;
-    float deadzone = 0.0f;
-    int   average_ms = 0;
-    EdgeReach edge;
-    bool  edge_on = true;       // use the measured edge; off keeps the values for later
-};
+using HandConfig = ancfg::HandConfig;
 
-struct Config {
-    bool enable = true;
-    HandConfig hand[2] = {{true, true, 0.0f, 0}, {false, true, 0.0f, 0}};
+struct Config : ancfg::Config {
     std::wstring language = L"auto";   // panel only, the driver ignores it
     bool exists = false;
 };
 
 std::wstring g_ini;
-const Config kDefaults{};
 
 std::wstring hand_key(int i, const wchar_t* suffix) { return std::wstring(kHandKey[i]) + suffix; }
 
+std::string ascii(const std::wstring& w) {
+    std::string s;
+    for (wchar_t c : w) s += c < 128 ? (char)c : '?';
+    return s;
+}
+
 Config read_config(const std::wstring& path) {
     Config c;
-    c.exists = GetFileAttributesW(path.c_str()) != INVALID_FILE_ATTRIBUTES;
-    const wchar_t* f = path.c_str();
-    c.enable = GetPrivateProfileIntW(L"ancora", L"enable", 0, f) != 0;
-    for (int i = 0; i < 2; ++i) {
-        HandConfig& h = c.hand[i];
-        h.enable     = GetPrivateProfileIntW(L"ancora", kHandKey[i], i == 0 ? 1 : 0, f) != 0;
-        h.touch_gate = GetPrivateProfileIntW(L"ancora", hand_key(i, L"_touch_gate").c_str(), 1, f) != 0;
-        wchar_t buf[32]{};
-        GetPrivateProfileStringW(L"ancora", hand_key(i, L"_deadzone").c_str(), L"0", buf, 32, f);
-        h.deadzone = (float)_wtof(buf);
-        if (!(h.deadzone >= 0.0f)) h.deadzone = 0.0f;
-        if (h.deadzone > 0.95f) h.deadzone = 0.95f;
-        h.average_ms = GetPrivateProfileIntW(L"ancora", hand_key(i, L"_average_ms").c_str(), 0, f);
-        if (h.average_ms < 0) h.average_ms = 0;
-        if (h.average_ms > kMaxAverageMs) h.average_ms = kMaxAverageMs;
-        wchar_t edge[512]{};
-        GetPrivateProfileStringW(L"ancora", hand_key(i, L"_edge").c_str(), L"", edge, 512, f);
-        std::string narrow;
-        for (const wchar_t* p = edge; *p; ++p) narrow += *p < 128 ? (char)*p : '?';
-        h.edge = edge_parse(narrow.c_str());
-        h.edge_on = GetPrivateProfileIntW(L"ancora", hand_key(i, L"_edge_on").c_str(), 1, f) != 0;
-    }
-    wchar_t lang[32]{};
-    GetPrivateProfileStringW(L"ancora", L"language", L"auto", lang, 32, f);
+    std::string text;
+    c.exists = ancfg::read_file(path, text);
+    static_cast<ancfg::Config&>(c) = ancfg::parse(text);
+    std::wstring lang(c.ancfg::Config::language.begin(), c.ancfg::Config::language.end());
     c.language = lang_code_ok(lang) ? lang : L"auto";
     return c;
 }
 
 void write_key(const std::wstring& path, const std::wstring& key, const std::wstring& value) {
-    WritePrivateProfileStringW(L"ancora", key.c_str(), value.c_str(), path.c_str());
+    ancfg::set_key(path, ascii(key).c_str(), ascii(value));
 }
 
 void write_bool(const std::wstring& path, const std::wstring& key, bool v) { write_key(path, key, v ? L"1" : L"0"); }
@@ -169,51 +148,11 @@ void write_edge(const std::wstring& path, int hand, const EdgeReach& e) {
     write_key(path, hand_key(hand, L"_edge"), std::wstring(s.begin(), s.end()));
 }
 
-// full file with comments, used when the file is missing
+// full file with comments, used when the file is missing (never replaces one)
 void write_config_file(const std::wstring& path, const Config& c) {
-    std::string le = edge_format(c.hand[0].edge), re = edge_format(c.hand[1].edge);
-    std::wstring lw(le.begin(), le.end()), rw(re.begin(), re.end());
-    wchar_t text[2048];
-    swprintf(text, 2048,
-             L"; ancora driver config. The driver re-reads it within 250 ms while SteamVR runs.\r\n"
-             L"[ancora]\r\n"
-             L"; master switch, 0 = pass all input through unchanged\r\n"
-             L"enable=%d\r\n"
-             L"; per hand: correct the stick (1 = on), thumb gate (thumb off the cap -> 0,0),\r\n"
-             L"; moving average for a shaky stick (0..300 ms, 0 = off, adds lag),\r\n"
-             L"; radial deadzone while touched (0..0.95, 0 = off),\r\n"
-             L"; edge stretch: 16 measured reach values, from right counterclockwise\r\n"
-             L"; (the Tune page writes them; empty = off), and whether to use them (1 = on)\r\n"
-             L"left=%d\r\n"
-             L"left_touch_gate=%d\r\n"
-             L"left_average_ms=%d\r\n"
-             L"left_deadzone=%.2f\r\n"
-             L"left_edge=%ls\r\n"
-             L"left_edge_on=%d\r\n"
-             L"right=%d\r\n"
-             L"right_touch_gate=%d\r\n"
-             L"right_average_ms=%d\r\n"
-             L"right_deadzone=%.2f\r\n"
-             L"right_edge=%ls\r\n"
-             L"right_edge_on=%d\r\n"
-             L"; panel language: auto follows Windows, or a code such as de, ar, ja, zh-Hant\r\n"
-             L"language=%ls\r\n",
-             c.enable, c.hand[0].enable, c.hand[0].touch_gate, c.hand[0].average_ms, c.hand[0].deadzone, lw.c_str(),
-             c.hand[0].edge_on,
-             c.hand[1].enable, c.hand[1].touch_gate, c.hand[1].average_ms, c.hand[1].deadzone, rw.c_str(),
-             c.hand[1].edge_on, c.language.c_str());
-    std::string utf8;
-    int n = WideCharToMultiByte(CP_UTF8, 0, text, -1, nullptr, 0, nullptr, nullptr);
-    utf8.resize(n - 1);
-    WideCharToMultiByte(CP_UTF8, 0, text, -1, utf8.data(), n, nullptr, nullptr);
-    // write to a temp file and swap, so the driver never reads half a file
-    std::wstring tmp = path + L".tmp";
-    HANDLE h = CreateFileW(tmp.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr);
-    if (h == INVALID_HANDLE_VALUE) return;
-    DWORD wr;
-    WriteFile(h, utf8.data(), (DWORD)utf8.size(), &wr, nullptr);
-    CloseHandle(h);
-    MoveFileExW(tmp.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING);
+    ancfg::Config f = c;
+    f.language = ascii(c.language);
+    ancfg::update(path, [&](const std::string& t) { return t.empty() ? ancfg::format(f) : t; });
 }
 
 FILETIME file_time(const std::wstring& path) {
@@ -258,27 +197,15 @@ std::wstring widen(const std::string& s) {
 // SteamVR log from the "log" entry of %LOCALAPPDATA%\openvr\openvrpaths.vrpath,
 // the file SteamVR itself keeps; empty when SteamVR is not set up
 std::wstring steamvr_log_path() {
-    std::string j = read_file(local_appdata() + L"\\openvr\\openvrpaths.vrpath");
-    size_t k = j.find("\"log\"");
-    if (k != std::string::npos) {
-        size_t a = j.find('"', j.find('[', k) + 1);
-        size_t b = j.find('"', a + 1);
-        if (a != std::string::npos && b != std::string::npos) {
-            std::string p = j.substr(a + 1, b - a - 1);
-            std::string clean;
-            for (size_t i = 0; i < p.size(); ++i) {   // JSON escapes a backslash as two
-                if (p[i] == '\\' && i + 1 < p.size() && p[i + 1] == '\\') ++i;
-                clean += p[i];
-            }
-            return widen(clean) + L"\\vrserver.txt";
-        }
-    }
-    return L"";
+    svr::Paths p = svr::find_paths();
+    return p.log.empty() ? L"" : p.log + L"\\vrserver.txt";
 }
 
+// an ancora driver folder among SteamVR's registered external drivers
 bool driver_registered() {
-    std::string j = read_file(local_appdata() + L"\\openvr\\openvrpaths.vrpath");
-    return j.find("ancora\\\\driver\\\\ancora") != std::string::npos;
+    for (const std::string& d : svr::find_paths().external_drivers)
+        if (svr::ends_with_nocase(d, "ancora\\driver\\ancora")) return true;
+    return false;
 }
 
 bool process_running(const wchar_t* name) {
@@ -2292,9 +2219,9 @@ int selftest() {
     auto check = [&](bool ok, const char* what) { std::printf("%s %s\n", ok ? "PASS" : "FAIL", what); if (!ok) ++fails; };
 
     Config c = read_config(p);
-    check(!c.exists && !c.enable && c.hand[0].enable && !c.hand[1].enable && c.hand[0].touch_gate &&
+    check(!c.exists && !c.enable && c.hand[0].enable && c.hand[1].enable && c.hand[0].touch_gate &&
           c.hand[1].touch_gate && c.hand[0].deadzone == 0 && c.hand[1].deadzone == 0,
-          "missing file reads safe defaults (disabled)");
+          "missing file reads safe defaults (disabled, both sticks set to be corrected)");
     Config d; d.enable = true; d.hand[1] = {true, false, 0.2f, 120};
     write_config_file(p, d);
     c = read_config(p);
@@ -2484,15 +2411,16 @@ int selftest() {
 
         svr::write_all(app, "{\"manifest_paths\":[\"D:\\\\other\\\\x.vrmanifest\",\"" + std::string("C:\\\\a\\\\ancora.vrmanifest") + "\"]}");
         svr::write_all(set, "{\"driver_ancora\":{\"x\":1},\"ancora.panel\":{},\"steamvr\":{\"y\":2},"
-                            "\"system.generated.probe.exe\":{}}");
+                            "\"system.generated.ancora_probe.exe\":{},\"system.generated.probe.exe\":{}}");
         int before = backups();
         auto unapp = [](svr::Json& x) { return svr::appconfig_set(x, std::string()); };
         check(svr::edit_json(set, bak, svr::vrsettings_strip) == svr::Edit::Written &&
               svr::edit_json(app, bak, unapp) == svr::Edit::Written && backups() == before + 2,
               "unregister strips both files with backups");
         svr::Json s = load(set);
-        check(s.o.size() == 1 && s.o[0].first == "steamvr" && s.find("steamvr")->find("y")->s == "2" &&
-              load(app).find("manifest_paths")->a.size() == 1, "only ancora's entries removed");
+        check(s.o.size() == 2 && s.o[0].first == "steamvr" && s.find("steamvr")->find("y")->s == "2" &&
+              s.find("system.generated.probe.exe") && load(app).find("manifest_paths")->a.size() == 1,
+              "only ancora's entries removed, a plain probe.exe section of another program stays");
         check(svr::edit_json(set, bak, svr::vrsettings_strip) == svr::Edit::Unchanged &&
               svr::edit_json(app, bak, unapp) == svr::Edit::Unchanged && backups() == before + 2,
               "second unregister changes nothing and makes no backup");
@@ -2533,10 +2461,12 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     for (const wchar_t* action : {L"check", L"register", L"unregister"}) {
         if (!has((std::wstring(L"--") + action).c_str())) continue;
         attach_console();
-        wchar_t exe[MAX_PATH]{};
-        GetModuleFileNameW(nullptr, exe, MAX_PATH);
+        // backups outside the install folder: the uninstaller deletes that folder
+        // right after --unregister, and the backups must outlive it
+        wchar_t tmp[MAX_PATH]{};
+        GetTempPathW(MAX_PATH, tmp);
         std::wstring root = arg_after(L"--root", (local_appdata() + L"\\ancora").c_str());
-        std::wstring backups = arg_after(L"--backup-dir", (svr::leaf_dir(exe) + L"\\backup").c_str());
+        std::wstring backups = arg_after(L"--backup-dir", (std::wstring(tmp) + L"ancora-backup").c_str());
         while (root.size() > 3 && (root.back() == L'\\' || root.back() == L'/')) root.pop_back();
         return svr::run(action, root, backups);
     }

@@ -34,25 +34,25 @@ private:
     void make() { x = raw_x; y = raw_y; ++seq; fresh = 0; }
 };
 
-const uint64_t kEdgeSaveMs = 5000;      // learned reach is saved this long after the last raise
+const double kEdgeSaveMs = 5000;        // learned reach is saved this long after the last change
 
 // per hand bookkeeping of edge learning
 struct EdgeLearnState {
     EdgeLearner learner;
     bool dirty = false;                 // learned reach not saved yet
-    uint64_t last_ms = 0;               // last raise
+    double last_ms = 0;                 // last change, ms
     std::string text;                   // <hand>_edge as last read from the ini
 
-    // a whole pair; returns true when it raised the reach
-    bool on_pair(EdgeReach& e, float x, float y, uint64_t now) {
-        if (!learner.feed(e, x, y)) return false;
+    // a whole pair at time now (ms); returns true when it changed the reach
+    bool on_pair(EdgeReach& e, float x, float y, double now) {
+        if (!learner.feed(e, x, y, now)) return false;
         dirty = true;
         last_ms = now;
         return true;
     }
 
     // time to save: learned something, and nothing more for kEdgeSaveMs
-    bool save_due(uint64_t now) const { return dirty && now - last_ms >= kEdgeSaveMs; }
+    bool save_due(double now) const { return dirty && now - last_ms >= kEdgeSaveMs; }
 
     // the config file was read again. loaded: the edge as read; current: the one in
     // use, with any learning not saved yet. When only other keys changed, unsaved

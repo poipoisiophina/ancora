@@ -1,0 +1,47 @@
+# Builds ancora on pushes to main and on pull requests: package.bat runs
+# build_driver.bat all (driver tests, panel self test; any failure fails the job)
+# and packs the installer. Windows runners count double against private repo
+# minutes, so: main and PRs only (a PR branch push is not built twice), a newer
+# push cancels the older run, docs-only changes are skipped, a hung run stops
+# after 20 minutes, and artifacts are kept 7 days.
+name: build
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md']
+  pull_request:
+    paths-ignore: ['**.md']
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, test and package
+        shell: cmd
+        run: call package.bat
+      - name: Keep the test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: |
+            driver/obj/ancora_test.log
+            driver/obj/panel_test.log
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Keep the installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ancora-setup
+          path: dist/*.exe
+          retention-days: 7

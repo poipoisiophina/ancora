@@ -4,16 +4,26 @@ rem C++ ABI; MinGW mismatches struct-return vcalls).
 rem   build_driver.bat         logic only: driver\ancora\logic\ancora_logic.dll
 rem                            (hot reloaded by the running driver, no restart)
 rem   build_driver.bat all     also the loader driver_ancora.dll (needs SteamVR closed),
-rem                            the panel and the probe/reader tools in src\bin
+rem                            the panel and the ancora_probe/ancora_reader tools in src\bin
 rem Both run the driver tests (test\ancora_test.cpp) first; "all" also runs the
 rem panel self test. Any failure stops the build, so package.bat never packs it.
-rem Fetches the OpenVR SDK into external\openvr first if it is missing.
+rem Fetches the OpenVR SDK into external\openvr first if it is missing: a pinned
+rem release, checked by its commit id, since its openvr_api.dll ships in the installer.
 setlocal
 cd /d %~dp0
+set "OPENVR_TAG=v2.15.6"
+set "OPENVR_COMMIT=0924064316de3effbcd1acf1e309182a2deb1c05"
+where git >nul 2>nul || (echo git not found, install git & exit /b 1)
 if not exist external\openvr\headers\openvr_driver.h (
-    echo fetching OpenVR SDK into external\openvr
-    where git >nul 2>nul || (echo git not found, install git or place the SDK in external\openvr & exit /b 1)
-    git clone --depth 1 https://github.com/ValveSoftware/openvr.git external\openvr || exit /b 1
+    echo fetching OpenVR SDK %OPENVR_TAG% into external\openvr
+    git -c advice.detachedHead=false clone --depth 1 --branch %OPENVR_TAG% https://github.com/ValveSoftware/openvr.git external\openvr || exit /b 1
+)
+set "GOT_COMMIT="
+for /f "delims=" %%c in ('git -C external\openvr rev-parse HEAD 2^>nul') do set "GOT_COMMIT=%%c"
+if /i not "%GOT_COMMIT%"=="%OPENVR_COMMIT%" (
+    echo external\openvr is not OpenVR SDK %OPENVR_TAG% ^(commit %OPENVR_COMMIT%^), found "%GOT_COMMIT%"
+    echo delete external\openvr and build again to fetch the pinned SDK
+    exit /b 1
 )
 rem locate MSVC with vswhere, which Visual Studio installs under %ProgramFiles(x86)%
 set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
@@ -95,9 +105,9 @@ if exist src\bin rmdir /s /q src\bin
 mkdir src\bin\bindings
 for %%t in (probe reader) do (
     cl /nologo /std:c++17 /O2 /EHsc /MT /W3 /Iexternal\openvr\headers /Fodriver\obj\ ^
-       src\%%t.cpp /Fe:src\bin\%%t.exe /link external\openvr\lib\win64\openvr_api.lib || exit /b 1
+       src\%%t.cpp /Fe:src\bin\ancora_%%t.exe /link external\openvr\lib\win64\openvr_api.lib || exit /b 1
 )
 copy /y external\openvr\bin\win64\openvr_api.dll src\bin\ >nul || exit /b 1
 copy /y ancora.vrmanifest src\bin\ >nul || exit /b 1
 copy /y bindings\*.json src\bin\bindings\ >nul || exit /b 1
-echo built src\bin\probe.exe, src\bin\reader.exe
+echo built src\bin\ancora_probe.exe, src\bin\ancora_reader.exe

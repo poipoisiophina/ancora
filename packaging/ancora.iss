@@ -6,7 +6,7 @@
 ; same switches install.ps1 and uninstall.ps1 use, so no PowerShell script runs.
 ; SteamVR must be closed to install or uninstall.
 
-#define AppVersion "0.1.3"
+#define AppVersion "0.1.4"
 
 [Setup]
 AppId={{6AB13E94-DDD3-4AAB-B3FE-6965F0462422}
@@ -89,6 +89,9 @@ Source: "..\driver\ancora\ancora.ini"; DestDir: "{app}"; Flags: onlyifdoesntexis
 Type: files; Name: "{app}\driver\ancora\logic\ancora_logic_live*.dll"
 ; registration script of 0.1.2 and older, replaced by ancora.exe --register
 Type: files; Name: "{app}\steamvr.ps1"
+; diagnostic tools of 0.1.3 and older, now ancora_probe.exe and ancora_reader.exe
+Type: files; Name: "{app}\diag\probe.exe"
+Type: files; Name: "{app}\diag\reader.exe"
 
 [Run]
 Filename: "{app}\ancora.exe"; Parameters: "--register --root ""{app}"""; \

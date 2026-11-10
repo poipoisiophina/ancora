@@ -8,7 +8,8 @@ ancora fixes it: when your thumb is **off** the stick, games get "stick
 centered". When your thumb is **on** the stick, everything works as normal.
 
 - Works with Quest controllers (Touch style sticks with a thumb sensor).
-- Does not touch the game or its files. It runs inside SteamVR only.
+- Does not touch the game or its files. It runs inside SteamVR only, where it
+  hooks the calls controller drivers use to report the stick.
 - Free, small, and you can turn it off or remove it at any time.
 
 ---
@@ -17,7 +18,10 @@ centered". When your thumb is **on** the stick, everything works as normal.
 
 - A Windows 10 or 11 PC (64-bit).
 - SteamVR installed and started at least once.
-- Your Quest connected to SteamVR (for example with Steam Link).
+- Your Quest connected to SteamVR. Tested with Steam Link. Virtual Desktop,
+  ALVR and Quest Link also hand the controllers to SteamVR through a driver, so
+  they should work the same way, but they are not tested yet. If ancora does
+  not see a stick, its card on the Status page says **Not connected**.
 
 Nothing else. No extra runtimes, no admin rights.
 
@@ -26,7 +30,7 @@ Nothing else. No extra runtimes, no admin rights.
 ## Install
 
 1. **Close SteamVR** completely.
-2. Run PreRelease **`ancora-setup-0.1.3.exe`**.
+2. Run PreRelease **`ancora-setup-0.1.4.exe`**.
    - If Windows says "Windows protected your PC", click **More info**, then
      **Run anyway**. (This happens because the installer is not signed with a
      paid certificate.)
@@ -59,10 +63,15 @@ One card per controller:
 Each card has:
 
 - **Switch at the top**: ancora on or off for this controller.
-- **Thumb gate**: the main fix. Keep it **on**.
+- **Thumb gate**: the main fix. Keep it **on**. If the thumb sensor misses
+  your thumb (a worn sensor, a silicone cap, pushing with the side of your
+  thumb), holding the stick at its edge for a quarter second still works:
+  ancora stops trusting the sensor until it sees your thumb again.
 - **Deadzone**: only needed if your stick drifts even while your thumb rests
   on it. Leave it **off** unless you need it. Higher numbers mean you must push
-  the stick further before you move.
+  the stick further before you move. SteamVR's own controller bindings can
+  also set a deadzone; ancora's is per stick and the Tune page measures it for
+  you, but you only need one of the two.
 - **Smoothing**: steadies a stick that shakes while your thumb is on it. It does
   not fix drift, and higher numbers add lag to your movement. Leave it **off**
   unless your stick shakes.
@@ -96,12 +105,14 @@ those directions back to full:
 
 A worn stick does not stop at the same place every time, so the measurement
 can come out short in places. While you play, ancora keeps watching: when the
-stick goes further than the measured edge in some direction, that direction
-is raised to match, and saved a few seconds later. The stretch only ever gets
-gentler this way, never stronger. Only that direction and its close neighbours
-change, so a worn spot stays stretched even when the stick goes further right
-beside it, and a single odd reading is ignored. Games get full a little (4 %)
-before the furthest edge seen, so an ordinary full push still counts as full.
+stick is held further than the measured edge in some direction, that direction
+is raised to match, and saved a few seconds later. A stick also keeps wearing:
+when many full pushes in a row toward one direction all stop clearly short of
+its edge, that direction is lowered part of the way. Only that one direction
+changes, so a worn spot stays stretched even when the stick goes further right
+beside it, and readings shorter than a fiftieth of a second are ignored. Games
+get full a little (4 %) before the furthest edge seen, so an ordinary full
+push still counts as full.
 
 The stretched directions get a little more sensitive near the edge. Your
 deadzone keeps working as before. The Status page draws the outline in yellow
@@ -148,8 +159,10 @@ The translations were drafted by machine. If yours reads oddly, see
 2. Windows **Settings > Apps > Installed apps**, find **ancora**, click
    **Uninstall**.
 
-This removes everything ancora added, including its SteamVR entries. Nothing
-is left behind.
+This removes everything ancora added, including its SteamVR entries. Before
+it changes a SteamVR settings file, ancora saves a copy to
+`%TEMP%\ancora-backup`, so you can put a file back if something went wrong.
+Windows clears that folder with its other temporary files.
 
 ---
 
@@ -160,7 +173,7 @@ is left behind.
 | No anchor icon in the tray | Start SteamVR, ancora starts with it. Or run `%LOCALAPPDATA%\ancora\ancora.exe`. The icon can also be hidden behind the small up arrow in the tray. |
 | Installer says "SteamVR is running" | Close SteamVR fully (also from the tray), then press OK. |
 | Still drifting | Open the panel. Is the card **Drift anchored** when your thumb is off? If it says **Not corrected**, switch it on. If it drifts with your thumb **on** the stick, use **Tune** and apply a deadzone. |
-| A controller shows **Not connected** | Wake the controller or check its battery. |
+| A controller shows **Not connected** | Wake the controller or check its battery. If it stays that way while the controller works in games, restart SteamVR with the controller already on: ancora only sees sticks a controller driver sets up after ancora has started. |
 | I cannot walk slowly any more | Your deadzone is too high. Lower it, or turn it off. |
 | My controller is a Valve Index | Not supported yet. ancora does nothing on Index controllers. |
 | Game does not use SteamVR | ancora only works for games that run through SteamVR. |
@@ -173,14 +186,16 @@ text along with your question.
 ## Questions
 
 **Can this get me banned in VRChat?**
-ancora never touches VRChat or its files. It sits inside SteamVR and only
-changes what your own stick reports, like a SteamVR controller setting.
-Nobody can promise anything for VRChat's rules, but ancora does not modify
-the game.
+ancora never touches VRChat or its files. It is a SteamVR driver: inside
+SteamVR's own process it intercepts the stick values your controller driver
+reports and changes them before any game sees them. A game only ever sees
+ordinary stick values. Nobody can promise anything for VRChat's rules, but
+ancora does not modify the game.
 
 **Does it slow anything down?**
-No. It uses a few MB of memory and almost no CPU, and nothing at all while
-the panel is closed.
+No. The driver runs inside SteamVR whenever SteamVR runs and does a few
+calculations per stick update. The panel uses a few MB of memory and draws
+nothing while it is hidden in the tray.
 
 **Does it change my buttons or other controller settings?**
 No. Only the thumbstick, and only when needed. Buttons, triggers, grip,
@@ -199,7 +214,7 @@ Everything is rebuilt from source; the repo holds no binaries.
 | Command | Does |
 |---|---|
 | `build_driver.bat` | Builds the logic dll only. While SteamVR runs, the installed driver swaps it in live. |
-| `build_driver.bat all` | Builds everything: driver, panel (`ancora.exe`), diagnostic tools. Fetches the OpenVR SDK on first run. |
+| `build_driver.bat all` | Builds everything: driver, panel (`ancora.exe`), diagnostic tools. Fetches the OpenVR SDK (pinned release, checked by commit) on first run. |
 | `install.ps1` | Builds and installs from the repo (SteamVR closed). |
 | `uninstall.ps1` | Removes the install (SteamVR closed). |
 | `package.bat` | Builds and creates `dist\ancora-setup-<version>.exe` with Inno Setup (fetched automatically, nothing installed). |
@@ -210,17 +225,27 @@ Tests run on every build, and a failure stops it, so nothing untested is
 deployed into a running SteamVR or packed into an installer:
 
 - `test/ancora_test.cpp`, driver side: edge stretch, edge measuring, edge
-  learning, whole x/y pairs, saving learned reach, smoothing. Runs before any
-  dll is built, also in the quick logic only build.
+  learning (raising and lowering), whole x/y pairs, saving learned reach,
+  smoothing, the output order, the thumb gate and its fallback, ancora.ini
+  reading and key edits, and that the shipped `ancora.ini` is the default
+  file. Runs before any dll is built, also in the quick logic only build.
 - `ancora.exe --selftest`, panel side: ini files, the Tune page flow, every
-  language file. Runs in `build_driver.bat all`, so also in `package.bat`.
+  language file, the SteamVR settings edits. Runs in `build_driver.bat all`,
+  so also in `package.bat`.
+
+GitHub Actions runs `package.bat` on pushes to `main` and on pull requests,
+skipping changes that only touch `.md` files (`.github/workflows/build.yml`),
+and keeps the installer and test logs for 7 days.
 
 Layout:
 
 - `driver/src/driver_ancora.cpp` fixed loader: hooks SteamVR's driver input calls.
 - `driver/src/ancora_logic.cpp` the behaviour, hot reloadable.
-- `driver/src/ancora_edge.h`, `ancora_learn.h`, `ancora_average.h` the stick math,
-  shared by the logic dll, the panel and the tests.
+- `driver/src/ancora_edge.h`, `ancora_learn.h`, `ancora_average.h`,
+  `ancora_output.h` the stick math and the thumb gate, shared by the logic dll,
+  the panel and the tests.
+- `driver/src/ancora_config.h`, `ancora_ini_io.h` ancora.ini: defaults,
+  reading, and locked, atomic key writes, shared by the driver and the panel.
 - `test/ancora_test.cpp` driver side tests.
 - `gui/src/ancora_panel.cpp` the panel.
 - `gui/src/ancora_lang.h` panel text loading; `gui/lang/*.xml` one file per language.

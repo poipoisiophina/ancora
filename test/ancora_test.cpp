@@ -1,9 +1,10 @@
 // ancora_test.cpp
-// Tests for the driver side math that the logic dll runs on every stick update:
+// Tests for the driver side code that the logic dll runs on every stick update:
 // edge stretch, edge measuring, edge learning during play, whole x/y pairs, the
-// learned edge bookkeeping and the moving average. Plain console program, no
-// SteamVR, no Windows API. build_driver.bat builds and runs it before it deploys
-// the logic dll, so a failing test stops the build.
+// learned edge bookkeeping, the moving average, the output order, the thumb gate
+// and ancora.ini (also that the shipped file is the default one). Plain console program, no
+// SteamVR, no Windows API. build_driver.bat builds and runs it from the repo root
+// before it deploys the logic dll, so a failing test stops the build.
 //   ancora_test.exe        run every test, exit code 0 = all pass
 
 #include <cmath>
@@ -11,6 +12,10 @@
 #include "../driver/src/ancora_average.h"
 #include "../driver/src/ancora_edge.h"
 #include "../driver/src/ancora_learn.h"
+#include "../driver/src/ancora_output.h"
+#include "../driver/src/ancora_config.h"
+#include <fstream>
+#include <sstream>
 
 namespace {
 
@@ -167,34 +172,81 @@ void test_learn() {
     check(!edge_learn(mid, 0.97f * std::cos(rad(step / 2)), 0.97f * std::sin(rad(step / 2))) && mid.r[0] == 0.5f && mid.r[1] == 0.5f,
           "learn: a reading half way between two directions teaches nothing");
 
+    // a push held at (x, y) for ms milliseconds, a reading every step ms, from t
+    auto hold = [](EdgeLearner& L, EdgeReach& e, float x, float y, double& t, double ms, double step = 1.0) {
+        bool changed = false;
+        for (double end = t + ms; t < end; t += step) changed |= L.feed(e, x, y, t);
+        return changed;
+    };
+    auto centre = [](EdgeLearner& L, EdgeReach& e, double& t) { L.feed(e, 0, 0, t); t += 50; };
+
     EdgeReach s = flat(0.6f);
     EdgeLearner L;
-    L.feed(s, 0.5f, 0.0f);
-    L.feed(s, 1.0f, 0.0f);
+    double t = 0;
+    L.feed(s, 0.5f, 0.0f, t); t += 1;
+    L.feed(s, 1.0f, 0.0f, t); t += 1;
+    centre(L, s, t);
     check(edge_reach(s, 1, 0) <= 0.6f + 1e-4f, "learn: a single glitch at the rim teaches nothing");
-    L = EdgeLearner{};
-    L.feed(s, 0.9f, 0.0f);
-    L.feed(s, 0.95f, 0.0f);
-    check(std::fabs(edge_reach(s, 1, 0) - 0.9f) < 1e-3f, "learn: two readings in a row raise it to the shorter one");
-    L = EdgeLearner{};
+    hold(L, s, 0.95f, 0.0f, t, 10);
+    centre(L, s, t);
+    check(edge_reach(s, 1, 0) <= 0.6f + 1e-4f, "learn: a glitch of 10 readings (10 ms) teaches nothing");
+    hold(L, s, 0.5f, 0.0f, t, 30);
+    hold(L, s, 0.95f, 0.0f, t, 8);
+    hold(L, s, 0.5f, 0.0f, t, 30);
+    centre(L, s, t);
+    check(edge_reach(s, 1, 0) <= 0.6f + 1e-4f, "learn: a short spike inside a long push teaches nothing");
+    check(hold(L, s, 0.9f, 0.0f, t, 40) && std::fabs(edge_reach(s, 1, 0) - 0.9f) < 1e-3f,
+          "learn: a push held 40 ms raises the reach to it");
+    centre(L, s, t);
     s = flat(0.6f);
-    L.feed(s, 0.0f, 0.95f);
-    L.feed(s, 0.0f, -0.95f);
+    L.feed(s, 0.0f, 0.95f, t); t += 1;
+    L.feed(s, 0.0f, -0.95f, t); t += 1;
+    centre(L, s, t);
     check(std::fabs(edge_reach(s, 0, 1) - 0.6f) < 1e-4f && std::fabs(edge_reach(s, 0, -1) - 0.6f) < 1e-4f,
           "learn: two readings far apart teach nothing");
 
-    // playing on the simulated worn stick, starting from a measurement that came out short
+    // playing on the simulated worn stick, starting from a measurement that came out short:
+    // rolling round the rim, a little slower each turn (about 330 to 140 deg a second)
     EdgeReach play = flat(0.55f);
     EdgeLearner P;
-    for (int t = 0; t < 5; ++t)
+    t = 0;
+    for (int r = 0; r < 5; ++r)
         for (int k = 0; k < 360; ++k) {
             float deg = k * 1.0f, m = reach_at(deg);
-            P.feed(play, m * std::cos(rad(deg)), m * std::sin(rad(deg)));
+            for (int j = 0; j < 3 + r; ++j, t += 1) P.feed(play, m * std::cos(rad(deg)), m * std::sin(rad(deg)), t);
         }
     float worst = 0;
     for (int k = 0; k < 360; k += 3) worst = std::fmax(worst, std::fabs(edge_reach(play, std::cos(rad(k)), std::sin(rad(k))) - reach_at(k)));
     check(worst < 0.03f, "learn: play on a worn stick brings a short measurement to the real edge");
     check(edge_reach(play, std::cos(rad(135)), std::sin(rad(135))) < 0.68f, "learn: the worn spot stays short after play");
+
+    // the stick wears: full pushes right now stop at 0.85, the stored reach says 0.98
+    EdgeReach worn = flat(0.98f);
+    EdgeLearner W;
+    t = 0;
+    bool lowered = false;
+    for (int p = 0; p < kEdgeLowerPushes - 1; ++p) { lowered |= hold(W, worn, 0.85f, 0.0f, t, 200); centre(W, worn, t); }
+    check(!lowered && std::fabs(worn.r[0] - 0.98f) < 1e-6f, "learn: fewer full pushes than needed lower nothing");
+    lowered = hold(W, worn, 0.85f, 0.0f, t, 200);
+    lowered |= W.feed(worn, 0, 0, t); t += 50;
+    check(lowered && std::fabs(worn.r[0] - (0.98f + 0.85f) / 2) < 1e-4f && worn.r[kEdgeSectors / 2] == 0.98f,
+          "learn: enough short full pushes lower that direction half way, and only it");
+    for (int p = 0; p < kEdgeLowerPushes * 4; ++p) { hold(W, worn, 0.85f, 0.0f, t, 200); centre(W, worn, t); }
+    check(worn.r[0] < 0.86f + kEdgeLowerGap && worn.r[0] >= 0.85f, "learn: repeated wear settles on the new reach");
+
+    EdgeReach keep = flat(0.98f);
+    EdgeLearner K;
+    t = 0;
+    for (int p = 0; p < kEdgeLowerPushes * 3; ++p) {
+        hold(K, keep, p % 10 == 9 ? 0.975f : 0.85f, 0.0f, t, 200);   // every tenth push reaches the edge
+        centre(K, keep, t);
+    }
+    check(std::fabs(keep.r[0] - 0.98f) < 1e-6f, "learn: a push that still reaches the edge keeps the reach");
+    EdgeReach soft = flat(0.98f);
+    EdgeLearner S;
+    t = 0;
+    for (int p = 0; p < kEdgeLowerPushes * 3; ++p) { hold(S, soft, 0.6f, 0.0f, t, 200); centre(S, soft, t); }
+    check(std::fabs(soft.r[0] - 0.98f) < 1e-6f, "learn: gentle half pushes never lower the reach");
 }
 
 void test_pairs() {
@@ -226,9 +278,12 @@ void test_learn_state() {
     EdgeLearnState st;
     EdgeReach e = flat(0.6f);
     st.text = edge_format(e);
-    st.on_pair(e, 0.9f, 0.0f, 1000);
-    check(!st.on_pair(e, 0.95f, 0.0f, 1010) || st.dirty, "state: learning marks the edge to save");
-    check(!st.save_due(1010 + kEdgeSaveMs - 1) && st.save_due(1010 + kEdgeSaveMs), "state: saved only after a quiet time");
+    bool learned = false;
+    double t = 1000;
+    for (; t < 1040; t += 1) learned |= st.on_pair(e, 0.9f, 0.0f, t);
+    check(learned && st.dirty && std::fabs(edge_reach(e, 1, 0) - 0.9f) < 1e-3f, "state: learning marks the edge to save");
+    double last = st.last_ms;
+    check(!st.save_due(last + kEdgeSaveMs - 1) && st.save_due(last + kEdgeSaveMs), "state: saved only after a quiet time");
 
     // another key in the file changed before the save: learned reach is kept
     EdgeReach loaded = edge_parse(st.text.c_str());
@@ -243,8 +298,7 @@ void test_learn_state() {
     check(!st.dirty && std::fabs(edge_reach(got, 1, 0) - 0.8f) < 1e-3f, "state: a new measurement replaces unsaved learning");
 
     // removed in the panel: stays off
-    st.on_pair(got, 0.95f, 0.0f, 2000);
-    st.on_pair(got, 0.97f, 0.0f, 2010);
+    for (t = 2000; t < 2040; t += 1) st.on_pair(got, 0.95f, 0.0f, t);
     EdgeReach removed;
     st.reload(removed, got, "");
     check(!st.dirty && !removed.on, "state: removing the stretch is not undone by unsaved learning");
@@ -259,6 +313,101 @@ void test_learn_state() {
     check(!st.dirty && std::fabs(edge_reach(reread, 1, 0) - 0.7f) < 1e-3f, "state: reading back its own save keeps the values");
 }
 
+void test_config() {
+    using namespace ancfg;
+    Config c = parse("");
+    check(!c.enable && c.hand[0].enable && c.hand[1].enable && c.hand[0].touch_gate && c.hand[1].touch_gate &&
+              c.hand[0].deadzone == 0 && !c.hand[0].edge.on && c.hand[0].edge_on && c.language == "auto",
+          "config: missing file is off, with both sticks set to be corrected");
+
+    std::ifstream f("driver/ancora/ancora.ini", std::ios::binary);
+    std::stringstream ss;
+    ss << f.rdbuf();
+    std::string shipped = ss.str(), made = format(Config{});
+    auto strip = [](std::string s) { std::string o; for (char ch : s) if (ch != '\r') o += ch; return o; };
+    check(f.good() && strip(shipped) == strip(made), "config: the shipped ancora.ini is exactly the default file");
+    Config d = parse(shipped);
+    check(d.enable && d.hand[0].enable && d.hand[1].enable, "config: the shipped file corrects both sticks");
+
+    std::string text = "; my note\r\n[other]\r\nleft=0\r\n[Ancora]\r\n  LEFT_deadzone = 0.3 \r\nkeep=me\r\n[tail]\r\nx=1\r\n";
+    c = parse(text);
+    check(c.hand[0].enable && std::fabs(c.hand[0].deadzone - 0.3f) < 1e-6f,
+          "config: keys only from [ancora], any case, trimmed");
+    std::string t2 = set(text, "left_deadzone", "0.45");
+    check(t2 == "; my note\r\n[other]\r\nleft=0\r\n[Ancora]\r\nleft_deadzone=0.45\r\nkeep=me\r\n[tail]\r\nx=1\r\n",
+          "config: changing a key keeps every other line");
+    std::string t3 = set(t2, "right", "0");
+    check(t3 == "; my note\r\n[other]\r\nleft=0\r\n[Ancora]\r\nleft_deadzone=0.45\r\nkeep=me\r\nright=0\r\n[tail]\r\nx=1\r\n" &&
+              !parse(t3).hand[1].enable,
+          "config: a new key goes at the end of the section");
+    check(set("", "enable", "1") == "[ancora]\r\nenable=1\r\n" && set("a=1\n", "enable", "1") == "a=1\n[ancora]\nenable=1\n",
+          "config: a missing section is added, line endings kept");
+    c = parse("[ancora]\nright_deadzone=7\nleft_deadzone=abc\nleft_average_ms=5000\nright_average_ms=-5\nleft_edge=0.9,0.9\n");
+    check(c.hand[1].deadzone == kMaxDeadzone && c.hand[0].deadzone == 0 && c.hand[0].average_ms == kMaxAverageMs &&
+              c.hand[1].average_ms == 0 && c.hand[0].edge_bad && !c.hand[0].edge.on,
+          "config: out of range and garbage values are clamped or off");
+    Config e;
+    e.hand[0].edge = flat(0.8f);
+    e.hand[0].edge_on = false;
+    Config back = parse(format(e));
+    check(back.hand[0].edge.on && !effective_edge(back.hand[0]).on && std::fabs(back.hand[0].edge.r[5] - 0.8f) < 1e-3f,
+          "config: an edge switched off keeps its values but is not used");
+}
+
+void test_output() {
+    StickSettings st;
+    st.correct = true;
+    float x, y;
+    stick_output(st, true, false, 0, 0, 0.3f, 0.2f, x, y);
+    check(x == 0 && y == 0, "output: a closed gate gives 0,0");
+    st.deadzone = 0.5f;
+    stick_output(st, false, false, 0, 0, 0.3f, 0.0f, x, y);
+    check(x == 0 && y == 0, "output: inside the deadzone gives 0,0");
+    stick_output(st, false, false, 0, 0, 0.0f, 0.75f, x, y);
+    check(x == 0 && std::fabs(y - 0.5f) < 1e-5f, "output: the deadzone rescales the rest to full");
+    stick_output(st, false, true, 0.2f, 0.0f, 0.9f, 0.0f, x, y);
+    check(x == 0 && y == 0, "output: the average comes before the deadzone");
+    stick_output(st, false, true, 0.3f, 0.4f, 0.0f, 0.0f, x, y);
+    check(std::fabs(std::sqrt(x * x + y * y) - 0.0f) < 1e-5f, "output: the deadzone is radial (0.3,0.4 is 0.5 out)");
+    st.correct = false;
+    stick_output(st, true, true, 0, 0, 0.3f, 0.2f, x, y);
+    check(x == 0.3f && y == 0.2f, "output: correction off passes the raw stick, gate and all");
+    // only y changes, x stays: x's output still follows, so it has to be sent again
+    st.correct = true;
+    st.deadzone = 0.2f;
+    float x1, y1, x2, y2;
+    stick_output(st, false, false, 0, 0, 0.5f, 0.0f, x1, y1);
+    stick_output(st, false, false, 0, 0, 0.5f, 0.5f, x2, y2);
+    check(x1 != x2, "output: a change of one axis changes the other axis's output");
+}
+
+void test_gate() {
+    TouchGate g;
+    check(g.closed(0), "gate: closed before the thumb ever touches");
+    g.on_touch(true, 100);
+    check(!g.closed(100), "gate: open while touched");
+    g.on_touch(false, 200);
+    check(!g.closed(210) && g.closed(200 + kGateReleaseMs), "gate: closes only after the release debounce");
+    g.on_touch(true, 300);
+    g.on_touch(false, 310);
+    g.on_touch(true, 315);
+    check(!g.closed(400), "gate: a flicker of the sensor does not close it");
+    g.on_touch(false, 500);
+    bool flagged = false;
+    for (double t = 500; t < 500 + kGateSuspectMs - 10; t += 1) flagged |= g.on_stick(0.95f, t);
+    check(!flagged && g.closed(500 + kGateSuspectMs - 10), "gate: a short push at the rim with touch off stays gated");
+    g.on_stick(0.1f, 800);
+    for (double t = 900; t <= 900 + kGateSuspectMs; t += 1) flagged |= g.on_stick(0.95f, t);
+    check(flagged && !g.closed(900 + kGateSuspectMs), "gate: held at the rim with touch off, the sensor is not trusted");
+    check(!g.closed(5000) && !g.on_stick(0.0f, 5000), "gate: stays open while the sensor is not trusted");
+    g.on_touch(true, 6000);
+    g.on_touch(false, 6100);
+    check(g.closed(6100 + kGateReleaseMs), "gate: a working sensor again brings the gate back");
+    TouchGate d;
+    for (double t = 0; t < 1000; t += 1) d.on_stick(0.6f, t);
+    check(d.closed(1000), "gate: drift short of the rim never opens the gate");
+}
+
 } // namespace
 
 int main() {
@@ -268,6 +417,9 @@ int main() {
     test_learn();
     test_pairs();
     test_learn_state();
+    test_config();
+    test_output();
+    test_gate();
     std::printf("%d test(s), %d failure(s)\n", g_count, g_fails);
     return g_fails ? 1 : 0;
 }

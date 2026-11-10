@@ -4,7 +4,7 @@
 #   ancora.exe, ancora.vrmanifest                    control panel
 #   ancora.ini                                       config (an existing one is kept)
 #   driver\ancora\                                   SteamVR driver
-#   diag\                                            probe.exe, reader.exe with the SDK's
+#   diag\                                            ancora_probe.exe, ancora_reader.exe with the SDK's
 #                                                    openvr_api.dll, manifest and bindings
 # Then registers it with SteamVR through ancora.exe --register (Steam file backups
 # go to the repo's backup folder). SteamVR must be closed.

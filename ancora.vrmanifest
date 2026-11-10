@@ -4,7 +4,7 @@
         {
             "app_key": "ancora.reader",
             "launch_type": "binary",
-            "binary_path_windows": "reader.exe",
+            "binary_path_windows": "ancora_reader.exe",
             "is_dashboard_overlay": false,
             "action_manifest_path": "bindings/action_manifest.json",
             "strings": {

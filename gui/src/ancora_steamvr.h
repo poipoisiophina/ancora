@@ -350,11 +350,15 @@ inline std::wstring backup(const std::wstring& path, const std::wstring& backup_
 
 // ---- the edits ------------------------------------------------------------------------
 // entries ancora owns in Steam\config: steamvr.vrsettings sections and the matching
-// vrappconfig\<name>.vrappconfig files (all but driver_ancora have one)
+// vrappconfig\<name>.vrappconfig files (all but driver_ancora have one). SteamVR
+// names an app without a manifest system.generated.<exe name>, so only exe names
+// that are ancora's alone are listed: the diagnostic tools are ancora_probe.exe and
+// ancora_reader.exe for that reason. Sections of 0.1.3 and older tools named plain
+// probe.exe and reader.exe are left alone, since another program can have them.
 inline const std::vector<std::string>& owned_sections() {
     static const std::vector<std::string> v = {"driver_ancora", "ancora.panel", "ancora.reader",
-                                               "system.generated.ancora.exe", "system.generated.reader.exe",
-                                               "system.generated.probe.exe"};
+                                               "system.generated.ancora.exe", "system.generated.ancora_reader.exe",
+                                               "system.generated.ancora_probe.exe"};
     return v;
 }
 
@@ -447,6 +451,8 @@ inline bool steamvr_running() { return process_running(L"vrserver.exe") || proce
 struct Paths {
     std::wstring vrpathreg;   // empty when SteamVR is not set up
     std::wstring config;      // Steam\config, empty when not found
+    std::wstring log;         // SteamVR's log folder, empty when not found
+    std::vector<std::string> external_drivers;   // registered driver folders, UTF-8
     std::wstring vrpath;      // openvrpaths.vrpath itself
 };
 
@@ -467,6 +473,12 @@ inline Paths find_paths() {
     if (Json* cf = j.find("config"); cf && cf->type == Json::Arr)
         for (auto& e : cf->a)
             if (e.type == Json::Str && is_dir(wide(e.s))) { r.config = wide(e.s); break; }
+    if (Json* lg = j.find("log"); lg && lg->type == Json::Arr)
+        for (auto& e : lg->a)
+            if (e.type == Json::Str) { r.log = wide(e.s); break; }
+    if (Json* ed = j.find("external_drivers"); ed && ed->type == Json::Arr)
+        for (auto& e : ed->a)
+            if (e.type == Json::Str) r.external_drivers.push_back(e.s);
     return r;
 }
 

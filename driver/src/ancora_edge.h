@@ -65,50 +65,122 @@ inline float edge_map(const EdgeReach& e, float x, float y, float m, float dz) {
 // one direction to the reading, and only when the reading lies within
 // kEdgeLearnWindow of the direction's own angle. Raising neighbours to fit a
 // reading between two directions would push up a narrow worn spot from readings
-// on its slopes, and since reach only grows, that error would stay. Readings come
-// about a thousand a second during play, so every direction is hit squarely soon
-// enough. Reach only grows, so the stretch only gets gentler. Shortfalls under
-// kEdgeLearnMin are ignored (ini rounding, noise at the rim).
+// on its slopes. Readings come about a thousand a second during play, so every
+// direction is hit squarely soon enough. Shortfalls under kEdgeLearnMin are
+// ignored (ini rounding, noise at the rim).
 const float kEdgeLearnMin = 0.005f;
 const float kEdgeLearnWindow = 0.25f;   // share of the step between two directions
+
+// direction a reading teaches, -1 = between two directions
+inline int edge_learn_dir(float x, float y) {
+    int k, k1;
+    float f;
+    edge_pos(x, y, kEdgeSectors, k, k1, f);
+    if (f <= kEdgeLearnWindow) return k;
+    if (f >= 1.0f - kEdgeLearnWindow) return k1;
+    return -1;
+}
 
 inline bool edge_learn(EdgeReach& e, float x, float y) {
     if (!e.on) return false;
     float m = std::sqrt(x * x + y * y);
     if (m > 1.0f) m = 1.0f;
-    int k, k1;
-    float f;
-    edge_pos(x, y, kEdgeSectors, k, k1, f);
-    int d;
-    if (f <= kEdgeLearnWindow) d = k;
-    else if (f >= 1.0f - kEdgeLearnWindow) d = k1;
-    else return false;
-    if (m - e.r[d] < kEdgeLearnMin) return false;
+    int d = edge_learn_dir(x, y);
+    if (d < 0 || m - e.r[d] < kEdgeLearnMin) return false;
     e.r[d] = m;
     return true;
 }
 
-// learning from a stream of x/y pairs. A single reading never raises the reach: it
-// takes two pairs in a row pointing the same way (within kEdgeLearnSpread), and
-// the shorter of the two counts, so a one-off glitch at the rim teaches nothing.
-const float kEdgeLearnSpread = 360.0f / kEdgeSectors * 2;   // degrees
+// Learning from a stream of x/y pairs, in pushes: a push is a run of readings past
+// kEdgeCountFrom that stay within kEdgeLearnSpread of where the run started.
+// - Raising: a reading teaches only once the push has lasted kEdgeLearnHoldMs, and
+//   then the shortest reading of the last kEdgeLearnHoldMs counts (at least
+//   kEdgeLearnHoldReads of them), so a glitch shorter than that teaches nothing.
+// - Lowering: a stick wears, so its reach can also shrink. A push that stays
+//   within kEdgeLowerSteady for kEdgeLowerHoldMs, at kEdgeLowerFrom of the stored
+//   reach or more, is a full push. When kEdgeLowerPushes full pushes in a row
+//   toward one direction all stop more than kEdgeLowerGap short of its reach, it
+//   is lowered half way to the furthest of them. A push that does reach the
+//   stored edge starts the count over.
+const float  kEdgeLearnSpread = 360.0f / kEdgeSectors * 2;   // degrees
+const double kEdgeLearnHoldMs = 20.0;
+const int    kEdgeLearnHoldReads = 4;
+const double kEdgeLowerHoldMs = 100.0;
+const float  kEdgeLowerFrom = 0.85f;
+const float  kEdgeLowerSteady = 0.02f;
+const float  kEdgeLowerGap = 0.02f;
+const int    kEdgeLowerPushes = 25;
+const int    kEdgeRecent = 64;          // readings kept for the hold window
 
 struct EdgeLearner {
-    bool  have = false;
-    float px = 0, py = 0;
+    // the current push
+    bool   run = false;
+    float  sx = 0, sy = 0;              // unit direction where it started
+    double t0 = 0;
+    double held_t0 = 0;                 // start of the steady part at its end
+    float  held_lo = 0, held_hi = 0;
+    double recent_t[kEdgeRecent] = {};
+    float  recent_m[kEdgeRecent] = {};
+    int    recent_n = 0, recent_head = 0;
+    double last_t = 0;
+    // full pushes per direction that stopped short of the stored reach
+    int    short_pushes[kEdgeSectors] = {};
+    float  short_best[kEdgeSectors] = {};
 
-    bool feed(EdgeReach& e, float x, float y) {
-        bool raised = false;
-        float m = std::sqrt(x * x + y * y), pm = std::sqrt(px * px + py * py);
-        if (have && m > kEdgeCountFrom && pm > kEdgeCountFrom) {
-            float c = (x * px + y * py) / (m * pm);
-            if (c >= std::cos(kEdgeLearnSpread * 3.14159265f / 180)) {
-                float use = (pm < m ? pm : m) / m;
-                raised = edge_learn(e, x * use, y * use);
+    // a whole pair at time now (ms); true when the reach changed
+    bool feed(EdgeReach& e, float x, float y, double now) {
+        float m = std::sqrt(x * x + y * y);
+        bool same = false;
+        if (run && m > kEdgeCountFrom)
+            same = (x * sx + y * sy) / m >= std::cos(kEdgeLearnSpread * 3.14159265f / 180);
+        bool changed = false;
+        if (!same) {
+            if (run) changed = end_push(e);
+            run = m > kEdgeCountFrom;
+            if (run) {
+                sx = x / m; sy = y / m; t0 = held_t0 = now;
+                held_lo = held_hi = m;
+                recent_n = recent_head = 0;
             }
         }
-        px = x; py = y; have = true;
-        return raised;
+        if (!run) return changed;
+        last_t = now;
+        if (m > held_lo + kEdgeLowerSteady || m < held_hi - kEdgeLowerSteady) { held_t0 = now; held_lo = held_hi = m; }
+        else { if (m < held_lo) held_lo = m; if (m > held_hi) held_hi = m; }
+        recent_t[recent_head] = now;
+        recent_m[recent_head] = m;
+        recent_head = (recent_head + 1) % kEdgeRecent;
+        if (recent_n < kEdgeRecent) ++recent_n;
+        if (now - t0 < kEdgeLearnHoldMs) return changed;
+        float lo = m;
+        int count = 0;
+        for (int i = 0; i < recent_n; ++i) {
+            int j = (recent_head - 1 - i + kEdgeRecent) % kEdgeRecent;
+            if (now - recent_t[j] > kEdgeLearnHoldMs) break;
+            if (recent_m[j] < lo) lo = recent_m[j];
+            ++count;
+        }
+        if (count < kEdgeLearnHoldReads) return changed;
+        int d = edge_learn_dir(x, y);
+        if (d >= 0 && e.on && lo >= e.r[d] - kEdgeLowerGap) { short_pushes[d] = 0; short_best[d] = 0; }
+        float use = lo / m;
+        if (edge_learn(e, x * use, y * use)) changed = true;
+        return changed;
+    }
+
+private:
+    bool end_push(EdgeReach& e) {
+        run = false;
+        if (!e.on || last_t - held_t0 < kEdgeLowerHoldMs) return false;
+        int d = edge_learn_dir(sx, sy);
+        if (d < 0 || held_hi < kEdgeLowerFrom * e.r[d] || held_hi >= e.r[d] - kEdgeLowerGap) return false;
+        if (short_pushes[d] == 0 || held_hi > short_best[d]) short_best[d] = held_hi;
+        if (++short_pushes[d] < kEdgeLowerPushes) return false;
+        float r = (e.r[d] + short_best[d]) / 2;
+        e.r[d] = r < kEdgeMinReach ? kEdgeMinReach : r;
+        short_pushes[d] = 0;
+        short_best[d] = 0;
+        return true;
     }
 };
 
@@ -175,8 +247,7 @@ inline int edge_shortest(const EdgeReach& e) {
 // pushed to its edge. A sloppy pass somewhere only means more circling there.
 // A sector's reach is read from the fine bin at its centre, so a narrow dip is
 // not hidden by the larger reach at the sector's sides.
-const int kEdgeBins = 64;               // measuring bins, one per sector
-const int kEdgeBinsPerSector = kEdgeBins / kEdgeSectors;
+const int kEdgeBins = kEdgeSectors;     // measuring bins, one per sector
 const int kEdgeAway = 4;                // bins away a direction must be left before it counts as passed again
 const int kEdgeMaxGap = 8;              // widest run of unsettled bins (45 deg) that may be filled in to finish early
 
@@ -219,19 +290,8 @@ struct EdgeMeasure {
         return n;
     }
     bool done() const { return settled_count() == kEdgeBins; }
-    // reach at sector k so far, 0 = not reached: the centre bin, else the
-    // nearest reached bins on both sides within the sector, interpolated
-    float sector(int k) const {
-        int c = k * kEdgeBinsPerSector;
-        if (bin[c] > 0) return bin[c];
-        int h = kEdgeBinsPerSector / 2;
-        float lo = 0, hi = 0;
-        int dlo = 0, dhi = 0;
-        for (int d = 1; d <= h && !lo; ++d) { lo = bin[(c - d + kEdgeBins) % kEdgeBins]; dlo = d; }
-        for (int d = 1; d <= h && !hi; ++d) { hi = bin[(c + d) % kEdgeBins]; dhi = d; }
-        if (lo > 0 && hi > 0) return (lo * dhi + hi * dlo) / (dlo + dhi);
-        return lo > 0 ? lo : hi;
-    }
+    // reach at sector k so far, 0 = not reached
+    float sector(int k) const { return bin[k]; }
     int covered() const {
         int n = 0;
         for (int k = 0; k < kEdgeSectors; ++k) n += sector(k) > 0;
@@ -268,7 +328,7 @@ struct EdgeMeasure {
         }
         e.on = true;
         for (int k = 0; k < kEdgeSectors; ++k) {
-            float r = fill[k * kEdgeBinsPerSector];
+            float r = fill[k];
             e.r[k] = r < kEdgeMinReach ? kEdgeMinReach : r;
         }
         return e;
