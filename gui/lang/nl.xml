@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Dutch. Machine drafted, needs a native review. See en.xml. -->
+<language code="nl" name="Nederlands" dir="ltr" font="Segoe UI">
+  <nav_status>Status</nav_status>
+  <nav_tune>Afstellen</nav_tune>
+  <nav_diag>Diagnose</nav_diag>
+  <rail_steamvr_on>SteamVR draait</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR uit</rail_steamvr_off>
+  <rail_both>Beide controllers</rail_both>
+  <rail_one>Eén controller</rail_one>
+  <rail_none>Geen controllers</rail_none>
+  <lang_auto>Automatisch ({name})</lang_auto>
+  <lang_missing>{name}: {n} teksten niet vertaald, in het Engels getoond</lang_missing>
+  <hint_back>Terug</hint_back>
+  <hint_apply>Toepassen</hint_apply>
+  <hint_select>Kiezen</hint_select>
+  <hint_next>Volgende</hint_next>
+  <hand_left>Linker controller</hand_left>
+  <hand_right>Rechter controller</hand_right>
+  <state_no_signal>Geen signaal</state_no_signal>
+  <sub_no_signal>Start SteamVR om deze controller te zien.</sub_no_signal>
+  <state_not_connected>Niet verbonden</state_not_connected>
+  <sub_wake>Maak de controller wakker om de stick te zien.</sub_wake>
+  <sub_silent>Al {n} s geen stickgegevens. Controleer de batterij of maak hem wakker.</sub_silent>
+  <state_not_corrected>Niet gecorrigeerd</state_not_corrected>
+  <sub_unchanged>Ongewijzigd naar games.</sub_unchanged>
+  <state_anchored>Drift verankerd</state_anchored>
+  <sub_drifting>Drift {value}. Duim los, dus games krijgen 0.</sub_drifting>
+  <sub_thumb_off>Duim los, dus games krijgen 0.</sub_thumb_off>
+  <state_in_deadzone>In dode zone</state_in_deadzone>
+  <sub_in_deadzone>Binnen de dode zone van {percent}, dus games krijgen 0.</sub_in_deadzone>
+  <state_following>Volgt de duim</state_following>
+  <sub_past_deadzone>Voorbij de dode zone van {percent}, games krijgen een geschaalde duw.</sub_past_deadzone>
+  <sub_as_is>Zoals het is naar games.</sub_as_is>
+  <read_reports>Meldt</read_reports>
+  <read_games>Games krijgen</read_games>
+  <read_thumb>Duim</read_thumb>
+  <thumb_no_sensor>geen sensor</thumb_no_sensor>
+  <thumb_on>op stick</thumb_on>
+  <thumb_off>los</thumb_off>
+  <set_gate>Duimpoort</set_gate>
+  <set_smoothing>Afvlakking</set_smoothing>
+  <set_deadzone>Dode zone</set_deadzone>
+  <set_edge>Randrekking</set_edge>
+  <edge_not_measured>niet gemeten, afstellen</edge_not_measured>
+  <value_off>uit</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Verankering aan</master_on>
+  <master_off>Verankering uit</master_off>
+  <tune_suggested>voorgesteld {value}</tune_suggested>
+  <legend_rests>Rustpunt</legend_rests>
+  <legend_suggested>Voorgestelde dode zone</legend_suggested>
+  <step_rest>Laat de stick los</step_rest>
+  <step_rest_active>Rustpunt wordt opgenomen, houd je duim eraf.</step_rest_active>
+  <step_rest_done>{n} s rust opgenomen.</step_rest_done>
+  <step_flick>Duw hem en laat los</step_flick>
+  <step_flick_settle>{n} van {total}. Laat los, meten waar hij stopt.</step_flick_settle>
+  <step_flick_release>{n} van {total}. Laat nu los.</step_flick_release>
+  <step_flick_push>{n} van {total}. Duw helemaal, laat dan los.</step_flick_push>
+  <step_flick_done>{total} van {total} duwen opgenomen.</step_flick_done>
+  <step_review>Bekijken en toepassen</step_review>
+  <res_peak>hoogste drift</res_peak>
+  <res_typical>gewone drift</res_typical>
+  <res_direction>richting</res_direction>
+  <dir_none>geen</dir_none>
+  <dir_right>rechts</dir_right>
+  <dir_forward_right>vooruit rechts</dir_forward_right>
+  <dir_forward>vooruit</dir_forward>
+  <dir_forward_left>vooruit links</dir_forward_left>
+  <dir_left>links</dir_left>
+  <dir_back_left>achteruit links</dir_back_left>
+  <dir_back>achteruit</dir_back>
+  <dir_back_right>achteruit rechts</dir_back_right>
+  <find_none>Nauwelijks drift gemeten. Geen dode zone nodig.</find_none>
+  <find_gate_ok>De duimsensor bleef uit toen je losliet, dus de duimpoort stopt deze drift al.</find_gate_ok>
+  <find_gate_fail>De duimsensor meldde aan toen je losliet, dus de duimpoort alleen kan het niet stoppen.</find_gate_fail>
+  <find_no_sensor>Geen duimsensor gevonden, dus alleen een dode zone kan het stoppen.</find_no_sensor>
+  <find_creep>Met je duim op de stick kan hij nog kruipen. Een dode zone van {value} vangt dat op.</find_creep>
+  <tune_intro>Meet hoe deze stick drift en stelt een dode zone voor. Duurt ongeveer 20 seconden: laat de stick los en duw hem dan een paar keer.</tune_intro>
+  <btn_start>Meten starten</btn_start>
+  <btn_apply_left>Dode zone {value} links toepassen</btn_apply_left>
+  <btn_apply_right>Dode zone {value} rechts toepassen</btn_apply_right>
+  <btn_restart>Opnieuw beginnen</btn_restart>
+  <edge_intro>Randrekking: haalt de stick in sommige richtingen het einde niet, draai hem dan langs de rand en ancora rekt die richtingen op tot het einde.</edge_intro>
+  <btn_edge>Rand meten</btn_edge>
+  <btn_edge_apply_left>Linker stick rekken</btn_edge_apply_left>
+  <btn_edge_apply_right>Rechter stick rekken</btn_edge_apply_right>
+  <btn_edge_clear_left>Rekking links weghalen</btn_edge_clear_left>
+  <btn_edge_clear_right>Rekking rechts weghalen</btn_edge_clear_right>
+  <step_edge>Draai de stick langs de rand</step_edge>
+  <res_reach>kortste bereik</res_reach>
+  <find_edge_ok>De stick haalt in elke richting het einde. Geen rekking nodig.</find_edge_ok>
+  <find_edge_short>Richting {direction}: de stick haalt maar {value}. De rekking laat hem daar het einde halen, iets gevoeliger bij de rand.</find_edge_short>
+  <legend_reach>Hoe ver hij komt</legend_reach>
+  <step_edge_active>Duw helemaal en draai langzaam. {n} van {total} richtingen klaar.</step_edge_active>
+  <step_edge_done>Alle {total} richtingen hebben de rand bereikt.</step_edge_done>
+  <legend_edge_done>Rand bereikt</legend_edge_done>
+  <legend_edge_more>Hier nog eens</legend_edge_more>
+  <btn_edge_finish>Hiermee afronden</btn_edge_finish>
+  <edge_gap_hint>Kom je in sommige richtingen niet? Zodra de gaten klein zijn, vult Hiermee afronden ze aan vanuit de richtingen ernaast.</edge_gap_hint>
+  <tile_driver>Driver</tile_driver>
+  <drv_loaded>Geladen</drv_loaded>
+  <drv_registered>Geregistreerd</drv_registered>
+  <drv_missing>Niet geïnstalleerd</drv_missing>
+  <drv_patched>{n} invoertabellen aangepast</drv_patched>
+  <drv_not_seen>niet gezien in het SteamVR-logboek</drv_not_seen>
+  <tile_logic>Logica</tile_logic>
+  <logic_gen>Generatie {n}</logic_gen>
+  <logic_none>Niet geladen</logic_none>
+  <logic_loaded>geladen {time}, {n} invoeren opnieuw gezien</logic_loaded>
+  <tile_config>Configuratie</tile_config>
+  <cfg_pending>Nog niet toegepast</cfg_pending>
+  <cfg_applied>Toegepast {time}</cfg_applied>
+  <col_controller>Controller</col_controller>
+  <col_inputs>Invoer gevonden</col_inputs>
+  <col_thumb>Duim nu</col_thumb>
+  <col_updates>Updates</col_updates>
+  <diag_left_untracked>Links: niet gevolgd</diag_left_untracked>
+  <diag_right_untracked>Rechts: niet gevolgd</diag_right_untracked>
+  <inputs_silent>stil</inputs_silent>
+  <rate_idle>inactief</rate_idle>
+  <log_title>SteamVR-logboek, ancora-regels</log_title>
+  <log_empty>Nog geen ancora-regels in het SteamVR-logboek.</log_empty>
+  <btn_copy>Diagnose kopiëren</btn_copy>
+  <btn_open_cfg>Configuratie openen</btn_open_cfg>
+  <btn_open_log>SteamVR-logboek openen</btn_open_log>
+  <note_saved>{what} opgeslagen</note_saved>
+  <what_anchoring>Verankering</what_anchoring>
+  <what_left_gate>Duimpoort links</what_left_gate>
+  <what_right_gate>Duimpoort rechts</what_right_gate>
+  <what_left_smoothing>Afvlakking links</what_left_smoothing>
+  <what_right_smoothing>Afvlakking rechts</what_right_smoothing>
+  <what_left_deadzone>Dode zone links</what_left_deadzone>
+  <what_right_deadzone>Dode zone rechts</what_right_deadzone>
+  <what_left_edge>Randrekking links</what_left_edge>
+  <what_right_edge>Randrekking rechts</what_right_edge>
+  <what_language>Taal</what_language>
+  <note_copied>Diagnose gekopieerd</note_copied>
+  <note_no_log>Locatie van SteamVR-logboek onbekend</note_no_log>
+  <tray_open>ancora openen</tray_open>
+  <tray_exit>Afsluiten</tray_exit>
+</language>

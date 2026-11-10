@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Croatian. Machine drafted, needs a native review. See en.xml. -->
+<language code="hr" name="Hrvatski" dir="ltr" font="Segoe UI">
+  <nav_status>Stanje</nav_status>
+  <nav_tune>Podešavanje</nav_tune>
+  <nav_diag>Dijagnostika</nav_diag>
+  <rail_steamvr_on>SteamVR radi</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR isključen</rail_steamvr_off>
+  <rail_both>Oba kontrolera</rail_both>
+  <rail_one>Jedan kontroler</rail_one>
+  <rail_none>Nema kontrolera</rail_none>
+  <lang_auto>Automatski ({name})</lang_auto>
+  <lang_missing>{name}: {n} tekstova nije prevedeno, prikazano na engleskom</lang_missing>
+  <hint_back>Natrag</hint_back>
+  <hint_apply>Primijeni</hint_apply>
+  <hint_select>Odaberi</hint_select>
+  <hint_next>Dalje</hint_next>
+  <hand_left>Lijevi kontroler</hand_left>
+  <hand_right>Desni kontroler</hand_right>
+  <state_no_signal>Nema signala</state_no_signal>
+  <sub_no_signal>Pokrenite SteamVR da biste vidjeli ovaj kontroler.</sub_no_signal>
+  <state_not_connected>Nije povezan</state_not_connected>
+  <sub_wake>Probudite kontroler da biste vidjeli palicu.</sub_wake>
+  <sub_silent>Nema podataka palice {n} s. Provjerite bateriju ili ga probudite.</sub_silent>
+  <state_not_corrected>Nije ispravljeno</state_not_corrected>
+  <sub_unchanged>Proslijeđeno igrama nepromijenjeno.</sub_unchanged>
+  <state_anchored>Klizanje usidreno</state_anchored>
+  <sub_drifting>Klizi {value}. Palac maknut, igre dobivaju 0.</sub_drifting>
+  <sub_thumb_off>Palac maknut, igre dobivaju 0.</sub_thumb_off>
+  <state_in_deadzone>U mrtvoj zoni</state_in_deadzone>
+  <sub_in_deadzone>Unutar mrtve zone od {percent}, igre dobivaju 0.</sub_in_deadzone>
+  <state_following>Prati palac</state_following>
+  <sub_past_deadzone>Iza mrtve zone od {percent}, igre dobivaju skalirani pomak.</sub_past_deadzone>
+  <sub_as_is>Proslijeđeno igrama kakvo jest.</sub_as_is>
+  <read_reports>Javlja</read_reports>
+  <read_games>Igre dobivaju</read_games>
+  <read_thumb>Palac</read_thumb>
+  <thumb_no_sensor>bez senzora</thumb_no_sensor>
+  <thumb_on>na palici</thumb_on>
+  <thumb_off>maknut</thumb_off>
+  <set_gate>Blokada palca</set_gate>
+  <set_smoothing>Izglađivanje</set_smoothing>
+  <set_deadzone>Mrtva zona</set_deadzone>
+  <set_edge>Rastezanje ruba</set_edge>
+  <edge_not_measured>nije izmjereno, podesi</edge_not_measured>
+  <value_off>isklj.</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Sidrenje uključeno</master_on>
+  <master_off>Sidrenje isključeno</master_off>
+  <tune_suggested>prijedlog {value}</tune_suggested>
+  <legend_rests>Položaj mirovanja</legend_rests>
+  <legend_suggested>Predložena mrtva zona</legend_suggested>
+  <step_rest>Pustite palicu</step_rest>
+  <step_rest_active>Snima se položaj mirovanja, držite palac podalje.</step_rest_active>
+  <step_rest_done>Snimljeno {n} s mirovanja.</step_rest_done>
+  <step_flick>Gurnite je i pustite</step_flick>
+  <step_flick_settle>{n} od {total}. Pustite, mjeri se gdje se smiri.</step_flick_settle>
+  <step_flick_release>{n} od {total}. Sada pustite.</step_flick_release>
+  <step_flick_push>{n} od {total}. Gurnite do kraja, zatim pustite.</step_flick_push>
+  <step_flick_done>Snimljeno {total} od {total} guranja.</step_flick_done>
+  <step_review>Pregledaj i primijeni</step_review>
+  <res_peak>najveće klizanje</res_peak>
+  <res_typical>uobičajeno klizanje</res_typical>
+  <res_direction>smjer</res_direction>
+  <dir_none>nijedan</dir_none>
+  <dir_right>desno</dir_right>
+  <dir_forward_right>naprijed desno</dir_forward_right>
+  <dir_forward>naprijed</dir_forward>
+  <dir_forward_left>naprijed lijevo</dir_forward_left>
+  <dir_left>lijevo</dir_left>
+  <dir_back_left>natrag lijevo</dir_back_left>
+  <dir_back>natrag</dir_back>
+  <dir_back_right>natrag desno</dir_back_right>
+  <find_none>Izmjereno gotovo nikakvo klizanje. Mrtva zona nije potrebna.</find_none>
+  <find_gate_ok>Senzor palca ostao je isključen kad ste pustili, pa blokada palca već zaustavlja ovo klizanje.</find_gate_ok>
+  <find_gate_fail>Senzor palca javljao je dodir kad ste pustili, pa ga sama blokada palca ne može zaustaviti.</find_gate_fail>
+  <find_no_sensor>Senzor palca nije pronađen, pa ga može zaustaviti samo mrtva zona.</find_no_sensor>
+  <find_creep>S palcem na palici još uvijek može puzati. Mrtva zona od {value} to pokriva.</find_creep>
+  <tune_intro>Mjeri kako ova palica klizi i predlaže mrtvu zonu. Traje oko 20 sekundi: pustite palicu, zatim je nekoliko puta gurnite.</tune_intro>
+  <btn_start>Započni mjerenje</btn_start>
+  <btn_apply_left>Primijeni mrtvu zonu {value} lijevo</btn_apply_left>
+  <btn_apply_right>Primijeni mrtvu zonu {value} desno</btn_apply_right>
+  <btn_restart>Počni ispočetka</btn_restart>
+  <edge_intro>Rastezanje ruba: ako palica u nekim smjerovima ne doseže kraj, okrećite je uz rub i ancora će te smjerove rastegnuti do kraja.</edge_intro>
+  <btn_edge>Izmjeri rub</btn_edge>
+  <btn_edge_apply_left>Rastegni lijevu palicu</btn_edge_apply_left>
+  <btn_edge_apply_right>Rastegni desnu palicu</btn_edge_apply_right>
+  <btn_edge_clear_left>Ukloni rastezanje lijevo</btn_edge_clear_left>
+  <btn_edge_clear_right>Ukloni rastezanje desno</btn_edge_clear_right>
+  <step_edge>Okrećite palicu uz rub</step_edge>
+  <res_reach>najkraći doseg</res_reach>
+  <find_edge_ok>Palica doseže kraj u svim smjerovima. Rastezanje nije potrebno.</find_edge_ok>
+  <find_edge_short>Smjer {direction}: palica doseže samo {value}. Rastezanje joj daje puni doseg, uz rub malo osjetljivije.</find_edge_short>
+  <legend_reach>Koliko daleko doseže</legend_reach>
+  <step_edge_active>Gurnite do kraja i polako kružite. Gotovo {n} od {total} smjerova.</step_edge_active>
+  <step_edge_done>Svih {total} smjerova doseglo je rub.</step_edge_done>
+  <legend_edge_done>Rub dosegnut</legend_edge_done>
+  <legend_edge_more>Ovdje ponovno</legend_edge_more>
+  <btn_edge_finish>Završi s ovim</btn_edge_finish>
+  <edge_gap_hint>Neke smjerove ne možete doseći? Kad praznine budu male, Završi s ovim popunit će ih iz susjednih smjerova.</edge_gap_hint>
+  <tile_driver>Upravljački program</tile_driver>
+  <drv_loaded>Učitan</drv_loaded>
+  <drv_registered>Registriran</drv_registered>
+  <drv_missing>Nije instaliran</drv_missing>
+  <drv_patched>Prilagođeno {n} ulaznih tablica</drv_patched>
+  <drv_not_seen>nije viđen u zapisniku SteamVR</drv_not_seen>
+  <tile_logic>Logika</tile_logic>
+  <logic_gen>Generacija {n}</logic_gen>
+  <logic_none>Nije učitana</logic_none>
+  <logic_loaded>učitana {time}, {n} ulaza ponovljeno</logic_loaded>
+  <tile_config>Konfiguracija</tile_config>
+  <cfg_pending>Još nije primijenjeno</cfg_pending>
+  <cfg_applied>Primijenjeno {time}</cfg_applied>
+  <col_controller>Kontroler</col_controller>
+  <col_inputs>Pronađeni ulazi</col_inputs>
+  <col_thumb>Palac sada</col_thumb>
+  <col_updates>Ažuriranja</col_updates>
+  <diag_left_untracked>Lijevo: ne prati se</diag_left_untracked>
+  <diag_right_untracked>Desno: ne prati se</diag_right_untracked>
+  <inputs_silent>tiho</inputs_silent>
+  <rate_idle>miruje</rate_idle>
+  <log_title>Zapisnik SteamVR, retci ancora</log_title>
+  <log_empty>Još nema redaka ancora u zapisniku SteamVR.</log_empty>
+  <btn_copy>Kopiraj dijagnostiku</btn_copy>
+  <btn_open_cfg>Otvori konfiguraciju</btn_open_cfg>
+  <btn_open_log>Otvori zapisnik SteamVR</btn_open_log>
+  <note_saved>Spremljeno: {what}</note_saved>
+  <what_anchoring>Sidrenje</what_anchoring>
+  <what_left_gate>Blokada palca lijevo</what_left_gate>
+  <what_right_gate>Blokada palca desno</what_right_gate>
+  <what_left_smoothing>Izglađivanje lijevo</what_left_smoothing>
+  <what_right_smoothing>Izglađivanje desno</what_right_smoothing>
+  <what_left_deadzone>Mrtva zona lijevo</what_left_deadzone>
+  <what_right_deadzone>Mrtva zona desno</what_right_deadzone>
+  <what_left_edge>Rastezanje ruba lijevo</what_left_edge>
+  <what_right_edge>Rastezanje ruba desno</what_right_edge>
+  <what_language>Jezik</what_language>
+  <note_copied>Dijagnostika kopirana</note_copied>
+  <note_no_log>Lokacija zapisnika SteamVR nepoznata</note_no_log>
+  <tray_open>Otvori ancora</tray_open>
+  <tray_exit>Izlaz</tray_exit>
+</language>

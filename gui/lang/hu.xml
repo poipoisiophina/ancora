@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Hungarian. Machine drafted, needs a native review. See en.xml. -->
+<language code="hu" name="Magyar" dir="ltr" font="Segoe UI">
+  <nav_status>Állapot</nav_status>
+  <nav_tune>Hangolás</nav_tune>
+  <nav_diag>Diagnosztika</nav_diag>
+  <rail_steamvr_on>SteamVR fut</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR ki</rail_steamvr_off>
+  <rail_both>Mindkét kontroller</rail_both>
+  <rail_one>Egy kontroller</rail_one>
+  <rail_none>Nincs kontroller</rail_none>
+  <lang_auto>Automatikus ({name})</lang_auto>
+  <lang_missing>{name}: {n} szöveg nincs lefordítva, angolul látható</lang_missing>
+  <hint_back>Vissza</hint_back>
+  <hint_apply>Alkalmaz</hint_apply>
+  <hint_select>Kiválaszt</hint_select>
+  <hint_next>Tovább</hint_next>
+  <hand_left>Bal kontroller</hand_left>
+  <hand_right>Jobb kontroller</hand_right>
+  <state_no_signal>Nincs jel</state_no_signal>
+  <sub_no_signal>Indítsa el a SteamVR-t a kontroller megjelenítéséhez.</sub_no_signal>
+  <state_not_connected>Nincs csatlakoztatva</state_not_connected>
+  <sub_wake>Ébressze fel a kontrollert a kar megjelenítéséhez.</sub_wake>
+  <sub_silent>{n} mp óta nincs kar adat. Ellenőrizze az elemet, vagy ébressze fel.</sub_silent>
+  <state_not_corrected>Nincs javítva</state_not_corrected>
+  <sub_unchanged>Változatlanul megy a játékokhoz.</sub_unchanged>
+  <state_anchored>Sodródás lehorgonyozva</state_anchored>
+  <sub_drifting>Sodródás {value}. A hüvelykujj nincs rajta, a játékok 0-t kapnak.</sub_drifting>
+  <sub_thumb_off>A hüvelykujj nincs rajta, a játékok 0-t kapnak.</sub_thumb_off>
+  <state_in_deadzone>Holtzónában</state_in_deadzone>
+  <sub_in_deadzone>A(z) {percent} holtzónán belül, a játékok 0-t kapnak.</sub_in_deadzone>
+  <state_following>Követi az ujjat</state_following>
+  <sub_past_deadzone>A(z) {percent} holtzónán túl, a játékok arányos mozgást kapnak.</sub_past_deadzone>
+  <sub_as_is>Ahogy van, megy a játékokhoz.</sub_as_is>
+  <read_reports>Jelent</read_reports>
+  <read_games>Játékok kapják</read_games>
+  <read_thumb>Hüvelykujj</read_thumb>
+  <thumb_no_sensor>nincs érzékelő</thumb_no_sensor>
+  <thumb_on>a karon</thumb_on>
+  <thumb_off>nincs rajta</thumb_off>
+  <set_gate>Ujjkapu</set_gate>
+  <set_smoothing>Simítás</set_smoothing>
+  <set_deadzone>Holtzóna</set_deadzone>
+  <set_edge>Peremnyújtás</set_edge>
+  <edge_not_measured>nincs mérve, hangolás</edge_not_measured>
+  <value_off>ki</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Horgonyzás be</master_on>
+  <master_off>Horgonyzás ki</master_off>
+  <tune_suggested>javasolt {value}</tune_suggested>
+  <legend_rests>Nyugalmi pont</legend_rests>
+  <legend_suggested>Javasolt holtzóna</legend_suggested>
+  <step_rest>Engedje el a kart</step_rest>
+  <step_rest_active>Nyugalmi pont rögzítése, tartsa távol az ujját.</step_rest_active>
+  <step_rest_done>{n} mp nyugalom rögzítve.</step_rest_done>
+  <step_flick>Pöccintse meg és engedje el</step_flick>
+  <step_flick_settle>{n}/{total}. Engedje el, mérjük, hol áll meg.</step_flick_settle>
+  <step_flick_release>{n}/{total}. Most engedje el.</step_flick_release>
+  <step_flick_push>{n}/{total}. Nyomja ütközésig, majd engedje el.</step_flick_push>
+  <step_flick_done>{total}/{total} pöccintés rögzítve.</step_flick_done>
+  <step_review>Áttekintés és alkalmazás</step_review>
+  <res_peak>legnagyobb sodródás</res_peak>
+  <res_typical>szokásos sodródás</res_typical>
+  <res_direction>irány</res_direction>
+  <dir_none>nincs</dir_none>
+  <dir_right>jobbra</dir_right>
+  <dir_forward_right>előre jobbra</dir_forward_right>
+  <dir_forward>előre</dir_forward>
+  <dir_forward_left>előre balra</dir_forward_left>
+  <dir_left>balra</dir_left>
+  <dir_back_left>hátra balra</dir_back_left>
+  <dir_back>hátra</dir_back>
+  <dir_back_right>hátra jobbra</dir_back_right>
+  <find_none>Alig mértünk sodródást. Nem kell holtzóna.</find_none>
+  <find_gate_ok>Az ujjérzékelő kikapcsolva maradt, amikor elengedte, így az ujjkapu már megállítja ezt a sodródást.</find_gate_ok>
+  <find_gate_fail>Az ujjérzékelő érintést jelzett, amikor elengedte, így az ujjkapu egyedül nem tudja megállítani.</find_gate_fail>
+  <find_no_sensor>Nincs ujjérzékelő, így csak holtzóna állíthatja meg.</find_no_sensor>
+  <find_creep>Ha az ujja a karon pihen, még kúszhat. Egy {value} holtzóna ezt lefedi.</find_creep>
+  <tune_intro>Megméri, hogyan sodródik ez a kar, és holtzónát javasol. Kb. 20 másodperc: engedje el a kart, majd pöccintse meg néhányszor.</tune_intro>
+  <btn_start>Mérés indítása</btn_start>
+  <btn_apply_left>{value} holtzóna a bal oldalra</btn_apply_left>
+  <btn_apply_right>{value} holtzóna a jobb oldalra</btn_apply_right>
+  <btn_restart>Újrakezdés</btn_restart>
+  <edge_intro>Peremnyújtás: ha a kar egyes irányokban nem éri el az ütközőt, forgassa körbe a peremén, és az ancora azokat az irányokat teljesre nyújtja.</edge_intro>
+  <btn_edge>Perem mérése</btn_edge>
+  <btn_edge_apply_left>Bal kar nyújtása</btn_edge_apply_left>
+  <btn_edge_apply_right>Jobb kar nyújtása</btn_edge_apply_right>
+  <btn_edge_clear_left>Bal nyújtás törlése</btn_edge_clear_left>
+  <btn_edge_clear_right>Jobb nyújtás törlése</btn_edge_clear_right>
+  <step_edge>Forgassa a kart a peremén körbe</step_edge>
+  <res_reach>legrövidebb elérés</res_reach>
+  <find_edge_ok>A kar minden irányban eléri az ütközőt. Nem kell nyújtás.</find_edge_ok>
+  <find_edge_short>{direction} irány: a kar csak {value} értéket ér el. A nyújtással ott is teljes lesz, a szélén kissé érzékenyebb.</find_edge_short>
+  <legend_reach>Meddig ér el</legend_reach>
+  <step_edge_active>Nyomja ütközésig, és lassan körözzön. {n}/{total} irány kész.</step_edge_active>
+  <step_edge_done>Mind a(z) {total} irány elérte a peremet.</step_edge_done>
+  <legend_edge_done>Perem elérve</legend_edge_done>
+  <legend_edge_more>Ide még egyszer</legend_edge_more>
+  <btn_edge_finish>Befejezés ezekkel</btn_edge_finish>
+  <edge_gap_hint>Egyes irányokat nem éri el? Ha a rések kicsik, a Befejezés ezekkel kitölti őket a szomszédos irányokból.</edge_gap_hint>
+  <tile_driver>Illesztő</tile_driver>
+  <drv_loaded>Betöltve</drv_loaded>
+  <drv_registered>Regisztrálva</drv_registered>
+  <drv_missing>Nincs telepítve</drv_missing>
+  <drv_patched>{n} bemeneti tábla módosítva</drv_patched>
+  <drv_not_seen>nem látható a SteamVR naplóban</drv_not_seen>
+  <tile_logic>Logika</tile_logic>
+  <logic_gen>{n}. generáció</logic_gen>
+  <logic_none>Nincs betöltve</logic_none>
+  <logic_loaded>betöltve {time}, {n} bemenet újrajátszva</logic_loaded>
+  <tile_config>Beállítások</tile_config>
+  <cfg_pending>Még nincs alkalmazva</cfg_pending>
+  <cfg_applied>Alkalmazva {time}</cfg_applied>
+  <col_controller>Kontroller</col_controller>
+  <col_inputs>Talált bemenetek</col_inputs>
+  <col_thumb>Ujj most</col_thumb>
+  <col_updates>Frissítések</col_updates>
+  <diag_left_untracked>Bal: nincs követve</diag_left_untracked>
+  <diag_right_untracked>Jobb: nincs követve</diag_right_untracked>
+  <inputs_silent>néma</inputs_silent>
+  <rate_idle>tétlen</rate_idle>
+  <log_title>SteamVR napló, ancora sorok</log_title>
+  <log_empty>Még nincsenek ancora sorok a SteamVR naplóban.</log_empty>
+  <btn_copy>Diagnosztika másolása</btn_copy>
+  <btn_open_cfg>Beállítófájl megnyitása</btn_open_cfg>
+  <btn_open_log>SteamVR napló megnyitása</btn_open_log>
+  <note_saved>Mentve: {what}</note_saved>
+  <what_anchoring>Horgonyzás</what_anchoring>
+  <what_left_gate>Bal ujjkapu</what_left_gate>
+  <what_right_gate>Jobb ujjkapu</what_right_gate>
+  <what_left_smoothing>Bal simítás</what_left_smoothing>
+  <what_right_smoothing>Jobb simítás</what_right_smoothing>
+  <what_left_deadzone>Bal holtzóna</what_left_deadzone>
+  <what_right_deadzone>Jobb holtzóna</what_right_deadzone>
+  <what_left_edge>Bal peremnyújtás</what_left_edge>
+  <what_right_edge>Jobb peremnyújtás</what_right_edge>
+  <what_language>Nyelv</what_language>
+  <note_copied>Diagnosztika másolva</note_copied>
+  <note_no_log>A SteamVR napló helye ismeretlen</note_no_log>
+  <tray_open>ancora megnyitása</tray_open>
+  <tray_exit>Kilépés</tray_exit>
+</language>

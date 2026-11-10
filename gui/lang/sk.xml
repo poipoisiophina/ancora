@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Slovak. Machine drafted, needs a native review. See en.xml. -->
+<language code="sk" name="Slovenčina" dir="ltr" font="Segoe UI">
+  <nav_status>Stav</nav_status>
+  <nav_tune>Ladenie</nav_tune>
+  <nav_diag>Diagnostika</nav_diag>
+  <rail_steamvr_on>SteamVR beží</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR vypnuté</rail_steamvr_off>
+  <rail_both>Oba ovládače</rail_both>
+  <rail_one>Jeden ovládač</rail_one>
+  <rail_none>Žiadne ovládače</rail_none>
+  <lang_auto>Automaticky ({name})</lang_auto>
+  <lang_missing>{name}: {n} textov nepreložených, zobrazené po anglicky</lang_missing>
+  <hint_back>Späť</hint_back>
+  <hint_apply>Použiť</hint_apply>
+  <hint_select>Vybrať</hint_select>
+  <hint_next>Ďalej</hint_next>
+  <hand_left>Ľavý ovládač</hand_left>
+  <hand_right>Pravý ovládač</hand_right>
+  <state_no_signal>Žiadny signál</state_no_signal>
+  <sub_no_signal>Spustite SteamVR, aby ste videli tento ovládač.</sub_no_signal>
+  <state_not_connected>Nepripojené</state_not_connected>
+  <sub_wake>Prebuďte ovládač, aby ste videli páčku.</sub_wake>
+  <sub_silent>Žiadne údaje páčky {n} s. Skontrolujte batériu alebo ho prebuďte.</sub_silent>
+  <state_not_corrected>Neopravené</state_not_corrected>
+  <sub_unchanged>Odovzdané hrám bez zmeny.</sub_unchanged>
+  <state_anchored>Drift ukotvený</state_anchored>
+  <sub_drifting>Drift {value}. Palec preč, hry dostávajú 0.</sub_drifting>
+  <sub_thumb_off>Palec preč, hry dostávajú 0.</sub_thumb_off>
+  <state_in_deadzone>V mŕtvej zóne</state_in_deadzone>
+  <sub_in_deadzone>Vnútri mŕtvej zóny {percent}, hry dostávajú 0.</sub_in_deadzone>
+  <state_following>Sleduje palec</state_following>
+  <sub_past_deadzone>Za mŕtvou zónou {percent}, hry dostávajú prepočítaný pohyb.</sub_past_deadzone>
+  <sub_as_is>Odovzdané hrám tak, ako je.</sub_as_is>
+  <read_reports>Hlási</read_reports>
+  <read_games>Hry dostávajú</read_games>
+  <read_thumb>Palec</read_thumb>
+  <thumb_no_sensor>bez senzora</thumb_no_sensor>
+  <thumb_on>na páčke</thumb_on>
+  <thumb_off>preč</thumb_off>
+  <set_gate>Palcová brána</set_gate>
+  <set_smoothing>Vyhladenie</set_smoothing>
+  <set_deadzone>Mŕtva zóna</set_deadzone>
+  <set_edge>Natiahnutie okraja</set_edge>
+  <edge_not_measured>nemerané, ladiť</edge_not_measured>
+  <value_off>vyp.</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Ukotvenie zapnuté</master_on>
+  <master_off>Ukotvenie vypnuté</master_off>
+  <tune_suggested>odporúčané {value}</tune_suggested>
+  <legend_rests>Pokojová poloha</legend_rests>
+  <legend_suggested>Odporúčaná mŕtva zóna</legend_suggested>
+  <step_rest>Pustite páčku</step_rest>
+  <step_rest_active>Zaznamenáva sa pokojová poloha, držte palec preč.</step_rest_active>
+  <step_rest_done>Zaznamenaných {n} s pokoja.</step_rest_done>
+  <step_flick>Cvrnknite a pustite</step_flick>
+  <step_flick_settle>{n} z {total}. Pustite, meria sa, kde sa ustáli.</step_flick_settle>
+  <step_flick_release>{n} z {total}. Teraz pustite.</step_flick_release>
+  <step_flick_push>{n} z {total}. Zatlačte až na doraz, potom pustite.</step_flick_push>
+  <step_flick_done>Zaznamenaných {total} z {total} cvrnknutí.</step_flick_done>
+  <step_review>Skontrolovať a použiť</step_review>
+  <res_peak>najvyšší drift</res_peak>
+  <res_typical>bežný drift</res_typical>
+  <res_direction>smer</res_direction>
+  <dir_none>žiadny</dir_none>
+  <dir_right>vpravo</dir_right>
+  <dir_forward_right>vpred vpravo</dir_forward_right>
+  <dir_forward>vpred</dir_forward>
+  <dir_forward_left>vpred vľavo</dir_forward_left>
+  <dir_left>vľavo</dir_left>
+  <dir_back_left>vzad vľavo</dir_back_left>
+  <dir_back>vzad</dir_back>
+  <dir_back_right>vzad vpravo</dir_back_right>
+  <find_none>Nameraný takmer žiadny drift. Mŕtva zóna nie je potrebná.</find_none>
+  <find_gate_ok>Senzor palca zostal vypnutý, keď ste pustili, takže palcová brána tento drift už zastaví.</find_gate_ok>
+  <find_gate_fail>Senzor palca hlásil dotyk, keď ste pustili, takže samotná palcová brána ho nezastaví.</find_gate_fail>
+  <find_no_sensor>Senzor palca sa nenašiel, zastaviť ho môže len mŕtva zóna.</find_no_sensor>
+  <find_creep>S palcom položeným na páčke môže stále liezť. Mŕtva zóna {value} to pokryje.</find_creep>
+  <tune_intro>Zmeria, ako táto páčka driftuje, a odporučí mŕtvu zónu. Trvá asi 20 sekúnd: pustite páčku a potom ňou niekoľkokrát cvrnknite.</tune_intro>
+  <btn_start>Začať merať</btn_start>
+  <btn_apply_left>Použiť mŕtvu zónu {value} vľavo</btn_apply_left>
+  <btn_apply_right>Použiť mŕtvu zónu {value} vpravo</btn_apply_right>
+  <btn_restart>Začať znova</btn_restart>
+  <edge_intro>Natiahnutie okraja: ak páčka v niektorých smeroch nedosiahne na doraz, krúžte ňou po okraji a ancora tieto smery natiahne na plný rozsah.</edge_intro>
+  <btn_edge>Zmerať okraj</btn_edge>
+  <btn_edge_apply_left>Natiahnuť ľavú páčku</btn_edge_apply_left>
+  <btn_edge_apply_right>Natiahnuť pravú páčku</btn_edge_apply_right>
+  <btn_edge_clear_left>Odstrániť natiahnutie vľavo</btn_edge_clear_left>
+  <btn_edge_clear_right>Odstrániť natiahnutie vpravo</btn_edge_clear_right>
+  <step_edge>Krúžte páčkou po okraji</step_edge>
+  <res_reach>najkratší dosah</res_reach>
+  <find_edge_ok>Páčka dosiahne na doraz vo všetkých smeroch. Natiahnutie nie je potrebné.</find_edge_ok>
+  <find_edge_short>Smer {direction}: páčka dosiahne len {value}. Natiahnutie zaistí plný rozsah, pri okraji o niečo citlivejšie.</find_edge_short>
+  <legend_reach>Kam dosiahne</legend_reach>
+  <step_edge_active>Zatlačte na doraz a pomaly krúžte. Hotových {n} z {total} smerov.</step_edge_active>
+  <step_edge_done>Všetkých {total} smerov dosiahlo okraj.</step_edge_done>
+  <legend_edge_done>Okraj dosiahnutý</legend_edge_done>
+  <legend_edge_more>Sem znova</legend_edge_more>
+  <btn_edge_finish>Dokončiť s týmto</btn_edge_finish>
+  <edge_gap_hint>Niektoré smery sa nedajú dosiahnuť? Keď budú medzery malé, Dokončiť s týmto ich doplní zo susedných smerov.</edge_gap_hint>
+  <tile_driver>Ovládač</tile_driver>
+  <drv_loaded>Načítaný</drv_loaded>
+  <drv_registered>Registrovaný</drv_registered>
+  <drv_missing>Nenainštalovaný</drv_missing>
+  <drv_patched>Upravených {n} vstupných tabuliek</drv_patched>
+  <drv_not_seen>nenájdený v protokole SteamVR</drv_not_seen>
+  <tile_logic>Logika</tile_logic>
+  <logic_gen>Generácia {n}</logic_gen>
+  <logic_none>Nenačítaná</logic_none>
+  <logic_loaded>načítaná {time}, {n} vstupov prehraných</logic_loaded>
+  <tile_config>Konfigurácia</tile_config>
+  <cfg_pending>Zatiaľ nepoužité</cfg_pending>
+  <cfg_applied>Použité {time}</cfg_applied>
+  <col_controller>Ovládač</col_controller>
+  <col_inputs>Nájdené vstupy</col_inputs>
+  <col_thumb>Palec teraz</col_thumb>
+  <col_updates>Aktualizácie</col_updates>
+  <diag_left_untracked>Vľavo: nesledované</diag_left_untracked>
+  <diag_right_untracked>Vpravo: nesledované</diag_right_untracked>
+  <inputs_silent>tichý</inputs_silent>
+  <rate_idle>nečinný</rate_idle>
+  <log_title>Protokol SteamVR, riadky ancora</log_title>
+  <log_empty>V protokole SteamVR zatiaľ nie sú riadky ancora.</log_empty>
+  <btn_copy>Kopírovať diagnostiku</btn_copy>
+  <btn_open_cfg>Otvoriť konfiguráciu</btn_open_cfg>
+  <btn_open_log>Otvoriť protokol SteamVR</btn_open_log>
+  <note_saved>Uložené: {what}</note_saved>
+  <what_anchoring>Ukotvenie</what_anchoring>
+  <what_left_gate>Palcová brána vľavo</what_left_gate>
+  <what_right_gate>Palcová brána vpravo</what_right_gate>
+  <what_left_smoothing>Vyhladenie vľavo</what_left_smoothing>
+  <what_right_smoothing>Vyhladenie vpravo</what_right_smoothing>
+  <what_left_deadzone>Mŕtva zóna vľavo</what_left_deadzone>
+  <what_right_deadzone>Mŕtva zóna vpravo</what_right_deadzone>
+  <what_left_edge>Natiahnutie okraja vľavo</what_left_edge>
+  <what_right_edge>Natiahnutie okraja vpravo</what_right_edge>
+  <what_language>Jazyk</what_language>
+  <note_copied>Diagnostika skopírovaná</note_copied>
+  <note_no_log>Umiestnenie protokolu SteamVR neznáme</note_no_log>
+  <tray_open>Otvoriť ancora</tray_open>
+  <tray_exit>Ukončiť</tray_exit>
+</language>

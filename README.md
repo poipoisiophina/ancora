@@ -26,7 +26,7 @@ Nothing else. No extra runtimes, no admin rights.
 ## Install
 
 1. **Close SteamVR** completely.
-2. Run PreRelease **`ancora-setup-0.1.1.exe`**.
+2. Run PreRelease **`ancora-setup-0.1.2.exe`**.
    - If Windows says "Windows protected your PC", click **More info**, then
      **Run anyway**. (This happens because the installer is not signed with a
      paid certificate.)
@@ -123,8 +123,11 @@ ancora speaks your Windows language when it has it. To pick another one,
 click the **globe** at the bottom left of the panel. It has VRChat's
 languages, English, Deutsch, Español, Français, Italiano, 日本語, 한국어,
 עברית, Português (Brasil), Polski, 简体中文, 繁體中文, Русский and
-toki pona, plus Українська, العربية and فارسی. Hebrew, Arabic and Persian turn the
-whole panel right to left.
+toki pona, plus Українська, العربية and فارسی, and every official EU
+language: Български, Čeština, Dansk, Eesti, Ελληνικά, Gaeilge, Hrvatski,
+Latviešu, Lietuvių, Magyar, Malti, Nederlands, Português (Portugal), Română,
+Slovenčina, Slovenščina, Suomi and Svenska. Hebrew, Arabic and Persian turn
+the whole panel right to left.
 
 The translations were drafted by machine. If yours reads oddly, see
 "Translate ancora" below.

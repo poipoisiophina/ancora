@@ -58,7 +58,13 @@ copy /y driver\obj\driver_ancora.dll driver\ancora\bin\win64\driver_ancora.dll >
 echo built driver\ancora\bin\win64\driver_ancora.dll
 rem control panel (no OpenVR dependency)
 if not exist gui\bin mkdir gui\bin
-cl /nologo /std:c++17 /utf-8 /O2 /EHsc /MT /W3 /DUNICODE /D_UNICODE /Fodriver\obj\ ^
+rem version: one place, the installer script's AppVersion; the panel shows it on Diagnostics
+set "ANCORA_VER="
+for /f "tokens=3" %%v in ('findstr /b /c:"#define AppVersion" packaging\ancora.iss') do set "ANCORA_VER=%%~v"
+if not defined ANCORA_VER (echo no AppVersion in packaging\ancora.iss & exit /b 1)
+> driver\obj\ancora_version.h echo #define ANCORA_VERSION L"%ANCORA_VER%"
+echo version %ANCORA_VER%
+cl /nologo /std:c++17 /utf-8 /O2 /EHsc /MT /W3 /DUNICODE /D_UNICODE /Idriver\obj /Fodriver\obj\ ^
    gui\src\ancora_panel.cpp /Fe:gui\bin\ancora.exe ^
    /link /SUBSYSTEM:WINDOWS || exit /b 1
 rem the panel draws its own icon: write it as an .ico, then relink with it embedded

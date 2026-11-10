@@ -49,6 +49,13 @@
 #include "../../driver/src/ancora_average.h"
 #include "../../driver/src/ancora_edge.h"
 #include "ancora_lang.h"
+// written by build_driver.bat from AppVersion in packaging\ancora.iss
+#if __has_include("ancora_version.h")
+#include "ancora_version.h"
+#endif
+#ifndef ANCORA_VERSION
+#define ANCORA_VERSION L"dev"
+#endif
 
 #pragma comment(lib, "d2d1")
 #pragma comment(lib, "dwrite")
@@ -1371,6 +1378,9 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
 void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
     text(t, tr(S_nav_diag), g.f_title, 292, 24, kText, 400);
     float x0 = 292, x1 = kW - 32, y = 84, tw = (x1 - x0 - 24) / 3;
+    // version, so a copied report or a screenshot says which build it came from
+    text(t, iso(std::wstring(L"ancora ") + ANCORA_VERSION), g.f_body, x1 - 300, 36, kMuted, 300,
+         DWRITE_TEXT_ALIGNMENT_TRAILING);
     const LogFacts& lf = g.log;
     struct Tile { Str head; std::wstring main, sub; };
     Tile tiles[3] = {
@@ -1597,7 +1607,7 @@ void commit_deadzone(int hand) {
 }
 
 void copy_diagnostics() {
-    std::wstring d = L"ancora diagnostics\r\nconfig: " + g_ini + L"\r\nlog: " + g.log_path + L"\r\n";
+    std::wstring d = std::wstring(L"ancora ") + ANCORA_VERSION + L" diagnostics\r\nconfig: " + g_ini + L"\r\nlog: " + g.log_path + L"\r\n";
     d += g.steamvr ? L"SteamVR running\r\n" : L"SteamVR off\r\n";
     d += g.registered ? L"driver registered\r\n" : L"driver not registered\r\n";
     d += L"language " + g.lang.info.code + L" (setting " + g.cfg.language + L"), " +
@@ -2401,7 +2411,13 @@ int selftest() {
     std::vector<LangInfo> fake(5);
     const wchar_t* codes[5] = {L"en", L"pt-BR", L"zh-Hans", L"zh-Hant", L"he"};
     for (int k = 0; k < 5; ++k) fake[k].code = codes[k];
-    check(lang_match(fake, L"pt-PT") == L"pt-BR", "Windows pt-PT picks pt-BR");
+    check(lang_match(fake, L"pt-PT") == L"pt-BR", "Windows pt-PT picks pt-BR when there is no pt-PT");
+    {
+        std::vector<LangInfo> pt(2);
+        pt[0].code = L"pt-BR"; pt[1].code = L"pt-PT";
+        check(lang_match(pt, L"pt-PT") == L"pt-PT" && lang_match(pt, L"pt-BR") == L"pt-BR" && lang_match(pt, L"pt-AO") != L"",
+              "Windows pt-PT picks pt-PT, pt-BR picks pt-BR, other Portuguese picks one of them");
+    }
     check(lang_match(fake, L"zh-CN") == L"zh-Hans" && lang_match(fake, L"zh-TW") == L"zh-Hant" &&
           lang_match(fake, L"zh-HK") == L"zh-Hant" && lang_match(fake, L"zh-Hans-SG") == L"zh-Hans",
           "Windows Chinese variants pick simplified or traditional");

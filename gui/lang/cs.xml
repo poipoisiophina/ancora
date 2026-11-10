@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Czech. Machine drafted, needs a native review. See en.xml. -->
+<language code="cs" name="Čeština" dir="ltr" font="Segoe UI">
+  <nav_status>Stav</nav_status>
+  <nav_tune>Ladění</nav_tune>
+  <nav_diag>Diagnostika</nav_diag>
+  <rail_steamvr_on>SteamVR běží</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR vypnuto</rail_steamvr_off>
+  <rail_both>Oba ovladače</rail_both>
+  <rail_one>Jeden ovladač</rail_one>
+  <rail_none>Žádné ovladače</rail_none>
+  <lang_auto>Automaticky ({name})</lang_auto>
+  <lang_missing>{name}: {n} textů nepřeloženo, zobrazeno anglicky</lang_missing>
+  <hint_back>Zpět</hint_back>
+  <hint_apply>Použít</hint_apply>
+  <hint_select>Vybrat</hint_select>
+  <hint_next>Další</hint_next>
+  <hand_left>Levý ovladač</hand_left>
+  <hand_right>Pravý ovladač</hand_right>
+  <state_no_signal>Žádný signál</state_no_signal>
+  <sub_no_signal>Spusťte SteamVR, abyste viděli tento ovladač.</sub_no_signal>
+  <state_not_connected>Nepřipojeno</state_not_connected>
+  <sub_wake>Probuďte ovladač, abyste viděli páčku.</sub_wake>
+  <sub_silent>Žádná data páčky {n} s. Zkontrolujte baterii nebo jej probuďte.</sub_silent>
+  <state_not_corrected>Neopraveno</state_not_corrected>
+  <sub_unchanged>Předáno hrám beze změny.</sub_unchanged>
+  <state_anchored>Drift ukotven</state_anchored>
+  <sub_drifting>Drift {value}. Palec mimo, hry dostávají 0.</sub_drifting>
+  <sub_thumb_off>Palec mimo, hry dostávají 0.</sub_thumb_off>
+  <state_in_deadzone>V mrtvé zóně</state_in_deadzone>
+  <sub_in_deadzone>Uvnitř mrtvé zóny {percent}, hry dostávají 0.</sub_in_deadzone>
+  <state_following>Sleduje palec</state_following>
+  <sub_past_deadzone>Za mrtvou zónou {percent}, hry dostávají přepočtený pohyb.</sub_past_deadzone>
+  <sub_as_is>Předáno hrám tak, jak je.</sub_as_is>
+  <read_reports>Hlásí</read_reports>
+  <read_games>Hry dostávají</read_games>
+  <read_thumb>Palec</read_thumb>
+  <thumb_no_sensor>bez senzoru</thumb_no_sensor>
+  <thumb_on>na páčce</thumb_on>
+  <thumb_off>mimo</thumb_off>
+  <set_gate>Palcová brána</set_gate>
+  <set_smoothing>Vyhlazení</set_smoothing>
+  <set_deadzone>Mrtvá zóna</set_deadzone>
+  <set_edge>Natažení okraje</set_edge>
+  <edge_not_measured>neměřeno, ladit</edge_not_measured>
+  <value_off>vyp.</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Ukotvení zapnuto</master_on>
+  <master_off>Ukotvení vypnuto</master_off>
+  <tune_suggested>doporučeno {value}</tune_suggested>
+  <legend_rests>Klidová poloha</legend_rests>
+  <legend_suggested>Doporučená mrtvá zóna</legend_suggested>
+  <step_rest>Pusťte páčku</step_rest>
+  <step_rest_active>Zaznamenává se klidová poloha, držte palec mimo.</step_rest_active>
+  <step_rest_done>Zaznamenáno {n} s klidu.</step_rest_done>
+  <step_flick>Cvrnkněte a pusťte</step_flick>
+  <step_flick_settle>{n} z {total}. Pusťte, měří se, kde se ustálí.</step_flick_settle>
+  <step_flick_release>{n} z {total}. Teď pusťte.</step_flick_release>
+  <step_flick_push>{n} z {total}. Zatlačte až na doraz, pak pusťte.</step_flick_push>
+  <step_flick_done>Zaznamenáno {total} z {total} cvrnknutí.</step_flick_done>
+  <step_review>Zkontrolovat a použít</step_review>
+  <res_peak>nejvyšší drift</res_peak>
+  <res_typical>běžný drift</res_typical>
+  <res_direction>směr</res_direction>
+  <dir_none>žádný</dir_none>
+  <dir_right>vpravo</dir_right>
+  <dir_forward_right>vpřed vpravo</dir_forward_right>
+  <dir_forward>vpřed</dir_forward>
+  <dir_forward_left>vpřed vlevo</dir_forward_left>
+  <dir_left>vlevo</dir_left>
+  <dir_back_left>vzad vlevo</dir_back_left>
+  <dir_back>vzad</dir_back>
+  <dir_back_right>vzad vpravo</dir_back_right>
+  <find_none>Naměřen téměř žádný drift. Mrtvá zóna není potřeba.</find_none>
+  <find_gate_ok>Senzor palce zůstal vypnutý, když jste pustili, takže palcová brána tento drift už zastaví.</find_gate_ok>
+  <find_gate_fail>Senzor palce hlásil dotyk, když jste pustili, takže samotná palcová brána ho nezastaví.</find_gate_fail>
+  <find_no_sensor>Senzor palce nenalezen, zastavit ho může jen mrtvá zóna.</find_no_sensor>
+  <find_creep>S palcem položeným na páčce může stále lézt. Mrtvá zóna {value} to pokryje.</find_creep>
+  <tune_intro>Změří, jak tato páčka driftuje, a doporučí mrtvou zónu. Trvá asi 20 sekund: pusťte páčku a pak ji několikrát cvrnkněte.</tune_intro>
+  <btn_start>Začít měřit</btn_start>
+  <btn_apply_left>Použít mrtvou zónu {value} vlevo</btn_apply_left>
+  <btn_apply_right>Použít mrtvou zónu {value} vpravo</btn_apply_right>
+  <btn_restart>Začít znovu</btn_restart>
+  <edge_intro>Natažení okraje: pokud páčka v některých směrech nedosáhne na doraz, kružte s ní po okraji a ancora tyto směry natáhne na plný rozsah.</edge_intro>
+  <btn_edge>Změřit okraj</btn_edge>
+  <btn_edge_apply_left>Natáhnout levou páčku</btn_edge_apply_left>
+  <btn_edge_apply_right>Natáhnout pravou páčku</btn_edge_apply_right>
+  <btn_edge_clear_left>Odebrat natažení vlevo</btn_edge_clear_left>
+  <btn_edge_clear_right>Odebrat natažení vpravo</btn_edge_clear_right>
+  <step_edge>Kružte páčkou po okraji</step_edge>
+  <res_reach>nejkratší dosah</res_reach>
+  <find_edge_ok>Páčka dosáhne na doraz ve všech směrech. Natažení není potřeba.</find_edge_ok>
+  <find_edge_short>Směr {direction}: páčka dosáhne jen {value}. Natažení zajistí plný rozsah, u okraje o něco citlivěji.</find_edge_short>
+  <legend_reach>Kam dosáhne</legend_reach>
+  <step_edge_active>Zatlačte na doraz a pomalu kružte. Hotovo {n} z {total} směrů.</step_edge_active>
+  <step_edge_done>Všech {total} směrů dosáhlo okraje.</step_edge_done>
+  <legend_edge_done>Okraj dosažen</legend_edge_done>
+  <legend_edge_more>Sem znovu</legend_edge_more>
+  <btn_edge_finish>Dokončit s tímto</btn_edge_finish>
+  <edge_gap_hint>Některé směry nejdou dosáhnout? Až budou mezery malé, Dokončit s tímto je doplní ze sousedních směrů.</edge_gap_hint>
+  <tile_driver>Ovladač</tile_driver>
+  <drv_loaded>Načten</drv_loaded>
+  <drv_registered>Registrován</drv_registered>
+  <drv_missing>Nenainstalován</drv_missing>
+  <drv_patched>Upraveno {n} vstupních tabulek</drv_patched>
+  <drv_not_seen>nenalezen v protokolu SteamVR</drv_not_seen>
+  <tile_logic>Logika</tile_logic>
+  <logic_gen>Generace {n}</logic_gen>
+  <logic_none>Nenačtena</logic_none>
+  <logic_loaded>načtena {time}, {n} vstupů přehráno</logic_loaded>
+  <tile_config>Konfigurace</tile_config>
+  <cfg_pending>Zatím nepoužito</cfg_pending>
+  <cfg_applied>Použito {time}</cfg_applied>
+  <col_controller>Ovladač</col_controller>
+  <col_inputs>Nalezené vstupy</col_inputs>
+  <col_thumb>Palec teď</col_thumb>
+  <col_updates>Aktualizace</col_updates>
+  <diag_left_untracked>Vlevo: nesledováno</diag_left_untracked>
+  <diag_right_untracked>Vpravo: nesledováno</diag_right_untracked>
+  <inputs_silent>tichý</inputs_silent>
+  <rate_idle>nečinný</rate_idle>
+  <log_title>Protokol SteamVR, řádky ancora</log_title>
+  <log_empty>V protokolu SteamVR zatím nejsou řádky ancora.</log_empty>
+  <btn_copy>Kopírovat diagnostiku</btn_copy>
+  <btn_open_cfg>Otevřít konfiguraci</btn_open_cfg>
+  <btn_open_log>Otevřít protokol SteamVR</btn_open_log>
+  <note_saved>Uloženo: {what}</note_saved>
+  <what_anchoring>Ukotvení</what_anchoring>
+  <what_left_gate>Palcová brána vlevo</what_left_gate>
+  <what_right_gate>Palcová brána vpravo</what_right_gate>
+  <what_left_smoothing>Vyhlazení vlevo</what_left_smoothing>
+  <what_right_smoothing>Vyhlazení vpravo</what_right_smoothing>
+  <what_left_deadzone>Mrtvá zóna vlevo</what_left_deadzone>
+  <what_right_deadzone>Mrtvá zóna vpravo</what_right_deadzone>
+  <what_left_edge>Natažení okraje vlevo</what_left_edge>
+  <what_right_edge>Natažení okraje vpravo</what_right_edge>
+  <what_language>Jazyk</what_language>
+  <note_copied>Diagnostika zkopírována</note_copied>
+  <note_no_log>Umístění protokolu SteamVR neznámé</note_no_log>
+  <tray_open>Otevřít ancora</tray_open>
+  <tray_exit>Ukončit</tray_exit>
+</language>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Irish. Machine drafted, needs a native review. See en.xml. -->
+<language code="ga" name="Gaeilge" dir="ltr" font="Segoe UI">
+  <nav_status>Stádas</nav_status>
+  <nav_tune>Tiúnadh</nav_tune>
+  <nav_diag>Diagnóisic</nav_diag>
+  <rail_steamvr_on>SteamVR ag rith</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR múchta</rail_steamvr_off>
+  <rail_both>An dá rialtóir</rail_both>
+  <rail_one>Rialtóir amháin</rail_one>
+  <rail_none>Gan rialtóirí</rail_none>
+  <lang_auto>Uathoibríoch ({name})</lang_auto>
+  <lang_missing>{name}: {n} téacs gan aistriú, taispeántar i mBéarla iad</lang_missing>
+  <hint_back>Siar</hint_back>
+  <hint_apply>Cuir i bhfeidhm</hint_apply>
+  <hint_select>Roghnaigh</hint_select>
+  <hint_next>Ar aghaidh</hint_next>
+  <hand_left>Rialtóir clé</hand_left>
+  <hand_right>Rialtóir deas</hand_right>
+  <state_no_signal>Gan chomhartha</state_no_signal>
+  <sub_no_signal>Tosaigh SteamVR chun an rialtóir seo a fheiceáil.</sub_no_signal>
+  <state_not_connected>Gan nascadh</state_not_connected>
+  <sub_wake>Dúisigh an rialtóir chun an maide a fheiceáil.</sub_wake>
+  <sub_silent>Gan sonraí maide le {n} s. Seiceáil an ceallra nó dúisigh é.</sub_silent>
+  <state_not_corrected>Gan cheartú</state_not_corrected>
+  <sub_unchanged>Seoltar chuig cluichí gan athrú.</sub_unchanged>
+  <state_anchored>Sruth ar ancaire</state_anchored>
+  <sub_drifting>Ag sruthú {value}. Ordóg bainte, faigheann cluichí 0.</sub_drifting>
+  <sub_thumb_off>Ordóg bainte, faigheann cluichí 0.</sub_thumb_off>
+  <state_in_deadzone>Sa chrios marbh</state_in_deadzone>
+  <sub_in_deadzone>Laistigh den chrios marbh {percent}, faigheann cluichí 0.</sub_in_deadzone>
+  <state_following>Ag leanúint na hordóige</state_following>
+  <sub_past_deadzone>Thar an gcrios marbh {percent}, faigheann cluichí brú scálaithe.</sub_past_deadzone>
+  <sub_as_is>Seoltar chuig cluichí mar atá.</sub_as_is>
+  <read_reports>Tuairiscíonn</read_reports>
+  <read_games>Faigheann cluichí</read_games>
+  <read_thumb>Ordóg</read_thumb>
+  <thumb_no_sensor>gan bhraiteoir</thumb_no_sensor>
+  <thumb_on>ar an maide</thumb_on>
+  <thumb_off>bainte</thumb_off>
+  <set_gate>Geata ordóige</set_gate>
+  <set_smoothing>Mínú</set_smoothing>
+  <set_deadzone>Crios marbh</set_deadzone>
+  <set_edge>Síneadh imill</set_edge>
+  <edge_not_measured>gan tomhas, tiúnáil</edge_not_measured>
+  <value_off>as</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Ancaireacht ar siúl</master_on>
+  <master_off>Ancaireacht as</master_off>
+  <tune_suggested>molta {value}</tune_suggested>
+  <legend_rests>Áit scíthe</legend_rests>
+  <legend_suggested>Crios marbh molta</legend_suggested>
+  <step_rest>Lig don mhaide</step_rest>
+  <step_rest_active>Áit scíthe á taifeadadh, coinnigh d'ordóg uaidh.</step_rest_active>
+  <step_rest_done>{n} s scíthe taifeadta.</step_rest_done>
+  <step_flick>Brúigh é agus lig dó</step_flick>
+  <step_flick_settle>{n} as {total}. Lig dó, á thomhas cá stopann sé.</step_flick_settle>
+  <step_flick_release>{n} as {total}. Lig dó anois.</step_flick_release>
+  <step_flick_push>{n} as {total}. Brúigh go deireadh, ansin lig dó.</step_flick_push>
+  <step_flick_done>{total} as {total} brú taifeadta.</step_flick_done>
+  <step_review>Athbhreithnigh agus cuir i bhfeidhm</step_review>
+  <res_peak>an sruth is mó</res_peak>
+  <res_typical>gnáthshruth</res_typical>
+  <res_direction>treo</res_direction>
+  <dir_none>dada</dir_none>
+  <dir_right>deas</dir_right>
+  <dir_forward_right>chun tosaigh ar dheis</dir_forward_right>
+  <dir_forward>chun tosaigh</dir_forward>
+  <dir_forward_left>chun tosaigh ar chlé</dir_forward_left>
+  <dir_left>clé</dir_left>
+  <dir_back_left>siar ar chlé</dir_back_left>
+  <dir_back>siar</dir_back>
+  <dir_back_right>siar ar dheis</dir_back_right>
+  <find_none>Is ar éigean a tomhaiseadh sruth. Níl gá le crios marbh.</find_none>
+  <find_gate_ok>D'fhan braiteoir na hordóige múchta nuair a lig tú dó, mar sin stopann geata na hordóige an sruth seo cheana.</find_gate_ok>
+  <find_gate_fail>Léigh braiteoir na hordóige teagmháil nuair a lig tú dó, mar sin ní féidir le geata na hordóige é a stopadh leis féin.</find_gate_fail>
+  <find_no_sensor>Níor aimsíodh braiteoir ordóige, mar sin ní féidir é a stopadh ach le crios marbh.</find_no_sensor>
+  <find_creep>Le d'ordóg ar an maide, is féidir leis snámh fós. Clúdaíonn crios marbh {value} é sin.</find_creep>
+  <tune_intro>Tomhaiseann sé conas a shruthaíonn an maide seo agus molann sé crios marbh. Tógann sé thart ar 20 soicind: lig don mhaide, ansin brúigh é cúpla uair.</tune_intro>
+  <btn_start>Tosaigh ag tomhas</btn_start>
+  <btn_apply_left>Crios marbh {value} ar chlé</btn_apply_left>
+  <btn_apply_right>Crios marbh {value} ar dheis</btn_apply_right>
+  <btn_restart>Tosaigh arís</btn_restart>
+  <edge_intro>Síneadh imill: mura sroicheann an maide an deireadh i dtreonna áirithe, rolláil timpeall a imill é agus síneann ancora na treonna sin go deireadh.</edge_intro>
+  <btn_edge>Tomhais an t-imeall</btn_edge>
+  <btn_edge_apply_left>Sín an maide clé</btn_edge_apply_left>
+  <btn_edge_apply_right>Sín an maide deas</btn_edge_apply_right>
+  <btn_edge_clear_left>Bain síneadh clé</btn_edge_clear_left>
+  <btn_edge_clear_right>Bain síneadh deas</btn_edge_clear_right>
+  <step_edge>Rolláil an maide timpeall an imill</step_edge>
+  <res_reach>an raon is giorra</res_reach>
+  <find_edge_ok>Sroicheann an maide an deireadh i ngach treo. Níl gá le síneadh.</find_edge_ok>
+  <find_edge_short>Treo {direction}: ní shroicheann an maide ach {value}. Cuireann an síneadh ar a chumas an deireadh a shroicheadh ansin, beagán níos íogaire in aice leis an imeall.</find_edge_short>
+  <legend_reach>Cé chomh fada a shroicheann sé</legend_reach>
+  <step_edge_active>Brúigh go deireadh agus déan ciorcal go mall. {n} as {total} treo déanta.</step_edge_active>
+  <step_edge_done>Shroich na {total} treo ar fad an t-imeall.</step_edge_done>
+  <legend_edge_done>Imeall sroichte</legend_edge_done>
+  <legend_edge_more>Brúigh anseo arís</legend_edge_more>
+  <btn_edge_finish>Críochnaigh leo seo</btn_edge_finish>
+  <edge_gap_hint>Treonna nach féidir leat a shroicheadh? Nuair a bhíonn na bearnaí beag, líonann Críochnaigh leo seo iad ó na treonna in aice leo.</edge_gap_hint>
+  <tile_driver>Tiománaí</tile_driver>
+  <drv_loaded>Luchtaithe</drv_loaded>
+  <drv_registered>Cláraithe</drv_registered>
+  <drv_missing>Gan suiteáil</drv_missing>
+  <drv_patched>{n} tábla ionchuir athraithe</drv_patched>
+  <drv_not_seen>gan feiceáil i loga SteamVR</drv_not_seen>
+  <tile_logic>Loighic</tile_logic>
+  <logic_gen>Glúin {n}</logic_gen>
+  <logic_none>Gan luchtú</logic_none>
+  <logic_loaded>luchtaithe {time}, {n} ionchur athsheinnte</logic_loaded>
+  <tile_config>Cumraíocht</tile_config>
+  <cfg_pending>Gan cur i bhfeidhm fós</cfg_pending>
+  <cfg_applied>Curtha i bhfeidhm {time}</cfg_applied>
+  <col_controller>Rialtóir</col_controller>
+  <col_inputs>Ionchuir aimsithe</col_inputs>
+  <col_thumb>Ordóg anois</col_thumb>
+  <col_updates>Nuashonruithe</col_updates>
+  <diag_left_untracked>Clé: gan rianú</diag_left_untracked>
+  <diag_right_untracked>Deas: gan rianú</diag_right_untracked>
+  <inputs_silent>ciúin</inputs_silent>
+  <rate_idle>díomhaoin</rate_idle>
+  <log_title>Loga SteamVR, línte ancora</log_title>
+  <log_empty>Níl aon línte ancora i loga SteamVR fós.</log_empty>
+  <btn_copy>Cóipeáil diagnóisic</btn_copy>
+  <btn_open_cfg>Oscail an chumraíocht</btn_open_cfg>
+  <btn_open_log>Oscail loga SteamVR</btn_open_log>
+  <note_saved>Sábháilte: {what}</note_saved>
+  <what_anchoring>Ancaireacht</what_anchoring>
+  <what_left_gate>Geata ordóige clé</what_left_gate>
+  <what_right_gate>Geata ordóige deas</what_right_gate>
+  <what_left_smoothing>Mínú clé</what_left_smoothing>
+  <what_right_smoothing>Mínú deas</what_right_smoothing>
+  <what_left_deadzone>Crios marbh clé</what_left_deadzone>
+  <what_right_deadzone>Crios marbh deas</what_right_deadzone>
+  <what_left_edge>Síneadh imill clé</what_left_edge>
+  <what_right_edge>Síneadh imill deas</what_right_edge>
+  <what_language>Teanga</what_language>
+  <note_copied>Diagnóisic cóipeáilte</note_copied>
+  <note_no_log>Suíomh loga SteamVR anaithnid</note_no_log>
+  <tray_open>Oscail ancora</tray_open>
+  <tray_exit>Scoir</tray_exit>
+</language>

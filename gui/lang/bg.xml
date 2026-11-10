@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Bulgarian. Machine drafted, needs a native review. See en.xml. -->
+<language code="bg" name="Български" dir="ltr" font="Segoe UI">
+  <nav_status>Състояние</nav_status>
+  <nav_tune>Настройка</nav_tune>
+  <nav_diag>Диагностика</nav_diag>
+  <rail_steamvr_on>SteamVR работи</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR е изключен</rail_steamvr_off>
+  <rail_both>И двата контролера</rail_both>
+  <rail_one>Един контролер</rail_one>
+  <rail_none>Няма контролери</rail_none>
+  <lang_auto>Автоматично ({name})</lang_auto>
+  <lang_missing>{name}: {n} текста не са преведени, показани на английски</lang_missing>
+  <hint_back>Назад</hint_back>
+  <hint_apply>Приложи</hint_apply>
+  <hint_select>Избери</hint_select>
+  <hint_next>Напред</hint_next>
+  <hand_left>Ляв контролер</hand_left>
+  <hand_right>Десен контролер</hand_right>
+  <state_no_signal>Няма сигнал</state_no_signal>
+  <sub_no_signal>Стартирайте SteamVR, за да видите този контролер.</sub_no_signal>
+  <state_not_connected>Не е свързан</state_not_connected>
+  <sub_wake>Събудете контролера, за да видите стика.</sub_wake>
+  <sub_silent>Няма данни от стика от {n} с. Проверете батерията или го събудете.</sub_silent>
+  <state_not_corrected>Не е коригиран</state_not_corrected>
+  <sub_unchanged>Подава се на игрите без промяна.</sub_unchanged>
+  <state_anchored>Дрейфът е закотвен</state_anchored>
+  <sub_drifting>Дрейф {value}. Палецът е махнат, игрите получават 0.</sub_drifting>
+  <sub_thumb_off>Палецът е махнат, игрите получават 0.</sub_thumb_off>
+  <state_in_deadzone>В мъртвата зона</state_in_deadzone>
+  <sub_in_deadzone>В мъртвата зона от {percent}, игрите получават 0.</sub_in_deadzone>
+  <state_following>Следва палеца</state_following>
+  <sub_past_deadzone>Отвъд мъртвата зона от {percent}, игрите получават мащабирано движение.</sub_past_deadzone>
+  <sub_as_is>Подава се на игрите както е.</sub_as_is>
+  <read_reports>Отчита</read_reports>
+  <read_games>Игрите получават</read_games>
+  <read_thumb>Палец</read_thumb>
+  <thumb_no_sensor>няма сензор</thumb_no_sensor>
+  <thumb_on>на стика</thumb_on>
+  <thumb_off>махнат</thumb_off>
+  <set_gate>Палцова бариера</set_gate>
+  <set_smoothing>Изглаждане</set_smoothing>
+  <set_deadzone>Мъртва зона</set_deadzone>
+  <set_edge>Разтягане на ръба</set_edge>
+  <edge_not_measured>не е измерено, настройте</edge_not_measured>
+  <value_off>изкл.</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Закотвяне вкл.</master_on>
+  <master_off>Закотвяне изкл.</master_off>
+  <tune_suggested>предложено {value}</tune_suggested>
+  <legend_rests>Позиция в покой</legend_rests>
+  <legend_suggested>Предложена мъртва зона</legend_suggested>
+  <step_rest>Пуснете стика</step_rest>
+  <step_rest_active>Записва се позицията в покой, дръжте палеца настрана.</step_rest_active>
+  <step_rest_done>Записани {n} с покой.</step_rest_done>
+  <step_flick>Бутнете го и пуснете</step_flick>
+  <step_flick_settle>{n} от {total}. Пуснете, измерва се къде спира.</step_flick_settle>
+  <step_flick_release>{n} от {total}. Сега пуснете.</step_flick_release>
+  <step_flick_push>{n} от {total}. Натиснете докрай, после пуснете.</step_flick_push>
+  <step_flick_done>Записани {total} от {total} бутвания.</step_flick_done>
+  <step_review>Преглед и прилагане</step_review>
+  <res_peak>най-голям дрейф</res_peak>
+  <res_typical>обичаен дрейф</res_typical>
+  <res_direction>посока</res_direction>
+  <dir_none>няма</dir_none>
+  <dir_right>надясно</dir_right>
+  <dir_forward_right>напред надясно</dir_forward_right>
+  <dir_forward>напред</dir_forward>
+  <dir_forward_left>напред наляво</dir_forward_left>
+  <dir_left>наляво</dir_left>
+  <dir_back_left>назад наляво</dir_back_left>
+  <dir_back>назад</dir_back>
+  <dir_back_right>назад надясно</dir_back_right>
+  <find_none>Почти няма измерен дрейф. Не е нужна мъртва зона.</find_none>
+  <find_gate_ok>Сензорът за палец остана изключен, когато пуснахте, така че палцовата бариера вече спира този дрейф.</find_gate_ok>
+  <find_gate_fail>Сензорът за палец отчете допир, когато пуснахте, така че само палцовата бариера не може да го спре.</find_gate_fail>
+  <find_no_sensor>Няма сензор за палец, така че само мъртва зона може да го спре.</find_no_sensor>
+  <find_creep>С палец върху стика той все още може да пълзи. Мъртва зона от {value} покрива това.</find_creep>
+  <tune_intro>Измерва как дрейфува този стик и предлага мъртва зона. Отнема около 20 секунди: пуснете стика, после го бутнете няколко пъти.</tune_intro>
+  <btn_start>Започни измерване</btn_start>
+  <btn_apply_left>Приложи мъртва зона {value} вляво</btn_apply_left>
+  <btn_apply_right>Приложи мъртва зона {value} вдясно</btn_apply_right>
+  <btn_restart>Отначало</btn_restart>
+  <edge_intro>Разтягане на ръба: ако стикът не стига докрай в някои посоки, завъртете го по ръба и ancora разтяга тези посоки докрай.</edge_intro>
+  <btn_edge>Измери ръба</btn_edge>
+  <btn_edge_apply_left>Разтегни левия стик</btn_edge_apply_left>
+  <btn_edge_apply_right>Разтегни десния стик</btn_edge_apply_right>
+  <btn_edge_clear_left>Махни разтягането вляво</btn_edge_clear_left>
+  <btn_edge_clear_right>Махни разтягането вдясно</btn_edge_clear_right>
+  <step_edge>Въртете стика по ръба</step_edge>
+  <res_reach>най-къс обхват</res_reach>
+  <find_edge_ok>Стикът стига докрай във всички посоки. Не е нужно разтягане.</find_edge_ok>
+  <find_edge_short>Посока {direction}: стикът стига само до {value}. Разтягането го кара да стига докрай там, малко по-чувствително до ръба.</find_edge_short>
+  <legend_reach>Докъде стига</legend_reach>
+  <step_edge_active>Натиснете докрай и въртете бавно. Готови {n} от {total} посоки.</step_edge_active>
+  <step_edge_done>Всички {total} посоки достигнаха ръба.</step_edge_done>
+  <legend_edge_done>Ръбът е достигнат</legend_edge_done>
+  <legend_edge_more>Още веднъж тук</legend_edge_more>
+  <btn_edge_finish>Завърши с тези</btn_edge_finish>
+  <edge_gap_hint>Не стигате някои посоки? Когато празнините са малки, „Завърши с тези“ ги попълва от съседните посоки.</edge_gap_hint>
+  <tile_driver>Драйвер</tile_driver>
+  <drv_loaded>Зареден</drv_loaded>
+  <drv_registered>Регистриран</drv_registered>
+  <drv_missing>Не е инсталиран</drv_missing>
+  <drv_patched>{n} входни таблици променени</drv_patched>
+  <drv_not_seen>не се вижда в дневника на SteamVR</drv_not_seen>
+  <tile_logic>Логика</tile_logic>
+  <logic_gen>Поколение {n}</logic_gen>
+  <logic_none>Не е заредена</logic_none>
+  <logic_loaded>заредена {time}, {n} входа повторени</logic_loaded>
+  <tile_config>Конфигурация</tile_config>
+  <cfg_pending>Още не е приложена</cfg_pending>
+  <cfg_applied>Приложена {time}</cfg_applied>
+  <col_controller>Контролер</col_controller>
+  <col_inputs>Намерени входове</col_inputs>
+  <col_thumb>Палец сега</col_thumb>
+  <col_updates>Обновявания</col_updates>
+  <diag_left_untracked>Ляв: не се проследява</diag_left_untracked>
+  <diag_right_untracked>Десен: не се проследява</diag_right_untracked>
+  <inputs_silent>мълчи</inputs_silent>
+  <rate_idle>бездейства</rate_idle>
+  <log_title>Дневник на SteamVR, редове на ancora</log_title>
+  <log_empty>Още няма редове на ancora в дневника на SteamVR.</log_empty>
+  <btn_copy>Копирай диагностиката</btn_copy>
+  <btn_open_cfg>Отвори конфигурацията</btn_open_cfg>
+  <btn_open_log>Отвори дневника на SteamVR</btn_open_log>
+  <note_saved>Запазено: {what}</note_saved>
+  <what_anchoring>Закотвяне</what_anchoring>
+  <what_left_gate>Палцова бариера вляво</what_left_gate>
+  <what_right_gate>Палцова бариера вдясно</what_right_gate>
+  <what_left_smoothing>Изглаждане вляво</what_left_smoothing>
+  <what_right_smoothing>Изглаждане вдясно</what_right_smoothing>
+  <what_left_deadzone>Мъртва зона вляво</what_left_deadzone>
+  <what_right_deadzone>Мъртва зона вдясно</what_right_deadzone>
+  <what_left_edge>Разтягане на ръба вляво</what_left_edge>
+  <what_right_edge>Разтягане на ръба вдясно</what_right_edge>
+  <what_language>Език</what_language>
+  <note_copied>Диагностиката е копирана</note_copied>
+  <note_no_log>Мястото на дневника на SteamVR е неизвестно</note_no_log>
+  <tray_open>Отвори ancora</tray_open>
+  <tray_exit>Изход</tray_exit>
+</language>

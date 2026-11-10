@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Estonian. Machine drafted, needs a native review. See en.xml. -->
+<language code="et" name="Eesti" dir="ltr" font="Segoe UI">
+  <nav_status>Olek</nav_status>
+  <nav_tune>Häälestus</nav_tune>
+  <nav_diag>Diagnostika</nav_diag>
+  <rail_steamvr_on>SteamVR töötab</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR väljas</rail_steamvr_off>
+  <rail_both>Mõlemad kontrollerid</rail_both>
+  <rail_one>Üks kontroller</rail_one>
+  <rail_none>Kontrollereid pole</rail_none>
+  <lang_auto>Automaatne ({name})</lang_auto>
+  <lang_missing>{name}: {n} teksti tõlkimata, näidatakse inglise keeles</lang_missing>
+  <hint_back>Tagasi</hint_back>
+  <hint_apply>Rakenda</hint_apply>
+  <hint_select>Vali</hint_select>
+  <hint_next>Järgmine</hint_next>
+  <hand_left>Vasak kontroller</hand_left>
+  <hand_right>Parem kontroller</hand_right>
+  <state_no_signal>Signaal puudub</state_no_signal>
+  <sub_no_signal>Selle kontrolleri nägemiseks käivitage SteamVR.</sub_no_signal>
+  <state_not_connected>Pole ühendatud</state_not_connected>
+  <sub_wake>Kangi nägemiseks äratage kontroller.</sub_wake>
+  <sub_silent>Kangi andmeid pole {n} s. Kontrollige akut või äratage see.</sub_silent>
+  <state_not_corrected>Parandamata</state_not_corrected>
+  <sub_unchanged>Läheb mängudele muutmata kujul.</sub_unchanged>
+  <state_anchored>Triiv ankurdatud</state_anchored>
+  <sub_drifting>Triivib {value}. Pöial eemal, mängud saavad 0.</sub_drifting>
+  <sub_thumb_off>Pöial eemal, mängud saavad 0.</sub_thumb_off>
+  <state_in_deadzone>Surnud tsoonis</state_in_deadzone>
+  <sub_in_deadzone>{percent} surnud tsooni sees, mängud saavad 0.</sub_in_deadzone>
+  <state_following>Järgib pöialt</state_following>
+  <sub_past_deadzone>Üle {percent} surnud tsooni, mängud saavad skaleeritud liikumise.</sub_past_deadzone>
+  <sub_as_is>Läheb mängudele nii, nagu on.</sub_as_is>
+  <read_reports>Teatab</read_reports>
+  <read_games>Mängud saavad</read_games>
+  <read_thumb>Pöial</read_thumb>
+  <thumb_no_sensor>andurit pole</thumb_no_sensor>
+  <thumb_on>kangil</thumb_on>
+  <thumb_off>eemal</thumb_off>
+  <set_gate>Pöidlavärav</set_gate>
+  <set_smoothing>Silumine</set_smoothing>
+  <set_deadzone>Surnud tsoon</set_deadzone>
+  <set_edge>Serva venitus</set_edge>
+  <edge_not_measured>mõõtmata, häälesta</edge_not_measured>
+  <value_off>väljas</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Ankurdus sees</master_on>
+  <master_off>Ankurdus väljas</master_off>
+  <tune_suggested>soovitus {value}</tune_suggested>
+  <legend_rests>Puhkeasend</legend_rests>
+  <legend_suggested>Soovitatud surnud tsoon</legend_suggested>
+  <step_rest>Laske kang lahti</step_rest>
+  <step_rest_active>Puhkeasendit salvestatakse, hoidke pöial eemal.</step_rest_active>
+  <step_rest_done>{n} s puhkust salvestatud.</step_rest_done>
+  <step_flick>Tõugake ja laske lahti</step_flick>
+  <step_flick_settle>{n}/{total}. Laske lahti, mõõdetakse, kuhu see peatub.</step_flick_settle>
+  <step_flick_release>{n}/{total}. Nüüd laske lahti.</step_flick_release>
+  <step_flick_push>{n}/{total}. Lükake lõpuni, siis laske lahti.</step_flick_push>
+  <step_flick_done>{total}/{total} tõuget salvestatud.</step_flick_done>
+  <step_review>Vaata üle ja rakenda</step_review>
+  <res_peak>suurim triiv</res_peak>
+  <res_typical>tavaline triiv</res_typical>
+  <res_direction>suund</res_direction>
+  <dir_none>puudub</dir_none>
+  <dir_right>paremale</dir_right>
+  <dir_forward_right>ette paremale</dir_forward_right>
+  <dir_forward>ette</dir_forward>
+  <dir_forward_left>ette vasakule</dir_forward_left>
+  <dir_left>vasakule</dir_left>
+  <dir_back_left>taha vasakule</dir_back_left>
+  <dir_back>taha</dir_back>
+  <dir_back_right>taha paremale</dir_back_right>
+  <find_none>Triivi peaaegu pole. Surnud tsooni pole vaja.</find_none>
+  <find_gate_ok>Pöidlaandur jäi lahtilaskmisel välja, nii et pöidlavärav peatab selle triivi juba.</find_gate_ok>
+  <find_gate_fail>Pöidlaandur näitas lahtilaskmisel puudutust, nii et pöidlavärav üksi ei suuda seda peatada.</find_gate_fail>
+  <find_no_sensor>Pöidlaandurit ei leitud, nii et seda saab peatada ainult surnud tsoon.</find_no_sensor>
+  <find_creep>Pöial kangil puhates võib see ikka roomata. {value} surnud tsoon katab selle.</find_creep>
+  <tune_intro>Mõõdab, kuidas see kang triivib, ja soovitab surnud tsooni. Võtab umbes 20 sekundit: laske kang lahti ja tõugake seda siis paar korda.</tune_intro>
+  <btn_start>Alusta mõõtmist</btn_start>
+  <btn_apply_left>Rakenda surnud tsoon {value} vasakule</btn_apply_left>
+  <btn_apply_right>Rakenda surnud tsoon {value} paremale</btn_apply_right>
+  <btn_restart>Alusta uuesti</btn_restart>
+  <edge_intro>Serva venitus: kui kang mõnes suunas lõpuni ei ulatu, keerutage seda mööda serva ja ancora venitab need suunad lõpuni.</edge_intro>
+  <btn_edge>Mõõda serva</btn_edge>
+  <btn_edge_apply_left>Venita vasakut kangi</btn_edge_apply_left>
+  <btn_edge_apply_right>Venita paremat kangi</btn_edge_apply_right>
+  <btn_edge_clear_left>Eemalda vasak venitus</btn_edge_clear_left>
+  <btn_edge_clear_right>Eemalda parem venitus</btn_edge_clear_right>
+  <step_edge>Keerutage kangi mööda serva</step_edge>
+  <res_reach>lühim ulatus</res_reach>
+  <find_edge_ok>Kang ulatub igas suunas lõpuni. Venitust pole vaja.</find_edge_ok>
+  <find_edge_short>Suund {direction}: kang ulatub ainult {value}. Venitus paneb selle seal lõpuni ulatuma, serva lähedal veidi tundlikumalt.</find_edge_short>
+  <legend_reach>Kui kaugele ulatub</legend_reach>
+  <step_edge_active>Lükake lõpuni ja keerutage aeglaselt. {n}/{total} suunda valmis.</step_edge_active>
+  <step_edge_done>Kõik {total} suunda jõudsid servani.</step_edge_done>
+  <legend_edge_done>Serv käes</legend_edge_done>
+  <legend_edge_more>Siia veel kord</legend_edge_more>
+  <btn_edge_finish>Lõpeta nendega</btn_edge_finish>
+  <edge_gap_hint>Mõnda suunda ei ulatu? Kui lüngad on väikesed, täidab Lõpeta nendega need kõrvalsuundadest.</edge_gap_hint>
+  <tile_driver>Draiver</tile_driver>
+  <drv_loaded>Laaditud</drv_loaded>
+  <drv_registered>Registreeritud</drv_registered>
+  <drv_missing>Pole paigaldatud</drv_missing>
+  <drv_patched>{n} sisendtabelit muudetud</drv_patched>
+  <drv_not_seen>SteamVR logis ei näe</drv_not_seen>
+  <tile_logic>Loogika</tile_logic>
+  <logic_gen>Põlvkond {n}</logic_gen>
+  <logic_none>Laadimata</logic_none>
+  <logic_loaded>laaditud {time}, {n} sisendit uuesti esitatud</logic_loaded>
+  <tile_config>Seaded</tile_config>
+  <cfg_pending>Veel rakendamata</cfg_pending>
+  <cfg_applied>Rakendatud {time}</cfg_applied>
+  <col_controller>Kontroller</col_controller>
+  <col_inputs>Leitud sisendid</col_inputs>
+  <col_thumb>Pöial nüüd</col_thumb>
+  <col_updates>Uuendused</col_updates>
+  <diag_left_untracked>Vasak: ei jälgita</diag_left_untracked>
+  <diag_right_untracked>Parem: ei jälgita</diag_right_untracked>
+  <inputs_silent>vaikne</inputs_silent>
+  <rate_idle>jõude</rate_idle>
+  <log_title>SteamVR logi, ancora read</log_title>
+  <log_empty>SteamVR logis pole veel ancora ridu.</log_empty>
+  <btn_copy>Kopeeri diagnostika</btn_copy>
+  <btn_open_cfg>Ava seadete fail</btn_open_cfg>
+  <btn_open_log>Ava SteamVR logi</btn_open_log>
+  <note_saved>Salvestatud: {what}</note_saved>
+  <what_anchoring>Ankurdus</what_anchoring>
+  <what_left_gate>Vasak pöidlavärav</what_left_gate>
+  <what_right_gate>Parem pöidlavärav</what_right_gate>
+  <what_left_smoothing>Vasak silumine</what_left_smoothing>
+  <what_right_smoothing>Parem silumine</what_right_smoothing>
+  <what_left_deadzone>Vasak surnud tsoon</what_left_deadzone>
+  <what_right_deadzone>Parem surnud tsoon</what_right_deadzone>
+  <what_left_edge>Vasak serva venitus</what_left_edge>
+  <what_right_edge>Parem serva venitus</what_right_edge>
+  <what_language>Keel</what_language>
+  <note_copied>Diagnostika kopeeritud</note_copied>
+  <note_no_log>SteamVR logi asukoht teadmata</note_no_log>
+  <tray_open>Ava ancora</tray_open>
+  <tray_exit>Välju</tray_exit>
+</language>

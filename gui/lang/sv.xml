@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Swedish. Machine drafted, needs a native review. See en.xml. -->
+<language code="sv" name="Svenska" dir="ltr" font="Segoe UI">
+  <nav_status>Status</nav_status>
+  <nav_tune>Justera</nav_tune>
+  <nav_diag>Diagnostik</nav_diag>
+  <rail_steamvr_on>SteamVR körs</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR av</rail_steamvr_off>
+  <rail_both>Båda handkontrollerna</rail_both>
+  <rail_one>En handkontroll</rail_one>
+  <rail_none>Inga handkontroller</rail_none>
+  <lang_auto>Automatiskt ({name})</lang_auto>
+  <lang_missing>{name}: {n} texter inte översatta, visas på engelska</lang_missing>
+  <hint_back>Tillbaka</hint_back>
+  <hint_apply>Använd</hint_apply>
+  <hint_select>Välj</hint_select>
+  <hint_next>Nästa</hint_next>
+  <hand_left>Vänster handkontroll</hand_left>
+  <hand_right>Höger handkontroll</hand_right>
+  <state_no_signal>Ingen signal</state_no_signal>
+  <sub_no_signal>Starta SteamVR för att se handkontrollen.</sub_no_signal>
+  <state_not_connected>Inte ansluten</state_not_connected>
+  <sub_wake>Väck handkontrollen för att se spaken.</sub_wake>
+  <sub_silent>Inga spakdata på {n} s. Kontrollera batteriet eller väck den.</sub_silent>
+  <state_not_corrected>Inte korrigerad</state_not_corrected>
+  <sub_unchanged>Skickas oförändrat till spel.</sub_unchanged>
+  <state_anchored>Drift förankrad</state_anchored>
+  <sub_drifting>Driver {value}. Tummen borta, så spel får 0.</sub_drifting>
+  <sub_thumb_off>Tummen borta, så spel får 0.</sub_thumb_off>
+  <state_in_deadzone>I dödzonen</state_in_deadzone>
+  <sub_in_deadzone>Inom dödzonen på {percent}, så spel får 0.</sub_in_deadzone>
+  <state_following>Följer tummen</state_following>
+  <sub_past_deadzone>Förbi dödzonen på {percent}, spel får en skalad rörelse.</sub_past_deadzone>
+  <sub_as_is>Skickas som det är till spel.</sub_as_is>
+  <read_reports>Rapporterar</read_reports>
+  <read_games>Spel får</read_games>
+  <read_thumb>Tumme</read_thumb>
+  <thumb_no_sensor>ingen sensor</thumb_no_sensor>
+  <thumb_on>på spaken</thumb_on>
+  <thumb_off>borta</thumb_off>
+  <set_gate>Tumspärr</set_gate>
+  <set_smoothing>Utjämning</set_smoothing>
+  <set_deadzone>Dödzon</set_deadzone>
+  <set_edge>Kantsträckning</set_edge>
+  <edge_not_measured>ej mätt, justera</edge_not_measured>
+  <value_off>av</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Förankring på</master_on>
+  <master_off>Förankring av</master_off>
+  <tune_suggested>förslag {value}</tune_suggested>
+  <legend_rests>Viloläge</legend_rests>
+  <legend_suggested>Föreslagen dödzon</legend_suggested>
+  <step_rest>Släpp spaken</step_rest>
+  <step_rest_active>Spelar in viloläget, håll tummen borta.</step_rest_active>
+  <step_rest_done>{n} s vila inspelad.</step_rest_done>
+  <step_flick>Knuffa den och släpp</step_flick>
+  <step_flick_settle>{n} av {total}. Släpp, mäter var den stannar.</step_flick_settle>
+  <step_flick_release>{n} av {total}. Släpp nu.</step_flick_release>
+  <step_flick_push>{n} av {total}. Tryck hela vägen, släpp sedan.</step_flick_push>
+  <step_flick_done>{total} av {total} knuffar inspelade.</step_flick_done>
+  <step_review>Granska och använd</step_review>
+  <res_peak>högsta drift</res_peak>
+  <res_typical>vanlig drift</res_typical>
+  <res_direction>riktning</res_direction>
+  <dir_none>ingen</dir_none>
+  <dir_right>höger</dir_right>
+  <dir_forward_right>framåt höger</dir_forward_right>
+  <dir_forward>framåt</dir_forward>
+  <dir_forward_left>framåt vänster</dir_forward_left>
+  <dir_left>vänster</dir_left>
+  <dir_back_left>bakåt vänster</dir_back_left>
+  <dir_back>bakåt</dir_back>
+  <dir_back_right>bakåt höger</dir_back_right>
+  <find_none>Knappt någon drift uppmätt. Ingen dödzon behövs.</find_none>
+  <find_gate_ok>Tumsensorn var av när du släppte, så tumspärren stoppar redan den här driften.</find_gate_ok>
+  <find_gate_fail>Tumsensorn visade på när du släppte, så tumspärren ensam kan inte stoppa den.</find_gate_fail>
+  <find_no_sensor>Ingen tumsensor hittades, så bara en dödzon kan stoppa den.</find_no_sensor>
+  <find_creep>Med tummen vilande på spaken kan den fortfarande krypa. En dödzon på {value} täcker det.</find_creep>
+  <tune_intro>Mäter hur spaken driver och föreslår en dödzon. Tar ungefär 20 sekunder: släpp spaken och knuffa den sedan några gånger.</tune_intro>
+  <btn_start>Starta mätning</btn_start>
+  <btn_apply_left>Använd dödzon {value} vänster</btn_apply_left>
+  <btn_apply_right>Använd dödzon {value} höger</btn_apply_right>
+  <btn_restart>Börja om</btn_restart>
+  <edge_intro>Kantsträckning: når spaken inte ända ut i vissa riktningar, rulla den längs kanten så sträcker ancora ut de riktningarna till fullt.</edge_intro>
+  <btn_edge>Mät kanten</btn_edge>
+  <btn_edge_apply_left>Sträck vänster spak</btn_edge_apply_left>
+  <btn_edge_apply_right>Sträck höger spak</btn_edge_apply_right>
+  <btn_edge_clear_left>Ta bort sträckning vänster</btn_edge_clear_left>
+  <btn_edge_clear_right>Ta bort sträckning höger</btn_edge_clear_right>
+  <step_edge>Rulla spaken längs kanten</step_edge>
+  <res_reach>kortaste räckvidd</res_reach>
+  <find_edge_ok>Spaken når ända ut i alla riktningar. Ingen sträckning behövs.</find_edge_ok>
+  <find_edge_short>Riktning {direction}: spaken når bara {value}. Sträckningen gör att den når fullt där, lite känsligare nära kanten.</find_edge_short>
+  <legend_reach>Hur långt den når</legend_reach>
+  <step_edge_active>Tryck hela vägen och cirkla långsamt. {n} av {total} riktningar klara.</step_edge_active>
+  <step_edge_done>Alla {total} riktningar har nått kanten.</step_edge_done>
+  <legend_edge_done>Kanten nådd</legend_edge_done>
+  <legend_edge_more>Tryck här igen</legend_edge_more>
+  <btn_edge_finish>Avsluta med dessa</btn_edge_finish>
+  <edge_gap_hint>Når du inte vissa riktningar? När luckorna är små fyller Avsluta med dessa i dem från riktningarna bredvid.</edge_gap_hint>
+  <tile_driver>Drivrutin</tile_driver>
+  <drv_loaded>Inläst</drv_loaded>
+  <drv_registered>Registrerad</drv_registered>
+  <drv_missing>Inte installerad</drv_missing>
+  <drv_patched>{n} indatatabeller ändrade</drv_patched>
+  <drv_not_seen>syns inte i SteamVR-loggen</drv_not_seen>
+  <tile_logic>Logik</tile_logic>
+  <logic_gen>Generation {n}</logic_gen>
+  <logic_none>Inte inläst</logic_none>
+  <logic_loaded>inläst {time}, {n} indata spelade upp igen</logic_loaded>
+  <tile_config>Konfiguration</tile_config>
+  <cfg_pending>Inte använd än</cfg_pending>
+  <cfg_applied>Använd {time}</cfg_applied>
+  <col_controller>Handkontroll</col_controller>
+  <col_inputs>Indata hittade</col_inputs>
+  <col_thumb>Tumme nu</col_thumb>
+  <col_updates>Uppdateringar</col_updates>
+  <diag_left_untracked>Vänster: inte spårad</diag_left_untracked>
+  <diag_right_untracked>Höger: inte spårad</diag_right_untracked>
+  <inputs_silent>tyst</inputs_silent>
+  <rate_idle>vilar</rate_idle>
+  <log_title>SteamVR-logg, ancora-rader</log_title>
+  <log_empty>Inga ancora-rader i SteamVR-loggen än.</log_empty>
+  <btn_copy>Kopiera diagnostik</btn_copy>
+  <btn_open_cfg>Öppna konfigurationen</btn_open_cfg>
+  <btn_open_log>Öppna SteamVR-loggen</btn_open_log>
+  <note_saved>{what} sparad</note_saved>
+  <what_anchoring>Förankring</what_anchoring>
+  <what_left_gate>Tumspärr vänster</what_left_gate>
+  <what_right_gate>Tumspärr höger</what_right_gate>
+  <what_left_smoothing>Utjämning vänster</what_left_smoothing>
+  <what_right_smoothing>Utjämning höger</what_right_smoothing>
+  <what_left_deadzone>Dödzon vänster</what_left_deadzone>
+  <what_right_deadzone>Dödzon höger</what_right_deadzone>
+  <what_left_edge>Kantsträckning vänster</what_left_edge>
+  <what_right_edge>Kantsträckning höger</what_right_edge>
+  <what_language>Språk</what_language>
+  <note_copied>Diagnostik kopierad</note_copied>
+  <note_no_log>SteamVR-loggens plats okänd</note_no_log>
+  <tray_open>Öppna ancora</tray_open>
+  <tray_exit>Avsluta</tray_exit>
+</language>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Greek. Machine drafted, needs a native review. See en.xml. -->
+<language code="el" name="Ελληνικά" dir="ltr" font="Segoe UI">
+  <nav_status>Κατάσταση</nav_status>
+  <nav_tune>Ρύθμιση</nav_tune>
+  <nav_diag>Διαγνωστικά</nav_diag>
+  <rail_steamvr_on>Το SteamVR τρέχει</rail_steamvr_on>
+  <rail_steamvr_off>Το SteamVR είναι κλειστό</rail_steamvr_off>
+  <rail_both>Και τα δύο χειριστήρια</rail_both>
+  <rail_one>Ένα χειριστήριο</rail_one>
+  <rail_none>Κανένα χειριστήριο</rail_none>
+  <lang_auto>Αυτόματα ({name})</lang_auto>
+  <lang_missing>{name}: {n} κείμενα αμετάφραστα, εμφανίζονται στα αγγλικά</lang_missing>
+  <hint_back>Πίσω</hint_back>
+  <hint_apply>Εφαρμογή</hint_apply>
+  <hint_select>Επιλογή</hint_select>
+  <hint_next>Επόμενο</hint_next>
+  <hand_left>Αριστερό χειριστήριο</hand_left>
+  <hand_right>Δεξί χειριστήριο</hand_right>
+  <state_no_signal>Χωρίς σήμα</state_no_signal>
+  <sub_no_signal>Ξεκινήστε το SteamVR για να δείτε αυτό το χειριστήριο.</sub_no_signal>
+  <state_not_connected>Μη συνδεδεμένο</state_not_connected>
+  <sub_wake>Ξυπνήστε το χειριστήριο για να δείτε το στικ.</sub_wake>
+  <sub_silent>Χωρίς δεδομένα στικ για {n} δευτ. Ελέγξτε την μπαταρία ή ξυπνήστε το.</sub_silent>
+  <state_not_corrected>Χωρίς διόρθωση</state_not_corrected>
+  <sub_unchanged>Περνά στα παιχνίδια αμετάβλητο.</sub_unchanged>
+  <state_anchored>Η ολίσθηση αγκυρώθηκε</state_anchored>
+  <sub_drifting>Ολίσθηση {value}. Ο αντίχειρας είναι μακριά, τα παιχνίδια παίρνουν 0.</sub_drifting>
+  <sub_thumb_off>Ο αντίχειρας είναι μακριά, τα παιχνίδια παίρνουν 0.</sub_thumb_off>
+  <state_in_deadzone>Στη νεκρή ζώνη</state_in_deadzone>
+  <sub_in_deadzone>Μέσα στη νεκρή ζώνη {percent}, τα παιχνίδια παίρνουν 0.</sub_in_deadzone>
+  <state_following>Ακολουθεί τον αντίχειρα</state_following>
+  <sub_past_deadzone>Πέρα από τη νεκρή ζώνη {percent}, τα παιχνίδια παίρνουν κλιμακωμένη κίνηση.</sub_past_deadzone>
+  <sub_as_is>Περνά στα παιχνίδια ως έχει.</sub_as_is>
+  <read_reports>Αναφέρει</read_reports>
+  <read_games>Τα παιχνίδια παίρνουν</read_games>
+  <read_thumb>Αντίχειρας</read_thumb>
+  <thumb_no_sensor>χωρίς αισθητήρα</thumb_no_sensor>
+  <thumb_on>στο στικ</thumb_on>
+  <thumb_off>μακριά</thumb_off>
+  <set_gate>Πύλη αντίχειρα</set_gate>
+  <set_smoothing>Εξομάλυνση</set_smoothing>
+  <set_deadzone>Νεκρή ζώνη</set_deadzone>
+  <set_edge>Επέκταση άκρου</set_edge>
+  <edge_not_measured>δεν μετρήθηκε, ρύθμιση</edge_not_measured>
+  <value_off>ανενεργό</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Αγκύρωση ενεργή</master_on>
+  <master_off>Αγκύρωση ανενεργή</master_off>
+  <tune_suggested>προτείνεται {value}</tune_suggested>
+  <legend_rests>Θέση ηρεμίας</legend_rests>
+  <legend_suggested>Προτεινόμενη νεκρή ζώνη</legend_suggested>
+  <step_rest>Αφήστε το στικ</step_rest>
+  <step_rest_active>Καταγράφεται η θέση ηρεμίας, κρατήστε τον αντίχειρα μακριά.</step_rest_active>
+  <step_rest_done>Καταγράφηκαν {n} δευτ. ηρεμίας.</step_rest_done>
+  <step_flick>Σπρώξτε το και αφήστε</step_flick>
+  <step_flick_settle>{n} από {total}. Αφήστε, μετράται πού σταματά.</step_flick_settle>
+  <step_flick_release>{n} από {total}. Τώρα αφήστε.</step_flick_release>
+  <step_flick_push>{n} από {total}. Σπρώξτε μέχρι τέρμα, μετά αφήστε.</step_flick_push>
+  <step_flick_done>Καταγράφηκαν {total} από {total} σπρωξίματα.</step_flick_done>
+  <step_review>Έλεγχος και εφαρμογή</step_review>
+  <res_peak>μέγιστη ολίσθηση</res_peak>
+  <res_typical>συνήθης ολίσθηση</res_typical>
+  <res_direction>κατεύθυνση</res_direction>
+  <dir_none>καμία</dir_none>
+  <dir_right>δεξιά</dir_right>
+  <dir_forward_right>εμπρός δεξιά</dir_forward_right>
+  <dir_forward>εμπρός</dir_forward>
+  <dir_forward_left>εμπρός αριστερά</dir_forward_left>
+  <dir_left>αριστερά</dir_left>
+  <dir_back_left>πίσω αριστερά</dir_back_left>
+  <dir_back>πίσω</dir_back>
+  <dir_back_right>πίσω δεξιά</dir_back_right>
+  <find_none>Σχεδόν καμία ολίσθηση. Δεν χρειάζεται νεκρή ζώνη.</find_none>
+  <find_gate_ok>Ο αισθητήρας αντίχειρα έμεινε ανενεργός όταν αφήσατε, οπότε η πύλη αντίχειρα ήδη σταματά αυτή την ολίσθηση.</find_gate_ok>
+  <find_gate_fail>Ο αισθητήρας αντίχειρα έδειξε επαφή όταν αφήσατε, οπότε η πύλη αντίχειρα μόνη της δεν μπορεί να τη σταματήσει.</find_gate_fail>
+  <find_no_sensor>Δεν βρέθηκε αισθητήρας αντίχειρα, οπότε μόνο νεκρή ζώνη μπορεί να τη σταματήσει.</find_no_sensor>
+  <find_creep>Με τον αντίχειρα πάνω στο στικ μπορεί ακόμα να γλιστρά. Μια νεκρή ζώνη {value} το καλύπτει.</find_creep>
+  <tune_intro>Μετρά πώς ολισθαίνει αυτό το στικ και προτείνει νεκρή ζώνη. Διαρκεί περίπου 20 δευτερόλεπτα: αφήστε το στικ και μετά σπρώξτε το μερικές φορές.</tune_intro>
+  <btn_start>Έναρξη μέτρησης</btn_start>
+  <btn_apply_left>Νεκρή ζώνη {value} αριστερά</btn_apply_left>
+  <btn_apply_right>Νεκρή ζώνη {value} δεξιά</btn_apply_right>
+  <btn_restart>Από την αρχή</btn_restart>
+  <edge_intro>Επέκταση άκρου: αν το στικ δεν φτάνει μέχρι τέρμα σε κάποιες κατευθύνσεις, γυρίστε το γύρω από το άκρο του και το ancora επεκτείνει αυτές τις κατευθύνσεις μέχρι τέρμα.</edge_intro>
+  <btn_edge>Μέτρηση άκρου</btn_edge>
+  <btn_edge_apply_left>Επέκταση αριστερού στικ</btn_edge_apply_left>
+  <btn_edge_apply_right>Επέκταση δεξιού στικ</btn_edge_apply_right>
+  <btn_edge_clear_left>Αφαίρεση επέκτασης αριστερά</btn_edge_clear_left>
+  <btn_edge_clear_right>Αφαίρεση επέκτασης δεξιά</btn_edge_clear_right>
+  <step_edge>Γυρίστε το στικ γύρω από το άκρο</step_edge>
+  <res_reach>μικρότερη εμβέλεια</res_reach>
+  <find_edge_ok>Το στικ φτάνει μέχρι τέρμα σε κάθε κατεύθυνση. Δεν χρειάζεται επέκταση.</find_edge_ok>
+  <find_edge_short>Κατεύθυνση {direction}: το στικ φτάνει μόνο {value}. Η επέκταση το κάνει να φτάνει μέχρι τέρμα εκεί, λίγο πιο ευαίσθητο κοντά στο άκρο.</find_edge_short>
+  <legend_reach>Πόσο μακριά φτάνει</legend_reach>
+  <step_edge_active>Σπρώξτε μέχρι τέρμα και γυρίστε αργά. Έτοιμες {n} από {total} κατευθύνσεις.</step_edge_active>
+  <step_edge_done>Και οι {total} κατευθύνσεις έφτασαν το άκρο.</step_edge_done>
+  <legend_edge_done>Το άκρο επιτεύχθηκε</legend_edge_done>
+  <legend_edge_more>Ξανά εδώ</legend_edge_more>
+  <btn_edge_finish>Ολοκλήρωση με αυτά</btn_edge_finish>
+  <edge_gap_hint>Δεν φτάνετε κάποιες κατευθύνσεις; Όταν τα κενά είναι μικρά, η Ολοκλήρωση με αυτά τα συμπληρώνει από τις διπλανές κατευθύνσεις.</edge_gap_hint>
+  <tile_driver>Πρόγραμμα οδήγησης</tile_driver>
+  <drv_loaded>Φορτώθηκε</drv_loaded>
+  <drv_registered>Καταχωρίστηκε</drv_registered>
+  <drv_missing>Δεν εγκαταστάθηκε</drv_missing>
+  <drv_patched>Τροποποιήθηκαν {n} πίνακες εισόδου</drv_patched>
+  <drv_not_seen>δεν φαίνεται στο αρχείο καταγραφής SteamVR</drv_not_seen>
+  <tile_logic>Λογική</tile_logic>
+  <logic_gen>Γενιά {n}</logic_gen>
+  <logic_none>Δεν φορτώθηκε</logic_none>
+  <logic_loaded>φορτώθηκε {time}, {n} είσοδοι επαναλήφθηκαν</logic_loaded>
+  <tile_config>Ρυθμίσεις</tile_config>
+  <cfg_pending>Δεν εφαρμόστηκαν ακόμα</cfg_pending>
+  <cfg_applied>Εφαρμόστηκαν {time}</cfg_applied>
+  <col_controller>Χειριστήριο</col_controller>
+  <col_inputs>Είσοδοι που βρέθηκαν</col_inputs>
+  <col_thumb>Αντίχειρας τώρα</col_thumb>
+  <col_updates>Ενημερώσεις</col_updates>
+  <diag_left_untracked>Αριστερό: δεν παρακολουθείται</diag_left_untracked>
+  <diag_right_untracked>Δεξί: δεν παρακολουθείται</diag_right_untracked>
+  <inputs_silent>σιωπηλό</inputs_silent>
+  <rate_idle>αδρανές</rate_idle>
+  <log_title>Αρχείο SteamVR, γραμμές ancora</log_title>
+  <log_empty>Δεν υπάρχουν ακόμα γραμμές ancora στο αρχείο SteamVR.</log_empty>
+  <btn_copy>Αντιγραφή διαγνωστικών</btn_copy>
+  <btn_open_cfg>Άνοιγμα ρυθμίσεων</btn_open_cfg>
+  <btn_open_log>Άνοιγμα αρχείου SteamVR</btn_open_log>
+  <note_saved>Αποθηκεύτηκε: {what}</note_saved>
+  <what_anchoring>Αγκύρωση</what_anchoring>
+  <what_left_gate>Πύλη αντίχειρα αριστερά</what_left_gate>
+  <what_right_gate>Πύλη αντίχειρα δεξιά</what_right_gate>
+  <what_left_smoothing>Εξομάλυνση αριστερά</what_left_smoothing>
+  <what_right_smoothing>Εξομάλυνση δεξιά</what_right_smoothing>
+  <what_left_deadzone>Νεκρή ζώνη αριστερά</what_left_deadzone>
+  <what_right_deadzone>Νεκρή ζώνη δεξιά</what_right_deadzone>
+  <what_left_edge>Επέκταση άκρου αριστερά</what_left_edge>
+  <what_right_edge>Επέκταση άκρου δεξιά</what_right_edge>
+  <what_language>Γλώσσα</what_language>
+  <note_copied>Τα διαγνωστικά αντιγράφηκαν</note_copied>
+  <note_no_log>Άγνωστη θέση αρχείου SteamVR</note_no_log>
+  <tray_open>Άνοιγμα ancora</tray_open>
+  <tray_exit>Έξοδος</tray_exit>
+</language>

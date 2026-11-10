@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Maltese. Machine drafted, needs a native review. See en.xml. -->
+<language code="mt" name="Malti" dir="ltr" font="Segoe UI">
+  <nav_status>Stat</nav_status>
+  <nav_tune>Irfinar</nav_tune>
+  <nav_diag>Dijanjostika</nav_diag>
+  <rail_steamvr_on>SteamVR qed jaħdem</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR mitfi</rail_steamvr_off>
+  <rail_both>Iż-żewġ kontrolluri</rail_both>
+  <rail_one>Kontrollur wieħed</rail_one>
+  <rail_none>L-ebda kontrollur</rail_none>
+  <lang_auto>Awtomatiku ({name})</lang_auto>
+  <lang_missing>{name}: {n} test mhux tradott, jidher bl-Ingliż</lang_missing>
+  <hint_back>Lura</hint_back>
+  <hint_apply>Applika</hint_apply>
+  <hint_select>Agħżel</hint_select>
+  <hint_next>Li jmiss</hint_next>
+  <hand_left>Kontrollur tax-xellug</hand_left>
+  <hand_right>Kontrollur tal-lemin</hand_right>
+  <state_no_signal>L-ebda sinjal</state_no_signal>
+  <sub_no_signal>Ibda SteamVR biex tara dan il-kontrollur.</sub_no_signal>
+  <state_not_connected>Mhux konness</state_not_connected>
+  <sub_wake>Qajjem il-kontrollur biex tara l-lieva.</sub_wake>
+  <sub_silent>L-ebda data mil-lieva għal {n} s. Iċċekkja l-batterija jew qajjmu.</sub_silent>
+  <state_not_corrected>Mhux ikkoreġut</state_not_corrected>
+  <sub_unchanged>Jgħaddi lil-logħob mingħajr bidla.</sub_unchanged>
+  <state_anchored>Drift ankrat</state_anchored>
+  <sub_drifting>Drift {value}. Is-saba' l-kbir barra, il-logħob jieħu 0.</sub_drifting>
+  <sub_thumb_off>Is-saba' l-kbir barra, il-logħob jieħu 0.</sub_thumb_off>
+  <state_in_deadzone>Fiż-żona mejta</state_in_deadzone>
+  <sub_in_deadzone>Ġewwa ż-żona mejta ta' {percent}, il-logħob jieħu 0.</sub_in_deadzone>
+  <state_following>Isegwi s-saba'</state_following>
+  <sub_past_deadzone>Lil hinn miż-żona mejta ta' {percent}, il-logħob jieħu moviment skalat.</sub_past_deadzone>
+  <sub_as_is>Jgħaddi lil-logħob kif inhu.</sub_as_is>
+  <read_reports>Jirrapporta</read_reports>
+  <read_games>Il-logħob jieħu</read_games>
+  <read_thumb>Saba' l-kbir</read_thumb>
+  <thumb_no_sensor>l-ebda sensor</thumb_no_sensor>
+  <thumb_on>fuq il-lieva</thumb_on>
+  <thumb_off>barra</thumb_off>
+  <set_gate>Bieb tas-saba'</set_gate>
+  <set_smoothing>Twittija</set_smoothing>
+  <set_deadzone>Żona mejta</set_deadzone>
+  <set_edge>Tiġbid tat-tarf</set_edge>
+  <edge_not_measured>mhux imkejjel, irfina</edge_not_measured>
+  <value_off>mitfi</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Ankraġġ mixgħul</master_on>
+  <master_off>Ankraġġ mitfi</master_off>
+  <tune_suggested>issuġġerit {value}</tune_suggested>
+  <legend_rests>Pożizzjoni ta' mistrieħ</legend_rests>
+  <legend_suggested>Żona mejta ssuġġerita</legend_suggested>
+  <step_rest>Itlaq il-lieva</step_rest>
+  <step_rest_active>Qed tiġi rreġistrata l-pożizzjoni ta' mistrieħ, żomm is-saba' barra.</step_rest_active>
+  <step_rest_done>{n} s ta' mistrieħ irreġistrati.</step_rest_done>
+  <step_flick>Imbuttaha u itlaqha</step_flick>
+  <step_flick_settle>{n} minn {total}. Itlaq, qed inkejlu fejn tieqaf.</step_flick_settle>
+  <step_flick_release>{n} minn {total}. Issa itlaq.</step_flick_release>
+  <step_flick_push>{n} minn {total}. Imbutta sat-tarf, imbagħad itlaq.</step_flick_push>
+  <step_flick_done>{total} minn {total} imbuttaturi rreġistrati.</step_flick_done>
+  <step_review>Irrevedi u applika</step_review>
+  <res_peak>l-ogħla drift</res_peak>
+  <res_typical>drift tas-soltu</res_typical>
+  <res_direction>direzzjoni</res_direction>
+  <dir_none>xejn</dir_none>
+  <dir_right>lemin</dir_right>
+  <dir_forward_right>'il quddiem lemin</dir_forward_right>
+  <dir_forward>'il quddiem</dir_forward>
+  <dir_forward_left>'il quddiem xellug</dir_forward_left>
+  <dir_left>xellug</dir_left>
+  <dir_back_left>lura xellug</dir_back_left>
+  <dir_back>lura</dir_back>
+  <dir_back_right>lura lemin</dir_back_right>
+  <find_none>Kważi l-ebda drift imkejjel. M'hemmx bżonn ta' żona mejta.</find_none>
+  <find_gate_ok>Is-sensor tas-saba' baqa' mitfi meta tlaqt, allura l-bieb tas-saba' diġà jwaqqaf dan id-drift.</find_gate_ok>
+  <find_gate_fail>Is-sensor tas-saba' wera mess meta tlaqt, allura l-bieb tas-saba' waħdu ma jistax iwaqqfu.</find_gate_fail>
+  <find_no_sensor>Ma nstab l-ebda sensor tas-saba', allura żona mejta biss tista' twaqqfu.</find_no_sensor>
+  <find_creep>Bis-saba' mistrieħ fuq il-lieva, xorta tista' titkaxkar. Żona mejta ta' {value} tkopri dan.</find_creep>
+  <tune_intro>Ikejjel kif din il-lieva tiddrifta u jissuġġerixxi żona mejta. Tieħu madwar 20 sekonda: itlaq il-lieva, imbagħad imbuttaha ftit drabi.</tune_intro>
+  <btn_start>Ibda kejl</btn_start>
+  <btn_apply_left>Applika żona mejta {value} xellug</btn_apply_left>
+  <btn_apply_right>Applika żona mejta {value} lemin</btn_apply_right>
+  <btn_restart>Erġa' ibda</btn_restart>
+  <edge_intro>Tiġbid tat-tarf: jekk il-lieva ma tasalx sal-aħħar f'xi direzzjonijiet, dawwarha mat-tarf u ancora tiġbed dawk id-direzzjonijiet sal-aħħar.</edge_intro>
+  <btn_edge>Kejjel it-tarf</btn_edge>
+  <btn_edge_apply_left>Iġbed il-lieva tax-xellug</btn_edge_apply_left>
+  <btn_edge_apply_right>Iġbed il-lieva tal-lemin</btn_edge_apply_right>
+  <btn_edge_clear_left>Neħħi t-tiġbid tax-xellug</btn_edge_clear_left>
+  <btn_edge_clear_right>Neħħi t-tiġbid tal-lemin</btn_edge_clear_right>
+  <step_edge>Dawwar il-lieva mat-tarf</step_edge>
+  <res_reach>l-iqsar firxa</res_reach>
+  <find_edge_ok>Il-lieva tasal sal-aħħar f'kull direzzjoni. M'hemmx bżonn ta' tiġbid.</find_edge_ok>
+  <find_edge_short>Direzzjoni {direction}: il-lieva tasal biss sa {value}. It-tiġbid iġagħlha tasal sal-aħħar hemm, ftit aktar sensittiva qrib it-tarf.</find_edge_short>
+  <legend_reach>Kemm tasal 'il bogħod</legend_reach>
+  <step_edge_active>Imbutta sat-tarf u dawwar bil-mod. {n} minn {total} direzzjonijiet lesti.</step_edge_active>
+  <step_edge_done>It-{total} direzzjoni kollha laħqu t-tarf.</step_edge_done>
+  <legend_edge_done>Tarf milħuq</legend_edge_done>
+  <legend_edge_more>Imbutta hawn mill-ġdid</legend_edge_more>
+  <btn_edge_finish>Lesti b'dawn</btn_edge_finish>
+  <edge_gap_hint>Ma tasalx f'xi direzzjonijiet? Meta l-vojt ikun żgħir, Lesti b'dawn jimlieh mid-direzzjonijiet ta' ħdejh.</edge_gap_hint>
+  <tile_driver>Sewwieq</tile_driver>
+  <drv_loaded>Mgħobbi</drv_loaded>
+  <drv_registered>Irreġistrat</drv_registered>
+  <drv_missing>Mhux installat</drv_missing>
+  <drv_patched>{n} tabelli tad-dħul modifikati</drv_patched>
+  <drv_not_seen>ma jidhirx fil-log ta' SteamVR</drv_not_seen>
+  <tile_logic>Loġika</tile_logic>
+  <logic_gen>Ġenerazzjoni {n}</logic_gen>
+  <logic_none>Mhux mgħobbija</logic_none>
+  <logic_loaded>mgħobbija {time}, {n} dħul irrepetut</logic_loaded>
+  <tile_config>Konfigurazzjoni</tile_config>
+  <cfg_pending>Għadha mhix applikata</cfg_pending>
+  <cfg_applied>Applikata {time}</cfg_applied>
+  <col_controller>Kontrollur</col_controller>
+  <col_inputs>Dħul misjub</col_inputs>
+  <col_thumb>Saba' issa</col_thumb>
+  <col_updates>Aġġornamenti</col_updates>
+  <diag_left_untracked>Xellug: mhux segwit</diag_left_untracked>
+  <diag_right_untracked>Lemin: mhux segwit</diag_right_untracked>
+  <inputs_silent>sieket</inputs_silent>
+  <rate_idle>wieqaf</rate_idle>
+  <log_title>Log ta' SteamVR, linji ta' ancora</log_title>
+  <log_empty>Għad m'hemmx linji ta' ancora fil-log ta' SteamVR.</log_empty>
+  <btn_copy>Ikkopja d-dijanjostika</btn_copy>
+  <btn_open_cfg>Iftaħ il-konfigurazzjoni</btn_open_cfg>
+  <btn_open_log>Iftaħ il-log ta' SteamVR</btn_open_log>
+  <note_saved>Issejvjat: {what}</note_saved>
+  <what_anchoring>Ankraġġ</what_anchoring>
+  <what_left_gate>Bieb tas-saba' xellug</what_left_gate>
+  <what_right_gate>Bieb tas-saba' lemin</what_right_gate>
+  <what_left_smoothing>Twittija xellug</what_left_smoothing>
+  <what_right_smoothing>Twittija lemin</what_right_smoothing>
+  <what_left_deadzone>Żona mejta xellug</what_left_deadzone>
+  <what_right_deadzone>Żona mejta lemin</what_right_deadzone>
+  <what_left_edge>Tiġbid tat-tarf xellug</what_left_edge>
+  <what_right_edge>Tiġbid tat-tarf lemin</what_right_edge>
+  <what_language>Lingwa</what_language>
+  <note_copied>Dijanjostika kkopjata</note_copied>
+  <note_no_log>Il-post tal-log ta' SteamVR mhux magħruf</note_no_log>
+  <tray_open>Iftaħ ancora</tray_open>
+  <tray_exit>Oħroġ</tray_exit>
+</language>

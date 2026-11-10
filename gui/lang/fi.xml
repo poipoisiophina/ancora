@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Finnish. Machine drafted, needs a native review. See en.xml. -->
+<language code="fi" name="Suomi" dir="ltr" font="Segoe UI">
+  <nav_status>Tila</nav_status>
+  <nav_tune>Säätö</nav_tune>
+  <nav_diag>Vianmääritys</nav_diag>
+  <rail_steamvr_on>SteamVR käynnissä</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR pois</rail_steamvr_off>
+  <rail_both>Molemmat ohjaimet</rail_both>
+  <rail_one>Yksi ohjain</rail_one>
+  <rail_none>Ei ohjaimia</rail_none>
+  <lang_auto>Automaattinen ({name})</lang_auto>
+  <lang_missing>{name}: {n} tekstiä kääntämättä, näytetään englanniksi</lang_missing>
+  <hint_back>Takaisin</hint_back>
+  <hint_apply>Käytä</hint_apply>
+  <hint_select>Valitse</hint_select>
+  <hint_next>Seuraava</hint_next>
+  <hand_left>Vasen ohjain</hand_left>
+  <hand_right>Oikea ohjain</hand_right>
+  <state_no_signal>Ei signaalia</state_no_signal>
+  <sub_no_signal>Käynnistä SteamVR nähdäksesi tämän ohjaimen.</sub_no_signal>
+  <state_not_connected>Ei yhdistetty</state_not_connected>
+  <sub_wake>Herätä ohjain nähdäksesi tikun.</sub_wake>
+  <sub_silent>Ei tikkutietoja {n} s. Tarkista akku tai herätä ohjain.</sub_silent>
+  <state_not_corrected>Ei korjattu</state_not_corrected>
+  <sub_unchanged>Välitetään peleille muuttamattomana.</sub_unchanged>
+  <state_anchored>Ajelehtiminen ankkuroitu</state_anchored>
+  <sub_drifting>Ajelehtii {value}. Peukalo irti, joten pelit saavat 0.</sub_drifting>
+  <sub_thumb_off>Peukalo irti, joten pelit saavat 0.</sub_thumb_off>
+  <state_in_deadzone>Kuolleella alueella</state_in_deadzone>
+  <sub_in_deadzone>{percent} kuolleen alueen sisällä, joten pelit saavat 0.</sub_in_deadzone>
+  <state_following>Seuraa peukaloa</state_following>
+  <sub_past_deadzone>{percent} kuolleen alueen yli, pelit saavat skaalatun liikkeen.</sub_past_deadzone>
+  <sub_as_is>Välitetään peleille sellaisenaan.</sub_as_is>
+  <read_reports>Ilmoittaa</read_reports>
+  <read_games>Pelit saavat</read_games>
+  <read_thumb>Peukalo</read_thumb>
+  <thumb_no_sensor>ei anturia</thumb_no_sensor>
+  <thumb_on>tikulla</thumb_on>
+  <thumb_off>irti</thumb_off>
+  <set_gate>Peukalolukko</set_gate>
+  <set_smoothing>Tasoitus</set_smoothing>
+  <set_deadzone>Kuollut alue</set_deadzone>
+  <set_edge>Reunan venytys</set_edge>
+  <edge_not_measured>ei mitattu, säädä</edge_not_measured>
+  <value_off>pois</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Ankkurointi päällä</master_on>
+  <master_off>Ankkurointi pois</master_off>
+  <tune_suggested>ehdotus {value}</tune_suggested>
+  <legend_rests>Lepokohta</legend_rests>
+  <legend_suggested>Ehdotettu kuollut alue</legend_suggested>
+  <step_rest>Päästä tikusta irti</step_rest>
+  <step_rest_active>Tallennetaan lepokohtaa, pidä peukalo irti.</step_rest_active>
+  <step_rest_done>{n} s lepoa tallennettu.</step_rest_done>
+  <step_flick>Näpäytä ja päästä irti</step_flick>
+  <step_flick_settle>{n}/{total}. Päästä irti, mitataan mihin se asettuu.</step_flick_settle>
+  <step_flick_release>{n}/{total}. Päästä nyt irti.</step_flick_release>
+  <step_flick_push>{n}/{total}. Työnnä pohjaan ja päästä irti.</step_flick_push>
+  <step_flick_done>{total}/{total} näpäytystä tallennettu.</step_flick_done>
+  <step_review>Tarkista ja käytä</step_review>
+  <res_peak>suurin ajelehtiminen</res_peak>
+  <res_typical>tavallinen ajelehtiminen</res_typical>
+  <res_direction>suunta</res_direction>
+  <dir_none>ei mitään</dir_none>
+  <dir_right>oikea</dir_right>
+  <dir_forward_right>eteen oikealle</dir_forward_right>
+  <dir_forward>eteen</dir_forward>
+  <dir_forward_left>eteen vasemmalle</dir_forward_left>
+  <dir_left>vasen</dir_left>
+  <dir_back_left>taakse vasemmalle</dir_back_left>
+  <dir_back>taakse</dir_back>
+  <dir_back_right>taakse oikealle</dir_back_right>
+  <find_none>Ajelehtimista tuskin lainkaan. Kuollutta aluetta ei tarvita.</find_none>
+  <find_gate_ok>Peukaloanturi pysyi pois, kun päästit irti, joten peukalolukko pysäyttää jo tämän ajelehtimisen.</find_gate_ok>
+  <find_gate_fail>Peukaloanturi näytti päällä, kun päästit irti, joten peukalolukko yksin ei voi pysäyttää sitä.</find_gate_fail>
+  <find_no_sensor>Peukaloanturia ei löytynyt, joten vain kuollut alue voi pysäyttää sen.</find_no_sensor>
+  <find_creep>Peukalon levätessä tikulla se voi silti ryömiä. {value} kuollut alue kattaa sen.</find_creep>
+  <tune_intro>Mittaa, miten tikku ajelehtii, ja ehdottaa kuollutta aluetta. Kestää noin 20 sekuntia: päästä tikusta irti ja näpäytä sitä sitten muutaman kerran.</tune_intro>
+  <btn_start>Aloita mittaus</btn_start>
+  <btn_apply_left>Käytä kuollutta aluetta {value} vasemmalle</btn_apply_left>
+  <btn_apply_right>Käytä kuollutta aluetta {value} oikealle</btn_apply_right>
+  <btn_restart>Aloita alusta</btn_restart>
+  <edge_intro>Reunan venytys: jos tikku ei yllä pohjaan joissain suunnissa, pyöritä sitä reunaa pitkin, ja ancora venyttää ne suunnat täysiksi.</edge_intro>
+  <btn_edge>Mittaa reuna</btn_edge>
+  <btn_edge_apply_left>Venytä vasen tikku</btn_edge_apply_left>
+  <btn_edge_apply_right>Venytä oikea tikku</btn_edge_apply_right>
+  <btn_edge_clear_left>Poista vasen venytys</btn_edge_clear_left>
+  <btn_edge_clear_right>Poista oikea venytys</btn_edge_clear_right>
+  <step_edge>Pyöritä tikkua reunaa pitkin</step_edge>
+  <res_reach>lyhin ulottuma</res_reach>
+  <find_edge_ok>Tikku yltää pohjaan joka suuntaan. Venytystä ei tarvita.</find_edge_ok>
+  <find_edge_short>Suunta {direction}: tikku yltää vain {value}. Venytys saa sen yltämään täysin, reunan lähellä hieman herkemmin.</find_edge_short>
+  <legend_reach>Kuinka pitkälle se yltää</legend_reach>
+  <step_edge_active>Työnnä pohjaan ja pyöritä hitaasti. {n}/{total} suuntaa valmiina.</step_edge_active>
+  <step_edge_done>Kaikki {total} suuntaa ylsivät reunaan.</step_edge_done>
+  <legend_edge_done>Reuna saavutettu</legend_edge_done>
+  <legend_edge_more>Työnnä tähän uudelleen</legend_edge_more>
+  <btn_edge_finish>Lopeta näillä</btn_edge_finish>
+  <edge_gap_hint>Etkö ylety joihinkin suuntiin? Kun aukot ovat pieniä, Lopeta näillä täyttää ne viereisistä suunnista.</edge_gap_hint>
+  <tile_driver>Ajuri</tile_driver>
+  <drv_loaded>Ladattu</drv_loaded>
+  <drv_registered>Rekisteröity</drv_registered>
+  <drv_missing>Ei asennettu</drv_missing>
+  <drv_patched>{n} syötetaulukkoa muokattu</drv_patched>
+  <drv_not_seen>ei näy SteamVR-lokissa</drv_not_seen>
+  <tile_logic>Logiikka</tile_logic>
+  <logic_gen>Sukupolvi {n}</logic_gen>
+  <logic_none>Ei ladattu</logic_none>
+  <logic_loaded>ladattu {time}, {n} syötettä toistettu</logic_loaded>
+  <tile_config>Asetukset</tile_config>
+  <cfg_pending>Ei vielä käytössä</cfg_pending>
+  <cfg_applied>Käytössä {time}</cfg_applied>
+  <col_controller>Ohjain</col_controller>
+  <col_inputs>Löydetyt syötteet</col_inputs>
+  <col_thumb>Peukalo nyt</col_thumb>
+  <col_updates>Päivitykset</col_updates>
+  <diag_left_untracked>Vasen: ei seurannassa</diag_left_untracked>
+  <diag_right_untracked>Oikea: ei seurannassa</diag_right_untracked>
+  <inputs_silent>hiljaa</inputs_silent>
+  <rate_idle>lepää</rate_idle>
+  <log_title>SteamVR-loki, ancoran rivit</log_title>
+  <log_empty>SteamVR-lokissa ei vielä ole ancoran rivejä.</log_empty>
+  <btn_copy>Kopioi vianmääritys</btn_copy>
+  <btn_open_cfg>Avaa asetustiedosto</btn_open_cfg>
+  <btn_open_log>Avaa SteamVR-loki</btn_open_log>
+  <note_saved>{what} tallennettu</note_saved>
+  <what_anchoring>Ankkurointi</what_anchoring>
+  <what_left_gate>Vasen peukalolukko</what_left_gate>
+  <what_right_gate>Oikea peukalolukko</what_right_gate>
+  <what_left_smoothing>Vasen tasoitus</what_left_smoothing>
+  <what_right_smoothing>Oikea tasoitus</what_right_smoothing>
+  <what_left_deadzone>Vasen kuollut alue</what_left_deadzone>
+  <what_right_deadzone>Oikea kuollut alue</what_right_deadzone>
+  <what_left_edge>Vasen reunan venytys</what_left_edge>
+  <what_right_edge>Oikea reunan venytys</what_right_edge>
+  <what_language>Kieli</what_language>
+  <note_copied>Vianmääritys kopioitu</note_copied>
+  <note_no_log>SteamVR-lokin sijainti tuntematon</note_no_log>
+  <tray_open>Avaa ancora</tray_open>
+  <tray_exit>Lopeta</tray_exit>
+</language>

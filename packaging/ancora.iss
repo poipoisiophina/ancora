@@ -5,7 +5,7 @@
 ; entries. SteamVR registration runs steamvr.ps1, the same script install.ps1
 ; uses. SteamVR must be closed to install or uninstall.
 
-#define AppVersion "0.1.1"
+#define AppVersion "0.1.2"
 
 [Setup]
 AppId={{6AB13E94-DDD3-4AAB-B3FE-6965F0462422}
@@ -55,6 +55,19 @@ Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
+Name: "bulgarian"; MessagesFile: "compiler:Languages\Bulgarian.isl"
+Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
+Name: "danish"; MessagesFile: "compiler:Languages\Danish.isl"
+Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "finnish"; MessagesFile: "compiler:Languages\Finnish.isl"
+Name: "hungarian"; MessagesFile: "compiler:Languages\Hungarian.isl"
+Name: "lithuanian"; MessagesFile: "compiler:Languages\Lithuanian.isl"
+Name: "portuguese"; MessagesFile: "compiler:Languages\Portuguese.isl"
+Name: "slovak"; MessagesFile: "compiler:Languages\Slovak.isl"
+Name: "slovenian"; MessagesFile: "compiler:Languages\Slovenian.isl"
+Name: "swedish"; MessagesFile: "compiler:Languages\Swedish.isl"
+; no Inno Setup message file for Croatian, Estonian, Greek, Irish, Latvian, Maltese
+; or Romanian: setup shows English there, the panel itself is translated
 
 ; ancora's own setup messages in those languages (UTF-8 file with a BOM)
 #include "messages.iss"

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Danish. Machine drafted, needs a native review. See en.xml. -->
+<language code="da" name="Dansk" dir="ltr" font="Segoe UI">
+  <nav_status>Status</nav_status>
+  <nav_tune>Justér</nav_tune>
+  <nav_diag>Diagnostik</nav_diag>
+  <rail_steamvr_on>SteamVR kører</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR slukket</rail_steamvr_off>
+  <rail_both>Begge controllere</rail_both>
+  <rail_one>Én controller</rail_one>
+  <rail_none>Ingen controllere</rail_none>
+  <lang_auto>Automatisk ({name})</lang_auto>
+  <lang_missing>{name}: {n} tekster ikke oversat, vises på engelsk</lang_missing>
+  <hint_back>Tilbage</hint_back>
+  <hint_apply>Anvend</hint_apply>
+  <hint_select>Vælg</hint_select>
+  <hint_next>Næste</hint_next>
+  <hand_left>Venstre controller</hand_left>
+  <hand_right>Højre controller</hand_right>
+  <state_no_signal>Intet signal</state_no_signal>
+  <sub_no_signal>Start SteamVR for at se denne controller.</sub_no_signal>
+  <state_not_connected>Ikke forbundet</state_not_connected>
+  <sub_wake>Væk controlleren for at se pinden.</sub_wake>
+  <sub_silent>Ingen pinddata i {n} s. Tjek batteriet eller væk den.</sub_silent>
+  <state_not_corrected>Ikke korrigeret</state_not_corrected>
+  <sub_unchanged>Sendes uændret til spil.</sub_unchanged>
+  <state_anchored>Drift forankret</state_anchored>
+  <sub_drifting>Driver {value}. Tommelfinger væk, så spil får 0.</sub_drifting>
+  <sub_thumb_off>Tommelfinger væk, så spil får 0.</sub_thumb_off>
+  <state_in_deadzone>I dødzonen</state_in_deadzone>
+  <sub_in_deadzone>Inden for dødzonen på {percent}, så spil får 0.</sub_in_deadzone>
+  <state_following>Følger tommelfingeren</state_following>
+  <sub_past_deadzone>Forbi dødzonen på {percent}, spil får et skaleret skub.</sub_past_deadzone>
+  <sub_as_is>Sendes som det er til spil.</sub_as_is>
+  <read_reports>Melder</read_reports>
+  <read_games>Spil får</read_games>
+  <read_thumb>Tommelfinger</read_thumb>
+  <thumb_no_sensor>ingen sensor</thumb_no_sensor>
+  <thumb_on>på pinden</thumb_on>
+  <thumb_off>væk</thumb_off>
+  <set_gate>Tommelspærre</set_gate>
+  <set_smoothing>Udjævning</set_smoothing>
+  <set_deadzone>Dødzone</set_deadzone>
+  <set_edge>Kantudstrækning</set_edge>
+  <edge_not_measured>ikke målt, justér</edge_not_measured>
+  <value_off>fra</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Forankring til</master_on>
+  <master_off>Forankring fra</master_off>
+  <tune_suggested>forslag {value}</tune_suggested>
+  <legend_rests>Hvilepunkt</legend_rests>
+  <legend_suggested>Foreslået dødzone</legend_suggested>
+  <step_rest>Slip pinden</step_rest>
+  <step_rest_active>Optager hvilepunktet, hold tommelfingeren væk.</step_rest_active>
+  <step_rest_done>{n} s hvile optaget.</step_rest_done>
+  <step_flick>Skub den og slip</step_flick>
+  <step_flick_settle>{n} af {total}. Slip, måler hvor den falder til ro.</step_flick_settle>
+  <step_flick_release>{n} af {total}. Slip nu.</step_flick_release>
+  <step_flick_push>{n} af {total}. Skub helt ud, og slip så.</step_flick_push>
+  <step_flick_done>{total} af {total} skub optaget.</step_flick_done>
+  <step_review>Gennemse og anvend</step_review>
+  <res_peak>højeste drift</res_peak>
+  <res_typical>typisk drift</res_typical>
+  <res_direction>retning</res_direction>
+  <dir_none>ingen</dir_none>
+  <dir_right>højre</dir_right>
+  <dir_forward_right>frem til højre</dir_forward_right>
+  <dir_forward>frem</dir_forward>
+  <dir_forward_left>frem til venstre</dir_forward_left>
+  <dir_left>venstre</dir_left>
+  <dir_back_left>tilbage til venstre</dir_back_left>
+  <dir_back>tilbage</dir_back>
+  <dir_back_right>tilbage til højre</dir_back_right>
+  <find_none>Næsten ingen drift målt. Ingen dødzone nødvendig.</find_none>
+  <find_gate_ok>Tommelsensoren var slukket, da du slap, så tommelspærren stopper allerede denne drift.</find_gate_ok>
+  <find_gate_fail>Tommelsensoren viste til, da du slap, så tommelspærren alene kan ikke stoppe den.</find_gate_fail>
+  <find_no_sensor>Ingen tommelsensor fundet, så kun en dødzone kan stoppe den.</find_no_sensor>
+  <find_creep>Med tommelfingeren hvilende på pinden kan den stadig krybe. En dødzone på {value} dækker det.</find_creep>
+  <tune_intro>Måler hvordan pinden driver og foreslår en dødzone. Tager cirka 20 sekunder: slip pinden, og skub den så et par gange.</tune_intro>
+  <btn_start>Start måling</btn_start>
+  <btn_apply_left>Anvend dødzone {value} venstre</btn_apply_left>
+  <btn_apply_right>Anvend dødzone {value} højre</btn_apply_right>
+  <btn_restart>Start forfra</btn_restart>
+  <edge_intro>Kantudstrækning: når pinden ikke helt ud i nogle retninger, så rul den langs kanten, og ancora strækker de retninger ud til fuldt.</edge_intro>
+  <btn_edge>Mål kanten</btn_edge>
+  <btn_edge_apply_left>Stræk venstre pind</btn_edge_apply_left>
+  <btn_edge_apply_right>Stræk højre pind</btn_edge_apply_right>
+  <btn_edge_clear_left>Fjern udstrækning venstre</btn_edge_clear_left>
+  <btn_edge_clear_right>Fjern udstrækning højre</btn_edge_clear_right>
+  <step_edge>Rul pinden langs kanten</step_edge>
+  <res_reach>korteste rækkevidde</res_reach>
+  <find_edge_ok>Pinden når helt ud i alle retninger. Ingen udstrækning nødvendig.</find_edge_ok>
+  <find_edge_short>Retning {direction}: pinden når kun {value}. Udstrækningen får den til at nå fuldt ud der, lidt mere følsom nær kanten.</find_edge_short>
+  <legend_reach>Hvor langt den når</legend_reach>
+  <step_edge_active>Skub helt ud og kør langsomt rundt. {n} af {total} retninger færdige.</step_edge_active>
+  <step_edge_done>Alle {total} retninger har nået kanten.</step_edge_done>
+  <legend_edge_done>Kanten nået</legend_edge_done>
+  <legend_edge_more>Skub her igen</legend_edge_more>
+  <btn_edge_finish>Afslut med disse</btn_edge_finish>
+  <edge_gap_hint>Kan du ikke nå nogle retninger? Når hullerne er små, udfylder Afslut med disse dem fra retningerne ved siden af.</edge_gap_hint>
+  <tile_driver>Driver</tile_driver>
+  <drv_loaded>Indlæst</drv_loaded>
+  <drv_registered>Registreret</drv_registered>
+  <drv_missing>Ikke installeret</drv_missing>
+  <drv_patched>{n} inputtabeller tilpasset</drv_patched>
+  <drv_not_seen>ikke set i SteamVR-loggen</drv_not_seen>
+  <tile_logic>Logik</tile_logic>
+  <logic_gen>Generation {n}</logic_gen>
+  <logic_none>Ikke indlæst</logic_none>
+  <logic_loaded>indlæst {time}, {n} input afspillet igen</logic_loaded>
+  <tile_config>Konfiguration</tile_config>
+  <cfg_pending>Ikke anvendt endnu</cfg_pending>
+  <cfg_applied>Anvendt {time}</cfg_applied>
+  <col_controller>Controller</col_controller>
+  <col_inputs>Input fundet</col_inputs>
+  <col_thumb>Tommelfinger nu</col_thumb>
+  <col_updates>Opdateringer</col_updates>
+  <diag_left_untracked>Venstre: ikke sporet</diag_left_untracked>
+  <diag_right_untracked>Højre: ikke sporet</diag_right_untracked>
+  <inputs_silent>tavs</inputs_silent>
+  <rate_idle>hviler</rate_idle>
+  <log_title>SteamVR-log, ancora-linjer</log_title>
+  <log_empty>Ingen ancora-linjer i SteamVR-loggen endnu.</log_empty>
+  <btn_copy>Kopiér diagnostik</btn_copy>
+  <btn_open_cfg>Åbn konfiguration</btn_open_cfg>
+  <btn_open_log>Åbn SteamVR-log</btn_open_log>
+  <note_saved>{what} gemt</note_saved>
+  <what_anchoring>Forankring</what_anchoring>
+  <what_left_gate>Tommelspærre venstre</what_left_gate>
+  <what_right_gate>Tommelspærre højre</what_right_gate>
+  <what_left_smoothing>Udjævning venstre</what_left_smoothing>
+  <what_right_smoothing>Udjævning højre</what_right_smoothing>
+  <what_left_deadzone>Dødzone venstre</what_left_deadzone>
+  <what_right_deadzone>Dødzone højre</what_right_deadzone>
+  <what_left_edge>Kantudstrækning venstre</what_left_edge>
+  <what_right_edge>Kantudstrækning højre</what_right_edge>
+  <what_language>Sprog</what_language>
+  <note_copied>Diagnostik kopieret</note_copied>
+  <note_no_log>SteamVR-loggens placering ukendt</note_no_log>
+  <tray_open>Åbn ancora</tray_open>
+  <tray_exit>Afslut</tray_exit>
+</language>

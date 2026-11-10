@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Lithuanian. Machine drafted, needs a native review. See en.xml. -->
+<language code="lt" name="Lietuvių" dir="ltr" font="Segoe UI">
+  <nav_status>Būsena</nav_status>
+  <nav_tune>Derinimas</nav_tune>
+  <nav_diag>Diagnostika</nav_diag>
+  <rail_steamvr_on>SteamVR veikia</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR išjungtas</rail_steamvr_off>
+  <rail_both>Abu valdikliai</rail_both>
+  <rail_one>Vienas valdiklis</rail_one>
+  <rail_none>Valdiklių nėra</rail_none>
+  <lang_auto>Automatiškai ({name})</lang_auto>
+  <lang_missing>{name}: {n} tekstų neišversta, rodoma angliškai</lang_missing>
+  <hint_back>Atgal</hint_back>
+  <hint_apply>Taikyti</hint_apply>
+  <hint_select>Pasirinkti</hint_select>
+  <hint_next>Toliau</hint_next>
+  <hand_left>Kairysis valdiklis</hand_left>
+  <hand_right>Dešinysis valdiklis</hand_right>
+  <state_no_signal>Nėra signalo</state_no_signal>
+  <sub_no_signal>Paleiskite SteamVR, kad matytumėte šį valdiklį.</sub_no_signal>
+  <state_not_connected>Neprijungtas</state_not_connected>
+  <sub_wake>Pažadinkite valdiklį, kad matytumėte svirtį.</sub_wake>
+  <sub_silent>Svirties duomenų nėra {n} s. Patikrinkite bateriją arba pažadinkite.</sub_silent>
+  <state_not_corrected>Netaisoma</state_not_corrected>
+  <sub_unchanged>Žaidimams perduodama nepakeista.</sub_unchanged>
+  <state_anchored>Dreifas įtvirtintas</state_anchored>
+  <sub_drifting>Dreifuoja {value}. Nykštys nuimtas, žaidimai gauna 0.</sub_drifting>
+  <sub_thumb_off>Nykštys nuimtas, žaidimai gauna 0.</sub_thumb_off>
+  <state_in_deadzone>Mirtinoje zonoje</state_in_deadzone>
+  <sub_in_deadzone>{percent} mirtinoje zonoje, žaidimai gauna 0.</sub_in_deadzone>
+  <state_following>Seka nykštį</state_following>
+  <sub_past_deadzone>Už {percent} mirtinos zonos, žaidimai gauna mastelintą judesį.</sub_past_deadzone>
+  <sub_as_is>Žaidimams perduodama tokia, kokia yra.</sub_as_is>
+  <read_reports>Praneša</read_reports>
+  <read_games>Žaidimai gauna</read_games>
+  <read_thumb>Nykštys</read_thumb>
+  <thumb_no_sensor>nėra jutiklio</thumb_no_sensor>
+  <thumb_on>ant svirties</thumb_on>
+  <thumb_off>nuimtas</thumb_off>
+  <set_gate>Nykščio užtvara</set_gate>
+  <set_smoothing>Glotninimas</set_smoothing>
+  <set_deadzone>Mirtina zona</set_deadzone>
+  <set_edge>Krašto ištempimas</set_edge>
+  <edge_not_measured>nematuota, derinti</edge_not_measured>
+  <value_off>išj.</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n} %</value_percent>
+  <master_on>Įtvirtinimas įjungtas</master_on>
+  <master_off>Įtvirtinimas išjungtas</master_off>
+  <tune_suggested>siūloma {value}</tune_suggested>
+  <legend_rests>Ramybės padėtis</legend_rests>
+  <legend_suggested>Siūloma mirtina zona</legend_suggested>
+  <step_rest>Paleiskite svirtį</step_rest>
+  <step_rest_active>Įrašoma ramybės padėtis, laikykite nykštį atokiai.</step_rest_active>
+  <step_rest_done>Įrašyta {n} s ramybės.</step_rest_done>
+  <step_flick>Stumtelėkite ir paleiskite</step_flick>
+  <step_flick_settle>{n} iš {total}. Paleiskite, matuojama, kur sustoja.</step_flick_settle>
+  <step_flick_release>{n} iš {total}. Dabar paleiskite.</step_flick_release>
+  <step_flick_push>{n} iš {total}. Nustumkite iki galo, tada paleiskite.</step_flick_push>
+  <step_flick_done>Įrašyta {total} iš {total} stumtelėjimų.</step_flick_done>
+  <step_review>Peržiūrėti ir taikyti</step_review>
+  <res_peak>didžiausias dreifas</res_peak>
+  <res_typical>įprastas dreifas</res_typical>
+  <res_direction>kryptis</res_direction>
+  <dir_none>nėra</dir_none>
+  <dir_right>dešinėn</dir_right>
+  <dir_forward_right>pirmyn dešinėn</dir_forward_right>
+  <dir_forward>pirmyn</dir_forward>
+  <dir_forward_left>pirmyn kairėn</dir_forward_left>
+  <dir_left>kairėn</dir_left>
+  <dir_back_left>atgal kairėn</dir_back_left>
+  <dir_back>atgal</dir_back>
+  <dir_back_right>atgal dešinėn</dir_back_right>
+  <find_none>Dreifo beveik nėra. Mirtinos zonos nereikia.</find_none>
+  <find_gate_ok>Nykščio jutiklis liko išjungtas, kai paleidote, todėl nykščio užtvara jau sustabdo šį dreifą.</find_gate_ok>
+  <find_gate_fail>Nykščio jutiklis rodė prisilietimą, kai paleidote, todėl vien nykščio užtvara jo nesustabdys.</find_gate_fail>
+  <find_no_sensor>Nykščio jutiklio nerasta, todėl jį sustabdyti gali tik mirtina zona.</find_no_sensor>
+  <find_creep>Nykščiui ilsintis ant svirties ji vis tiek gali šliaužti. {value} mirtina zona tai padengia.</find_creep>
+  <tune_intro>Išmatuoja, kaip ši svirtis dreifuoja, ir pasiūlo mirtiną zoną. Trunka apie 20 sekundžių: paleiskite svirtį, tada kelis kartus ją stumtelėkite.</tune_intro>
+  <btn_start>Pradėti matavimą</btn_start>
+  <btn_apply_left>Taikyti mirtiną zoną {value} kairei</btn_apply_left>
+  <btn_apply_right>Taikyti mirtiną zoną {value} dešinei</btn_apply_right>
+  <btn_restart>Pradėti iš naujo</btn_restart>
+  <edge_intro>Krašto ištempimas: jei svirtis kai kuriomis kryptimis nepasiekia galo, sukite ją palei kraštą, ir ancora ištemps tas kryptis iki galo.</edge_intro>
+  <btn_edge>Matuoti kraštą</btn_edge>
+  <btn_edge_apply_left>Ištempti kairę svirtį</btn_edge_apply_left>
+  <btn_edge_apply_right>Ištempti dešinę svirtį</btn_edge_apply_right>
+  <btn_edge_clear_left>Pašalinti kairį ištempimą</btn_edge_clear_left>
+  <btn_edge_clear_right>Pašalinti dešinį ištempimą</btn_edge_clear_right>
+  <step_edge>Sukite svirtį palei kraštą</step_edge>
+  <res_reach>trumpiausias siekis</res_reach>
+  <find_edge_ok>Svirtis pasiekia galą visomis kryptimis. Ištempimo nereikia.</find_edge_ok>
+  <find_edge_short>Kryptis {direction}: svirtis pasiekia tik {value}. Ištempimas leidžia ten pasiekti galą, prie krašto kiek jautriau.</find_edge_short>
+  <legend_reach>Kaip toli siekia</legend_reach>
+  <step_edge_active>Nustumkite iki galo ir lėtai sukite. Paruošta {n} iš {total} krypčių.</step_edge_active>
+  <step_edge_done>Visos {total} kryptys pasiekė kraštą.</step_edge_done>
+  <legend_edge_done>Kraštas pasiektas</legend_edge_done>
+  <legend_edge_more>Čia dar kartą</legend_edge_more>
+  <btn_edge_finish>Baigti su šiais</btn_edge_finish>
+  <edge_gap_hint>Kai kurių krypčių nepasiekiate? Kai tarpai maži, „Baigti su šiais“ juos užpildo iš gretimų krypčių.</edge_gap_hint>
+  <tile_driver>Tvarkyklė</tile_driver>
+  <drv_loaded>Įkelta</drv_loaded>
+  <drv_registered>Užregistruota</drv_registered>
+  <drv_missing>Neįdiegta</drv_missing>
+  <drv_patched>Pakeista {n} įvesties lentelių</drv_patched>
+  <drv_not_seen>nematyti SteamVR žurnale</drv_not_seen>
+  <tile_logic>Logika</tile_logic>
+  <logic_gen>Karta {n}</logic_gen>
+  <logic_none>Neįkelta</logic_none>
+  <logic_loaded>įkelta {time}, {n} įvesčių pakartota</logic_loaded>
+  <tile_config>Konfigūracija</tile_config>
+  <cfg_pending>Dar netaikyta</cfg_pending>
+  <cfg_applied>Taikyta {time}</cfg_applied>
+  <col_controller>Valdiklis</col_controller>
+  <col_inputs>Rastos įvestys</col_inputs>
+  <col_thumb>Nykštys dabar</col_thumb>
+  <col_updates>Atnaujinimai</col_updates>
+  <diag_left_untracked>Kairysis: nesekamas</diag_left_untracked>
+  <diag_right_untracked>Dešinysis: nesekamas</diag_right_untracked>
+  <inputs_silent>tylus</inputs_silent>
+  <rate_idle>neveikia</rate_idle>
+  <log_title>SteamVR žurnalas, ancora eilutės</log_title>
+  <log_empty>SteamVR žurnale dar nėra ancora eilučių.</log_empty>
+  <btn_copy>Kopijuoti diagnostiką</btn_copy>
+  <btn_open_cfg>Atverti konfigūraciją</btn_open_cfg>
+  <btn_open_log>Atverti SteamVR žurnalą</btn_open_log>
+  <note_saved>Išsaugota: {what}</note_saved>
+  <what_anchoring>Įtvirtinimas</what_anchoring>
+  <what_left_gate>Kairė nykščio užtvara</what_left_gate>
+  <what_right_gate>Dešinė nykščio užtvara</what_right_gate>
+  <what_left_smoothing>Kairysis glotninimas</what_left_smoothing>
+  <what_right_smoothing>Dešinysis glotninimas</what_right_smoothing>
+  <what_left_deadzone>Kairė mirtina zona</what_left_deadzone>
+  <what_right_deadzone>Dešinė mirtina zona</what_right_deadzone>
+  <what_left_edge>Kairysis krašto ištempimas</what_left_edge>
+  <what_right_edge>Dešinysis krašto ištempimas</what_right_edge>
+  <what_language>Kalba</what_language>
+  <note_copied>Diagnostika nukopijuota</note_copied>
+  <note_no_log>SteamVR žurnalo vieta nežinoma</note_no_log>
+  <tray_open>Atverti ancora</tray_open>
+  <tray_exit>Išeiti</tray_exit>
+</language>

@@ -63,3 +63,47 @@ arabic.Registering=جارٍ تسجيل ancora في SteamVR...
 ukrainian.SteamVRRunning=SteamVR працює. Закрийте SteamVR, потім натисніть OK, щоб продовжити.
 ukrainian.SteamVRRunningUninstall=SteamVR працює. Закрийте SteamVR, потім натисніть OK, щоб видалити ancora.
 ukrainian.Registering=Реєстрація ancora у SteamVR...
+
+bulgarian.SteamVRRunning=SteamVR работи. Затворете SteamVR, после натиснете OK, за да продължите.
+bulgarian.SteamVRRunningUninstall=SteamVR работи. Затворете SteamVR, после натиснете OK, за да деинсталирате ancora.
+bulgarian.Registering=Регистриране на ancora в SteamVR...
+
+czech.SteamVRRunning=SteamVR běží. Zavřete SteamVR a pokračujte stisknutím OK.
+czech.SteamVRRunningUninstall=SteamVR běží. Zavřete SteamVR a stisknutím OK odinstalujte ancora.
+czech.Registering=Registrace ancora ve SteamVR...
+
+danish.SteamVRRunning=SteamVR kører. Luk SteamVR, og tryk så på OK for at fortsætte.
+danish.SteamVRRunningUninstall=SteamVR kører. Luk SteamVR, og tryk så på OK for at afinstallere ancora.
+danish.Registering=Registrerer ancora i SteamVR...
+
+dutch.SteamVRRunning=SteamVR draait. Sluit SteamVR en klik dan op OK om door te gaan.
+dutch.SteamVRRunningUninstall=SteamVR draait. Sluit SteamVR en klik dan op OK om ancora te verwijderen.
+dutch.Registering=ancora wordt geregistreerd bij SteamVR...
+
+finnish.SteamVRRunning=SteamVR on käynnissä. Sulje SteamVR ja jatka painamalla OK.
+finnish.SteamVRRunningUninstall=SteamVR on käynnissä. Sulje SteamVR ja poista ancora painamalla OK.
+finnish.Registering=Rekisteröidään ancora SteamVR:ään...
+
+hungarian.SteamVRRunning=A SteamVR fut. Zárja be a SteamVR-t, majd a folytatáshoz kattintson az OK gombra.
+hungarian.SteamVRRunningUninstall=A SteamVR fut. Zárja be a SteamVR-t, majd az ancora eltávolításához kattintson az OK gombra.
+hungarian.Registering=Az ancora regisztrálása a SteamVR-ben...
+
+lithuanian.SteamVRRunning=SteamVR veikia. Uždarykite SteamVR, tada spustelėkite OK, kad tęstumėte.
+lithuanian.SteamVRRunningUninstall=SteamVR veikia. Uždarykite SteamVR, tada spustelėkite OK, kad pašalintumėte ancora.
+lithuanian.Registering=Registruojama ancora SteamVR...
+
+portuguese.SteamVRRunning=O SteamVR está em execução. Feche o SteamVR e clique em OK para continuar.
+portuguese.SteamVRRunningUninstall=O SteamVR está em execução. Feche o SteamVR e clique em OK para desinstalar o ancora.
+portuguese.Registering=A registar o ancora no SteamVR...
+
+slovak.SteamVRRunning=SteamVR beží. Zatvorte SteamVR a pokračujte stlačením OK.
+slovak.SteamVRRunningUninstall=SteamVR beží. Zatvorte SteamVR a stlačením OK odinštalujte ancora.
+slovak.Registering=Registrácia ancora v SteamVR...
+
+slovenian.SteamVRRunning=SteamVR teče. Zaprite SteamVR in za nadaljevanje kliknite V redu.
+slovenian.SteamVRRunningUninstall=SteamVR teče. Zaprite SteamVR in kliknite V redu, da odstranite ancora.
+slovenian.Registering=Registracija ancora v SteamVR...
+
+swedish.SteamVRRunning=SteamVR körs. Stäng SteamVR och klicka sedan på OK för att fortsätta.
+swedish.SteamVRRunningUninstall=SteamVR körs. Stäng SteamVR och klicka sedan på OK för att avinstallera ancora.
+swedish.Registering=Registrerar ancora i SteamVR...

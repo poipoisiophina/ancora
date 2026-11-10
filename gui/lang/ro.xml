@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Romanian. Machine drafted, needs a native review. See en.xml. -->
+<language code="ro" name="Română" dir="ltr" font="Segoe UI">
+  <nav_status>Stare</nav_status>
+  <nav_tune>Reglare</nav_tune>
+  <nav_diag>Diagnosticare</nav_diag>
+  <rail_steamvr_on>SteamVR rulează</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR oprit</rail_steamvr_off>
+  <rail_both>Ambele controlere</rail_both>
+  <rail_one>Un controler</rail_one>
+  <rail_none>Niciun controler</rail_none>
+  <lang_auto>Automat ({name})</lang_auto>
+  <lang_missing>{name}: {n} texte netraduse, afișate în engleză</lang_missing>
+  <hint_back>Înapoi</hint_back>
+  <hint_apply>Aplică</hint_apply>
+  <hint_select>Alege</hint_select>
+  <hint_next>Următorul</hint_next>
+  <hand_left>Controler stâng</hand_left>
+  <hand_right>Controler drept</hand_right>
+  <state_no_signal>Fără semnal</state_no_signal>
+  <sub_no_signal>Porniți SteamVR pentru a vedea acest controler.</sub_no_signal>
+  <state_not_connected>Neconectat</state_not_connected>
+  <sub_wake>Treziți controlerul pentru a vedea stickul.</sub_wake>
+  <sub_silent>Fără date de la stick de {n} s. Verificați bateria sau treziți-l.</sub_silent>
+  <state_not_corrected>Necorectat</state_not_corrected>
+  <sub_unchanged>Trimis jocurilor neschimbat.</sub_unchanged>
+  <state_anchored>Deriva ancorată</state_anchored>
+  <sub_drifting>Derivă {value}. Degetul nu e pe stick, jocurile primesc 0.</sub_drifting>
+  <sub_thumb_off>Degetul nu e pe stick, jocurile primesc 0.</sub_thumb_off>
+  <state_in_deadzone>În zona moartă</state_in_deadzone>
+  <sub_in_deadzone>În zona moartă de {percent}, jocurile primesc 0.</sub_in_deadzone>
+  <state_following>Urmează degetul</state_following>
+  <sub_past_deadzone>Dincolo de zona moartă de {percent}, jocurile primesc o mișcare scalată.</sub_past_deadzone>
+  <sub_as_is>Trimis jocurilor așa cum este.</sub_as_is>
+  <read_reports>Raportează</read_reports>
+  <read_games>Jocurile primesc</read_games>
+  <read_thumb>Deget</read_thumb>
+  <thumb_no_sensor>fără senzor</thumb_no_sensor>
+  <thumb_on>pe stick</thumb_on>
+  <thumb_off>ridicat</thumb_off>
+  <set_gate>Poarta degetului</set_gate>
+  <set_smoothing>Netezire</set_smoothing>
+  <set_deadzone>Zonă moartă</set_deadzone>
+  <set_edge>Întinderea marginii</set_edge>
+  <edge_not_measured>nemăsurat, reglați</edge_not_measured>
+  <value_off>oprit</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Ancorare pornită</master_on>
+  <master_off>Ancorare oprită</master_off>
+  <tune_suggested>sugerat {value}</tune_suggested>
+  <legend_rests>Poziția de repaus</legend_rests>
+  <legend_suggested>Zonă moartă sugerată</legend_suggested>
+  <step_rest>Eliberați stickul</step_rest>
+  <step_rest_active>Se înregistrează poziția de repaus, țineți degetul departe.</step_rest_active>
+  <step_rest_done>{n} s de repaus înregistrate.</step_rest_done>
+  <step_flick>Împingeți-l și eliberați</step_flick>
+  <step_flick_settle>{n} din {total}. Eliberați, se măsoară unde se oprește.</step_flick_settle>
+  <step_flick_release>{n} din {total}. Acum eliberați.</step_flick_release>
+  <step_flick_push>{n} din {total}. Împingeți până la capăt, apoi eliberați.</step_flick_push>
+  <step_flick_done>{total} din {total} împingeri înregistrate.</step_flick_done>
+  <step_review>Verificați și aplicați</step_review>
+  <res_peak>deriva maximă</res_peak>
+  <res_typical>deriva obișnuită</res_typical>
+  <res_direction>direcție</res_direction>
+  <dir_none>niciuna</dir_none>
+  <dir_right>dreapta</dir_right>
+  <dir_forward_right>înainte dreapta</dir_forward_right>
+  <dir_forward>înainte</dir_forward>
+  <dir_forward_left>înainte stânga</dir_forward_left>
+  <dir_left>stânga</dir_left>
+  <dir_back_left>înapoi stânga</dir_back_left>
+  <dir_back>înapoi</dir_back>
+  <dir_back_right>înapoi dreapta</dir_back_right>
+  <find_none>Aproape nicio derivă măsurată. Nu e nevoie de zonă moartă.</find_none>
+  <find_gate_ok>Senzorul de deget a rămas oprit când ați eliberat, deci poarta degetului oprește deja această derivă.</find_gate_ok>
+  <find_gate_fail>Senzorul de deget a indicat atingere când ați eliberat, deci poarta degetului singură nu o poate opri.</find_gate_fail>
+  <find_no_sensor>Nu s-a găsit senzor de deget, deci doar o zonă moartă o poate opri.</find_no_sensor>
+  <find_creep>Cu degetul sprijinit pe stick, acesta încă se poate târî. O zonă moartă de {value} acoperă asta.</find_creep>
+  <tune_intro>Măsoară cum derivă acest stick și sugerează o zonă moartă. Durează aproximativ 20 de secunde: eliberați stickul, apoi împingeți-l de câteva ori.</tune_intro>
+  <btn_start>Începeți măsurarea</btn_start>
+  <btn_apply_left>Aplică zona moartă {value} la stânga</btn_apply_left>
+  <btn_apply_right>Aplică zona moartă {value} la dreapta</btn_apply_right>
+  <btn_restart>Reîncepeți</btn_restart>
+  <edge_intro>Întinderea marginii: dacă stickul nu ajunge la capăt în unele direcții, rotiți-l pe margine și ancora întinde acele direcții până la capăt.</edge_intro>
+  <btn_edge>Măsurați marginea</btn_edge>
+  <btn_edge_apply_left>Întinde stickul stâng</btn_edge_apply_left>
+  <btn_edge_apply_right>Întinde stickul drept</btn_edge_apply_right>
+  <btn_edge_clear_left>Elimină întinderea stângă</btn_edge_clear_left>
+  <btn_edge_clear_right>Elimină întinderea dreaptă</btn_edge_clear_right>
+  <step_edge>Rotiți stickul pe margine</step_edge>
+  <res_reach>cea mai scurtă atingere</res_reach>
+  <find_edge_ok>Stickul ajunge la capăt în toate direcțiile. Nu e nevoie de întindere.</find_edge_ok>
+  <find_edge_short>Direcția {direction}: stickul ajunge doar la {value}. Întinderea îl face să ajungă la capăt acolo, puțin mai sensibil lângă margine.</find_edge_short>
+  <legend_reach>Cât de departe ajunge</legend_reach>
+  <step_edge_active>Împingeți până la capăt și rotiți încet. {n} din {total} direcții gata.</step_edge_active>
+  <step_edge_done>Toate cele {total} direcții au atins marginea.</step_edge_done>
+  <legend_edge_done>Margine atinsă</legend_edge_done>
+  <legend_edge_more>Încă o dată aici</legend_edge_more>
+  <btn_edge_finish>Termină cu acestea</btn_edge_finish>
+  <edge_gap_hint>Nu ajungeți în unele direcții? Când golurile sunt mici, Termină cu acestea le completează din direcțiile vecine.</edge_gap_hint>
+  <tile_driver>Driver</tile_driver>
+  <drv_loaded>Încărcat</drv_loaded>
+  <drv_registered>Înregistrat</drv_registered>
+  <drv_missing>Neinstalat</drv_missing>
+  <drv_patched>{n} tabele de intrare modificate</drv_patched>
+  <drv_not_seen>nu apare în jurnalul SteamVR</drv_not_seen>
+  <tile_logic>Logică</tile_logic>
+  <logic_gen>Generația {n}</logic_gen>
+  <logic_none>Neîncărcată</logic_none>
+  <logic_loaded>încărcată {time}, {n} intrări reluate</logic_loaded>
+  <tile_config>Configurare</tile_config>
+  <cfg_pending>Încă neaplicată</cfg_pending>
+  <cfg_applied>Aplicată {time}</cfg_applied>
+  <col_controller>Controler</col_controller>
+  <col_inputs>Intrări găsite</col_inputs>
+  <col_thumb>Deget acum</col_thumb>
+  <col_updates>Actualizări</col_updates>
+  <diag_left_untracked>Stânga: neurmărit</diag_left_untracked>
+  <diag_right_untracked>Dreapta: neurmărit</diag_right_untracked>
+  <inputs_silent>tăcut</inputs_silent>
+  <rate_idle>inactiv</rate_idle>
+  <log_title>Jurnal SteamVR, linii ancora</log_title>
+  <log_empty>Încă nu există linii ancora în jurnalul SteamVR.</log_empty>
+  <btn_copy>Copiați diagnosticarea</btn_copy>
+  <btn_open_cfg>Deschideți configurarea</btn_open_cfg>
+  <btn_open_log>Deschideți jurnalul SteamVR</btn_open_log>
+  <note_saved>Salvat: {what}</note_saved>
+  <what_anchoring>Ancorare</what_anchoring>
+  <what_left_gate>Poarta degetului stânga</what_left_gate>
+  <what_right_gate>Poarta degetului dreapta</what_right_gate>
+  <what_left_smoothing>Netezire stânga</what_left_smoothing>
+  <what_right_smoothing>Netezire dreapta</what_right_smoothing>
+  <what_left_deadzone>Zonă moartă stânga</what_left_deadzone>
+  <what_right_deadzone>Zonă moartă dreapta</what_right_deadzone>
+  <what_left_edge>Întinderea marginii stânga</what_left_edge>
+  <what_right_edge>Întinderea marginii dreapta</what_right_edge>
+  <what_language>Limbă</what_language>
+  <note_copied>Diagnosticare copiată</note_copied>
+  <note_no_log>Locația jurnalului SteamVR necunoscută</note_no_log>
+  <tray_open>Deschideți ancora</tray_open>
+  <tray_exit>Ieșire</tray_exit>
+</language>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ancora panel text, Latvian. Machine drafted, needs a native review. See en.xml. -->
+<language code="lv" name="Latviešu" dir="ltr" font="Segoe UI">
+  <nav_status>Statuss</nav_status>
+  <nav_tune>Regulēšana</nav_tune>
+  <nav_diag>Diagnostika</nav_diag>
+  <rail_steamvr_on>SteamVR darbojas</rail_steamvr_on>
+  <rail_steamvr_off>SteamVR izslēgts</rail_steamvr_off>
+  <rail_both>Abi kontrolieri</rail_both>
+  <rail_one>Viens kontrolieris</rail_one>
+  <rail_none>Nav kontrolieru</rail_none>
+  <lang_auto>Automātiski ({name})</lang_auto>
+  <lang_missing>{name}: {n} teksti nav tulkoti, rādīti angliski</lang_missing>
+  <hint_back>Atpakaļ</hint_back>
+  <hint_apply>Lietot</hint_apply>
+  <hint_select>Izvēlēties</hint_select>
+  <hint_next>Tālāk</hint_next>
+  <hand_left>Kreisais kontrolieris</hand_left>
+  <hand_right>Labais kontrolieris</hand_right>
+  <state_no_signal>Nav signāla</state_no_signal>
+  <sub_no_signal>Palaidiet SteamVR, lai redzētu šo kontrolieri.</sub_no_signal>
+  <state_not_connected>Nav savienots</state_not_connected>
+  <sub_wake>Pamodiniet kontrolieri, lai redzētu sviru.</sub_wake>
+  <sub_silent>Nav sviras datu {n} s. Pārbaudiet bateriju vai pamodiniet to.</sub_silent>
+  <state_not_corrected>Nav labots</state_not_corrected>
+  <sub_unchanged>Spēlēm nodots nemainīts.</sub_unchanged>
+  <state_anchored>Dreifs noenkurots</state_anchored>
+  <sub_drifting>Dreifē {value}. Īkšķis noņemts, spēles saņem 0.</sub_drifting>
+  <sub_thumb_off>Īkšķis noņemts, spēles saņem 0.</sub_thumb_off>
+  <state_in_deadzone>Mirušajā zonā</state_in_deadzone>
+  <sub_in_deadzone>{percent} mirušās zonas iekšpusē, spēles saņem 0.</sub_in_deadzone>
+  <state_following>Seko īkšķim</state_following>
+  <sub_past_deadzone>Aiz {percent} mirušās zonas, spēles saņem mērogotu kustību.</sub_past_deadzone>
+  <sub_as_is>Spēlēm nodots, kā ir.</sub_as_is>
+  <read_reports>Ziņo</read_reports>
+  <read_games>Spēles saņem</read_games>
+  <read_thumb>Īkšķis</read_thumb>
+  <thumb_no_sensor>nav sensora</thumb_no_sensor>
+  <thumb_on>uz sviras</thumb_on>
+  <thumb_off>noņemts</thumb_off>
+  <set_gate>Īkšķa vārti</set_gate>
+  <set_smoothing>Izlīdzināšana</set_smoothing>
+  <set_deadzone>Mirusī zona</set_deadzone>
+  <set_edge>Malas izstiepšana</set_edge>
+  <edge_not_measured>nav mērīts, regulēt</edge_not_measured>
+  <value_off>izsl.</value_off>
+  <value_ms>{n} ms</value_ms>
+  <value_percent>{n}%</value_percent>
+  <master_on>Enkurošana ieslēgta</master_on>
+  <master_off>Enkurošana izslēgta</master_off>
+  <tune_suggested>ieteikts {value}</tune_suggested>
+  <legend_rests>Miera stāvoklis</legend_rests>
+  <legend_suggested>Ieteiktā mirusī zona</legend_suggested>
+  <step_rest>Atlaidiet sviru</step_rest>
+  <step_rest_active>Tiek ierakstīts miera stāvoklis, turiet īkšķi nost.</step_rest_active>
+  <step_rest_done>Ierakstītas {n} s miera.</step_rest_done>
+  <step_flick>Pagrūdiet un atlaidiet</step_flick>
+  <step_flick_settle>{n} no {total}. Atlaidiet, mēra, kur tā apstājas.</step_flick_settle>
+  <step_flick_release>{n} no {total}. Tagad atlaidiet.</step_flick_release>
+  <step_flick_push>{n} no {total}. Spiediet līdz galam, tad atlaidiet.</step_flick_push>
+  <step_flick_done>Ierakstīti {total} no {total} grūdieniem.</step_flick_done>
+  <step_review>Pārskatīt un lietot</step_review>
+  <res_peak>lielākais dreifs</res_peak>
+  <res_typical>parastais dreifs</res_typical>
+  <res_direction>virziens</res_direction>
+  <dir_none>nav</dir_none>
+  <dir_right>pa labi</dir_right>
+  <dir_forward_right>uz priekšu pa labi</dir_forward_right>
+  <dir_forward>uz priekšu</dir_forward>
+  <dir_forward_left>uz priekšu pa kreisi</dir_forward_left>
+  <dir_left>pa kreisi</dir_left>
+  <dir_back_left>atpakaļ pa kreisi</dir_back_left>
+  <dir_back>atpakaļ</dir_back>
+  <dir_back_right>atpakaļ pa labi</dir_back_right>
+  <find_none>Dreifs gandrīz nav izmērīts. Mirusī zona nav vajadzīga.</find_none>
+  <find_gate_ok>Īkšķa sensors palika izslēgts, kad atlaidāt, tāpēc īkšķa vārti jau aptur šo dreifu.</find_gate_ok>
+  <find_gate_fail>Īkšķa sensors rādīja pieskārienu, kad atlaidāt, tāpēc īkšķa vārti vieni to nevar apturēt.</find_gate_fail>
+  <find_no_sensor>Īkšķa sensors nav atrasts, tāpēc to var apturēt tikai mirusī zona.</find_no_sensor>
+  <find_creep>Ar īkšķi uz sviras tā joprojām var slīdēt. {value} mirusī zona to nosedz.</find_creep>
+  <tune_intro>Izmēra, kā šī svira dreifē, un iesaka mirušo zonu. Aizņem apmēram 20 sekundes: atlaidiet sviru, tad dažas reizes to pagrūdiet.</tune_intro>
+  <btn_start>Sākt mērīšanu</btn_start>
+  <btn_apply_left>Lietot mirušo zonu {value} pa kreisi</btn_apply_left>
+  <btn_apply_right>Lietot mirušo zonu {value} pa labi</btn_apply_right>
+  <btn_restart>Sākt no jauna</btn_restart>
+  <edge_intro>Malas izstiepšana: ja svira dažos virzienos nesasniedz galu, grieziet to gar malu, un ancora izstiepj šos virzienus līdz galam.</edge_intro>
+  <btn_edge>Izmērīt malu</btn_edge>
+  <btn_edge_apply_left>Izstiept kreiso sviru</btn_edge_apply_left>
+  <btn_edge_apply_right>Izstiept labo sviru</btn_edge_apply_right>
+  <btn_edge_clear_left>Noņemt kreiso izstiepšanu</btn_edge_clear_left>
+  <btn_edge_clear_right>Noņemt labo izstiepšanu</btn_edge_clear_right>
+  <step_edge>Grieziet sviru gar malu</step_edge>
+  <res_reach>īsākais sniedziens</res_reach>
+  <find_edge_ok>Svira sasniedz galu visos virzienos. Izstiepšana nav vajadzīga.</find_edge_ok>
+  <find_edge_short>Virziens {direction}: svira sasniedz tikai {value}. Izstiepšana ļauj tai tur sasniegt galu, pie malas nedaudz jutīgāk.</find_edge_short>
+  <legend_reach>Cik tālu sniedzas</legend_reach>
+  <step_edge_active>Spiediet līdz galam un lēni grieziet. Gatavi {n} no {total} virzieniem.</step_edge_active>
+  <step_edge_done>Visi {total} virzieni sasniedza malu.</step_edge_done>
+  <legend_edge_done>Mala sasniegta</legend_edge_done>
+  <legend_edge_more>Šeit vēlreiz</legend_edge_more>
+  <btn_edge_finish>Pabeigt ar šiem</btn_edge_finish>
+  <edge_gap_hint>Dažus virzienus nevarat sasniegt? Kad robi ir mazi, Pabeigt ar šiem tos aizpilda no blakus virzieniem.</edge_gap_hint>
+  <tile_driver>Draiveris</tile_driver>
+  <drv_loaded>Ielādēts</drv_loaded>
+  <drv_registered>Reģistrēts</drv_registered>
+  <drv_missing>Nav instalēts</drv_missing>
+  <drv_patched>Pielāgotas {n} ievades tabulas</drv_patched>
+  <drv_not_seen>nav redzams SteamVR žurnālā</drv_not_seen>
+  <tile_logic>Loģika</tile_logic>
+  <logic_gen>Paaudze {n}</logic_gen>
+  <logic_none>Nav ielādēta</logic_none>
+  <logic_loaded>ielādēta {time}, {n} ievades atkārtotas</logic_loaded>
+  <tile_config>Konfigurācija</tile_config>
+  <cfg_pending>Vēl nav lietota</cfg_pending>
+  <cfg_applied>Lietota {time}</cfg_applied>
+  <col_controller>Kontrolieris</col_controller>
+  <col_inputs>Atrastās ievades</col_inputs>
+  <col_thumb>Īkšķis tagad</col_thumb>
+  <col_updates>Atjauninājumi</col_updates>
+  <diag_left_untracked>Kreisais: netiek izsekots</diag_left_untracked>
+  <diag_right_untracked>Labais: netiek izsekots</diag_right_untracked>
+  <inputs_silent>kluss</inputs_silent>
+  <rate_idle>dīkstāvē</rate_idle>
+  <log_title>SteamVR žurnāls, ancora rindas</log_title>
+  <log_empty>SteamVR žurnālā vēl nav ancora rindu.</log_empty>
+  <btn_copy>Kopēt diagnostiku</btn_copy>
+  <btn_open_cfg>Atvērt konfigurāciju</btn_open_cfg>
+  <btn_open_log>Atvērt SteamVR žurnālu</btn_open_log>
+  <note_saved>Saglabāts: {what}</note_saved>
+  <what_anchoring>Enkurošana</what_anchoring>
+  <what_left_gate>Kreisie īkšķa vārti</what_left_gate>
+  <what_right_gate>Labie īkšķa vārti</what_right_gate>
+  <what_left_smoothing>Kreisā izlīdzināšana</what_left_smoothing>
+  <what_right_smoothing>Labā izlīdzināšana</what_right_smoothing>
+  <what_left_deadzone>Kreisā mirusī zona</what_left_deadzone>
+  <what_right_deadzone>Labā mirusī zona</what_right_deadzone>
+  <what_left_edge>Kreisā malas izstiepšana</what_left_edge>
+  <what_right_edge>Labā malas izstiepšana</what_right_edge>
+  <what_language>Valoda</what_language>
+  <note_copied>Diagnostika nokopēta</note_copied>
+  <note_no_log>SteamVR žurnāla atrašanās vieta nav zināma</note_no_log>
+  <tray_open>Atvērt ancora</tray_open>
+  <tray_exit>Iziet</tray_exit>
+</language>
