@@ -41,6 +41,8 @@
   <set_gate>Блок за пальцем</set_gate>
   <set_smoothing>Згладжування</set_smoothing>
   <set_deadzone>Мертва зона</set_deadzone>
+  <set_edge>Розтяжка краю</set_edge>
+  <edge_not_measured>не виміряно, налаштувати</edge_not_measured>
   <value_off>вимк.</value_off>
   <value_ms>{n} мс</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>Застосувати {value} до лівого</btn_apply_left>
   <btn_apply_right>Застосувати {value} до правого</btn_apply_right>
   <btn_restart>Почати знову</btn_restart>
+  <edge_intro>Розтяжка краю: якщо стік не доходить до упору в деяких напрямках, проведіть його по краю по колу, і ancora розтягне ці напрямки до повного відхилення.</edge_intro>
+  <btn_edge>Виміряти край</btn_edge>
+  <btn_edge_apply_left>Розтягнути лівий стік</btn_edge_apply_left>
+  <btn_edge_apply_right>Розтягнути правий стік</btn_edge_apply_right>
+  <btn_edge_clear_left>Прибрати розтяжку зліва</btn_edge_clear_left>
+  <btn_edge_clear_right>Прибрати розтяжку справа</btn_edge_clear_right>
+  <step_edge>Проведіть стік по краю по колу</step_edge>
+  <res_reach>найкоротший хід</res_reach>
+  <find_edge_ok>Стік доходить до упору в усіх напрямках. Розтяжка не потрібна.</find_edge_ok>
+  <find_edge_short>Напрямок {direction}: стік доходить лише до {value}. Розтяжка дасть там повне відхилення, трохи чутливіше біля краю.</find_edge_short>
+  <legend_reach>Докуди доходить</legend_reach>
+  <step_edge_active>Відхиліть до упору й повільно ведіть по колу. Готово напрямків: {n} з {total}.</step_edge_active>
+  <step_edge_done>Усі напрямки ({total}) дійшли до краю.</step_edge_done>
+  <legend_edge_done>Край досягнуто</legend_edge_done>
+  <legend_edge_more>Ще раз сюди</legend_edge_more>
+  <btn_edge_finish>Завершити так</btn_edge_finish>
+  <edge_gap_hint>Не вдається в деяких напрямках? Коли прогалини невеликі, «Завершити так» заповнить їх за сусідніми напрямками.</edge_gap_hint>
   <tile_driver>Драйвер</tile_driver>
   <drv_loaded>Завантажено</drv_loaded>
   <drv_registered>Зареєстровано</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>праве згладжування</what_right_smoothing>
   <what_left_deadzone>ліва мертва зона</what_left_deadzone>
   <what_right_deadzone>права мертва зона</what_right_deadzone>
+  <what_left_edge>ліва розтяжка краю</what_left_edge>
+  <what_right_edge>права розтяжка краю</what_right_edge>
   <what_language>мова</what_language>
   <note_copied>Діагностику скопійовано</note_copied>
   <note_no_log>Розташування журналу SteamVR невідоме</note_no_log>

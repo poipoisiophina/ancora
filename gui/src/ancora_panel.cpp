@@ -16,7 +16,7 @@
 //   ancora.exe                    open the panel
 //   ancora.exe --tray             start hidden in the tray
 //   ancora.exe --steamvr          started by SteamVR: tray, exit when SteamVR exits
-//   ancora.exe --screenshot f.png [--fake] [--page status|tune|diag] [--lang code] [--kbd KLID]
+//   ancora.exe --screenshot f.png [--fake] [--page status|tune|edge|diag] [--lang code] [--kbd KLID]
 //                                 render one frame, exit (--kbd: key hints for another
 //                                 keyboard layout, such as 00000407 German)
 //                                 and list any text that does not fit its space
@@ -41,8 +41,13 @@
 #include <cwchar>
 #include <string>
 #include <vector>
+#include <atomic>
+#include <mutex>
+#include <thread>
+#include <mmsystem.h>
 #include "../../driver/src/ancora_state.h"
 #include "../../driver/src/ancora_average.h"
+#include "../../driver/src/ancora_edge.h"
 #include "ancora_lang.h"
 
 #pragma comment(lib, "d2d1")
@@ -52,6 +57,7 @@
 #pragma comment(lib, "user32")
 #pragma comment(lib, "gdi32")
 #pragma comment(lib, "ole32")
+#pragma comment(lib, "winmm")
 
 namespace {
 
@@ -73,7 +79,7 @@ const UINT kTimerFrame = 1, kTimerSlow = 2;
 const UINT kFrameMs = 33;                   // at most 30 redraws a second
 
 // ---- config (ancora.ini) ---------------------------------------------------------
-// ini keys per hand: <hand>, <hand>_touch_gate, <hand>_average_ms, <hand>_deadzone
+// ini keys per hand: <hand>, <hand>_touch_gate, <hand>_average_ms, <hand>_deadzone, <hand>_edge
 const wchar_t* kHandKey[2] = {L"left", L"right"};
 
 struct HandConfig {
@@ -81,6 +87,8 @@ struct HandConfig {
     bool  touch_gate = true;
     float deadzone = 0.0f;
     int   average_ms = 0;
+    EdgeReach edge;
+    bool  edge_on = true;       // use the measured edge; off keeps the values for later
 };
 
 struct Config {
@@ -112,6 +120,12 @@ Config read_config(const std::wstring& path) {
         h.average_ms = GetPrivateProfileIntW(L"ancora", hand_key(i, L"_average_ms").c_str(), 0, f);
         if (h.average_ms < 0) h.average_ms = 0;
         if (h.average_ms > kMaxAverageMs) h.average_ms = kMaxAverageMs;
+        wchar_t edge[512]{};
+        GetPrivateProfileStringW(L"ancora", hand_key(i, L"_edge").c_str(), L"", edge, 512, f);
+        std::string narrow;
+        for (const wchar_t* p = edge; *p; ++p) narrow += *p < 128 ? (char)*p : '?';
+        h.edge = edge_parse(narrow.c_str());
+        h.edge_on = GetPrivateProfileIntW(L"ancora", hand_key(i, L"_edge_on").c_str(), 1, f) != 0;
     }
     wchar_t lang[32]{};
     GetPrivateProfileStringW(L"ancora", L"language", L"auto", lang, 32, f);
@@ -135,29 +149,45 @@ void write_deadzone(const std::wstring& path, int hand, float v) {
     write_key(path, hand_key(hand, L"_deadzone"), buf);
 }
 
+// empty value = edge stretch off
+void write_edge(const std::wstring& path, int hand, const EdgeReach& e) {
+    std::string s = edge_format(e);
+    write_key(path, hand_key(hand, L"_edge"), std::wstring(s.begin(), s.end()));
+}
+
 // full file with comments, used when the file is missing
 void write_config_file(const std::wstring& path, const Config& c) {
-    wchar_t text[1024];
-    swprintf(text, 1024,
+    std::string le = edge_format(c.hand[0].edge), re = edge_format(c.hand[1].edge);
+    std::wstring lw(le.begin(), le.end()), rw(re.begin(), re.end());
+    wchar_t text[2048];
+    swprintf(text, 2048,
              L"; ancora driver config. The driver re-reads it within 250 ms while SteamVR runs.\r\n"
              L"[ancora]\r\n"
              L"; master switch, 0 = pass all input through unchanged\r\n"
              L"enable=%d\r\n"
              L"; per hand: correct the stick (1 = on), thumb gate (thumb off the cap -> 0,0),\r\n"
              L"; moving average for a shaky stick (0..300 ms, 0 = off, adds lag),\r\n"
-             L"; radial deadzone while touched (0..0.95, 0 = off)\r\n"
+             L"; radial deadzone while touched (0..0.95, 0 = off),\r\n"
+             L"; edge stretch: 16 measured reach values, from right counterclockwise\r\n"
+             L"; (the Tune page writes them; empty = off), and whether to use them (1 = on)\r\n"
              L"left=%d\r\n"
              L"left_touch_gate=%d\r\n"
              L"left_average_ms=%d\r\n"
              L"left_deadzone=%.2f\r\n"
+             L"left_edge=%ls\r\n"
+             L"left_edge_on=%d\r\n"
              L"right=%d\r\n"
              L"right_touch_gate=%d\r\n"
              L"right_average_ms=%d\r\n"
              L"right_deadzone=%.2f\r\n"
+             L"right_edge=%ls\r\n"
+             L"right_edge_on=%d\r\n"
              L"; panel language: auto follows Windows, or a code such as de, ar, ja, zh-Hant\r\n"
              L"language=%ls\r\n",
-             c.enable, c.hand[0].enable, c.hand[0].touch_gate, c.hand[0].average_ms, c.hand[0].deadzone,
-             c.hand[1].enable, c.hand[1].touch_gate, c.hand[1].average_ms, c.hand[1].deadzone, c.language.c_str());
+             c.enable, c.hand[0].enable, c.hand[0].touch_gate, c.hand[0].average_ms, c.hand[0].deadzone, lw.c_str(),
+             c.hand[0].edge_on,
+             c.hand[1].enable, c.hand[1].touch_gate, c.hand[1].average_ms, c.hand[1].deadzone, rw.c_str(),
+             c.hand[1].edge_on, c.language.c_str());
     std::string utf8;
     int n = WideCharToMultiByte(CP_UTF8, 0, text, -1, nullptr, 0, nullptr, nullptr);
     utf8.resize(n - 1);
@@ -349,7 +379,10 @@ TuneResult tune_compute(const std::vector<Point>& pts, int touch_on, int samples
     return r;
 }
 
-enum TuneStage { TUNE_IDLE, TUNE_REST, TUNE_FLICK, TUNE_REVIEW };
+// drift: IDLE -> REST -> FLICK -> REVIEW; edge stretch: IDLE -> EDGE -> EDGE_REVIEW
+enum TuneStage { TUNE_IDLE, TUNE_REST, TUNE_FLICK, TUNE_REVIEW, TUNE_EDGE, TUNE_EDGE_REVIEW };
+// an edge reach at or above this needs no stretch
+const float kEdgeFine = 0.95f;
 const uint64_t kRestMs = 5000;
 const int kFlicks = 6;
 // after a flick the stick never truly stops (it creeps and jitters off center),
@@ -367,11 +400,115 @@ struct Tune {
     float sum_x = 0, sum_y = 0;
     int sum_n = 0;
     TuneResult result;
+    EdgeMeasure edge;           // edge stretch measurement
+    EdgeReach edge_result;
 };
 
 Tune g_tune;
 
+bool tune_measuring() {
+    return g_tune.stage == TUNE_REST || g_tune.stage == TUNE_FLICK || g_tune.stage == TUNE_EDGE;
+}
+
+// The edge is measured from every stick update, not once per frame: at 30
+// frames a second a quick circle leaves each direction one or two readings,
+// often taken while the stick is still swinging out, which reads as a short
+// reach. A sampler thread reads the shared state about once a millisecond
+// (the driver publishes on every update) into g_edge_live; the UI thread
+// copies it into g_tune.edge each frame.
+std::mutex g_edge_mu;
+EdgeMeasure g_edge_live;                // guarded by g_edge_mu
+std::thread g_edge_thread;
+std::atomic<bool> g_edge_run{false};
+
+void edge_sampler(int hand) {
+    HANDLE map = OpenFileMappingA(FILE_MAP_READ, FALSE, ANCORA_STATE_NAME);
+    const AncoraState* view = map ? (const AncoraState*)MapViewOfFile(map, FILE_MAP_READ, 0, 0, sizeof(AncoraState)) : nullptr;
+    timeBeginPeriod(1);
+    uint32_t last_pair = 0;
+    while (g_edge_run && view) {
+        uint32_t a = view->seq;
+        if (!(a & 1) && view->magic == ANCORA_STATE_MAGIC && view->version == ANCORA_STATE_VERSION) {
+            const AncoraHandState& h = view->hand[hand];
+            uint32_t ps = h.pair_seq;
+            float x = h.pair_x, y = h.pair_y;   // a whole pair, never a new x with an old y
+            MemoryBarrier();
+            if (view->seq == a && ps != last_pair) {
+                last_pair = ps;
+                std::lock_guard<std::mutex> lk(g_edge_mu);
+                g_edge_live.feed(x, y);
+            }
+        }
+        Sleep(1);
+    }
+    timeEndPeriod(1);
+    if (view) UnmapViewOfFile(view);
+    if (map) CloseHandle(map);
+}
+
+void edge_sampler_stop() {
+    g_edge_run = false;
+    if (g_edge_thread.joinable()) g_edge_thread.join();
+}
+
+// sampler: false in the self test, which feeds readings itself
+void tune_start_edge(bool sampler = true) {
+    edge_sampler_stop();
+    int hand = g_tune.hand;
+    g_tune = Tune{};
+    g_tune.hand = hand;
+    g_tune.stage = TUNE_EDGE;
+    {
+        std::lock_guard<std::mutex> lk(g_edge_mu);
+        g_edge_live = EdgeMeasure{};
+    }
+    if (sampler && !g_fake) {
+        g_edge_run = true;
+        g_edge_thread = std::thread(edge_sampler, hand);
+    }
+}
+
+void tune_finish_edge() {
+    g_tune.edge_result = g_tune.edge.result();
+    g_tune.stage = TUNE_EDGE_REVIEW;
+}
+
+// one stick reading while measuring the edge (self test); returns true when it is done
+bool tune_feed_edge(float x, float y) {
+    if (g_tune.stage != TUNE_EDGE) return false;
+    g_tune.edge.feed(x, y);
+    if (!g_tune.edge.done()) return false;
+    tune_finish_edge();
+    return true;
+}
+
+// UI thread, once a frame: take over what the sampler collected
+void tune_pull_edge() {
+    if (g_tune.stage != TUNE_EDGE || !g_edge_run) return;
+    {
+        std::lock_guard<std::mutex> lk(g_edge_mu);
+        g_tune.edge = g_edge_live;
+    }
+    if (g_tune.edge.done()) {
+        edge_sampler_stop();
+        tune_finish_edge();
+    }
+}
+
+// "Finish with these": the stick skips some directions; fill the small gaps in
+void tune_finish_edge_early() {
+    if (g_tune.stage != TUNE_EDGE) return;
+    if (g_edge_run) {
+        std::lock_guard<std::mutex> lk(g_edge_mu);
+        g_tune.edge = g_edge_live;
+    }
+    if (!g_tune.edge.can_finish()) return;
+    edge_sampler_stop();
+    tune_finish_edge();
+}
+
 void tune_reset(int hand) {
+    edge_sampler_stop();
     g_tune = Tune{};
     g_tune.hand = hand;
 }
@@ -427,9 +564,10 @@ bool tune_feed(float x, float y, bool touch, bool sensor, uint64_t now) {
 }
 
 bool tune_sample(uint64_t now) {
-    if (g_tune.stage != TUNE_REST && g_tune.stage != TUNE_FLICK) return false;
+    if (!tune_measuring()) return false;
     if (!live_now(now)) return false;
     const AncoraHandState& h = g_live.snap.hand[g_tune.hand];
+    if (g_tune.stage == TUNE_EDGE) { tune_pull_edge(); return true; }   // the outline grows every frame
     return tune_feed(h.raw_x, h.raw_y, h.touch != 0, (h.tracked & 4) != 0, now);
 }
 
@@ -538,7 +676,8 @@ void trace(const char* f, ...) {
 
 // ---- focusable regions -------------------------------------------------------------------
 enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_AVERAGE, ID_SLIDER,
-          ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG };
+          ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_TUNE_EDGE, ID_TUNE_EDGE_APPLY,
+          ID_TUNE_EDGE_CLEAR, ID_EDGE_ON, ID_TUNE_EDGE_FINISH, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG };
 struct Region { D2D1_RECT_F r; Id id; int hand; };
 std::vector<Region> g_regions;     // rebuilt every frame, in focus order
 Id g_focus = ID_NAV_STATUS;
@@ -709,15 +848,18 @@ void draw_mark(ID2D1RenderTarget* t, float cx, float cy, float r, float weight =
     path->Release();
 }
 
-void draw_switch(ID2D1RenderTarget* t, float x, float y, bool on) {
+void draw_switch(ID2D1RenderTarget* t, float x, float y, bool on, uint32_t on_color = kOut) {
     D2D1_RECT_F r = {x, y, x + 46, y + 26};
-    fill_round(t, r, 13, on ? kOut : kGrid);
+    fill_round(t, r, 13, on ? on_color : kGrid);
     circle(t, on ? x + 33 : x + 13, y + 13, 10, on ? kBg : kDim);
 }
 
-void draw_button(ID2D1RenderTarget* t, D2D1_RECT_F r, const std::wstring& s, bool primary, Id id, int hand = 0) {
-    fill_round(t, r, 12, primary ? kOut : kCard);
-    text(t, s, g.f_h2, r.left + 12, r.top + (r.bottom - r.top - 24) / 2, primary ? kBg : kText, r.right - r.left - 24,
+// fill: a colour of its own (dark text on it), else green when primary, card when not
+void draw_button(ID2D1RenderTarget* t, D2D1_RECT_F r, const std::wstring& s, bool primary, Id id, int hand = 0,
+                 uint32_t fill = 0) {
+    bool solid = primary || fill;
+    fill_round(t, r, 12, fill ? fill : primary ? kOut : kCard);
+    text(t, s, g.f_h2, r.left + 12, r.top + (r.bottom - r.top - 24) / 2, solid ? kBg : kText, r.right - r.left - 24,
          DWRITE_TEXT_ALIGNMENT_CENTER);
     if (focused(id, hand)) ring(t, r, 12);
     region(r, id, hand);
@@ -743,6 +885,18 @@ void draw_target(ID2D1RenderTarget* t, float cx, float cy, float R, float dz, bo
     if (dz > 0) {
         circle(t, cx, cy, R * dz, kOut, 0.07f);
         circle(t, cx, cy, R * dz, kOut, 0.8f, false, dashed_dz ? 2.0f : 1.0f, dashed_dz ? g.dash : nullptr);
+    }
+}
+
+// edge stretch outline: how far the stick reaches in each direction
+void draw_edge(ID2D1RenderTarget* t, float cx, float cy, float R, const EdgeReach& e, float w, float a) {
+    const int n = 192;
+    float px = 0, py = 0;
+    for (int k = 0; k <= n; ++k) {
+        float ang = k * 2 * 3.14159265f / n, x = std::cos(ang), y = std::sin(ang), r = edge_reach(e, x, y);
+        float qx = cx + x * r * R, qy = cy - y * r * R;
+        if (k) line(t, px, py, qx, qy, kBrass, w, a);
+        px = qx; py = qy;
     }
 }
 
@@ -844,7 +998,8 @@ void draw_footer(ID2D1RenderTarget* t) {
     t->FillRectangle(D2D1::RectF(kNavW, kH - kFootH, kW, kH), g.br);
     float x = kW - 36, y = kH - kFootH + 14;
     key_hint(t, x, y, g.key_esc, tr(S_hint_back));
-    key_hint(t, x, y, g.key_enter, tr(g.page == PAGE_TUNE && g_tune.stage == TUNE_REVIEW ? S_hint_apply : S_hint_select));
+    bool review = g_tune.stage == TUNE_REVIEW || g_tune.stage == TUNE_EDGE_REVIEW;
+    key_hint(t, x, y, g.key_enter, tr(g.page == PAGE_TUNE && review ? S_hint_apply : S_hint_select));
     key_hint(t, x, y, g.key_tab, tr(S_hint_next));
     if (GetTickCount64() < g.note_until)
         text(t, g.status_note, g.f_body, kNavW + 32, y + 4, kOut, std::fmin(400.0f, x - kNavW - 40));
@@ -891,9 +1046,10 @@ void draw_trail(ID2D1RenderTarget* t, int i, float cx, float cy, float R, uint64
 // label_w: the widest label in the group, so the tracks line up
 void draw_slider(ID2D1RenderTarget* t, D2D1_RECT_F r, const std::wstring& label, const std::wstring& val, bool active,
                  float fraction, Id id, int hand, float label_w) {
-    float x0 = r.left + std::fmax(110.0f, std::fmin(label_w + 30, 190.0f)), x1 = r.right - 88, y = r.top + 26;
-    text(t, label, g.f_body, r.left + 14, r.top + 15, kText, x0 - r.left - 26);
-    text(t, val, g.f_body, r.right - 80, r.top + 15, active ? kText : kMuted, 66, DWRITE_TEXT_ALIGNMENT_TRAILING);
+    float x0 = r.left + std::fmax(110.0f, std::fmin(label_w + 30, 190.0f)), x1 = r.right - 88;
+    float y = (r.top + r.bottom) / 2, ty = y - 11;   // centred in the row, whatever its height
+    text(t, label, g.f_body, r.left + 14, ty, kText, x0 - r.left - 26);
+    text(t, val, g.f_body, r.right - 80, ty, active ? kText : kMuted, 66, DWRITE_TEXT_ALIGNMENT_TRAILING);
     line(t, x0, y, x1, y, kGrid, 4);
     float kx = x0 + (x1 - x0) * fraction;
     line(t, x0, y, kx, y, kOut, 4);
@@ -919,6 +1075,7 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     // stick
     float R = 82, cx = physical(t, x0 + 22 + R), cy = c.top + 62 + R;
     draw_target(t, cx, cy, R, (live && h.enable && g_live.snap.enable) ? h.deadzone : 0, false);
+    if (hc.edge.on && hc.edge_on && hc.enable && g.cfg.enable) draw_edge(t, cx, cy, R, hc.edge, 1.2f, 0.7f);
     draw_trail(t, i, cx, cy, R, now);
     if (tracked) {
         circle(t, cx + h.raw_x * R, cy - h.raw_y * R, 7, kRaw, 1, false, 2);
@@ -932,38 +1089,51 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     para(t, v.sub, g.f_body, x0 + 210, c.top + 134, 240, kMuted, 100);
 
     // readouts
-    float ry = c.top + 246, bw = (470 - 44 - 16) / 3.0f;
+    float ry = c.top + 240, bw = (470 - 44 - 16) / 3.0f;
     const Str lab[3] = {S_read_reports, S_read_games, S_read_thumb};
     for (int k = 0; k < 3; ++k) {
-        D2D1_RECT_F b = {x0 + 22 + k * (bw + 8), ry, x0 + 22 + k * (bw + 8) + bw, ry + 54};
+        D2D1_RECT_F b = {x0 + 22 + k * (bw + 8), ry, x0 + 22 + k * (bw + 8) + bw, ry + 50};
         fill_round(t, b, 10, kWell);
-        text(t, tr(lab[k]), g.f_small, b.left + 12, b.top + 7, kDim, bw - 24);
-        if (!tracked) { text(t, L"--", g.f_mono, b.left + 12, b.top + 26, kDim, bw - 24); continue; }
-        if (k == 0) text(t, fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y), g.f_mono, b.left + 12, b.top + 26, kRawText, bw - 24);
-        if (k == 1) text(t, fmt2(L"%+.2f %+.2f", h.out_x, h.out_y), g.f_mono, b.left + 12, b.top + 26, kOut, bw - 24);
+        text(t, tr(lab[k]), g.f_small, b.left + 12, b.top + 5, kDim, bw - 24);
+        if (!tracked) { text(t, L"--", g.f_mono, b.left + 12, b.top + 24, kDim, bw - 24); continue; }
+        if (k == 0) text(t, fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y), g.f_mono, b.left + 12, b.top + 24, kRawText, bw - 24);
+        if (k == 1) text(t, fmt2(L"%+.2f %+.2f", h.out_x, h.out_y), g.f_mono, b.left + 12, b.top + 24, kOut, bw - 24);
         if (k == 2) text(t, tr(!(h.tracked & 4) ? S_thumb_no_sensor : h.touch ? S_thumb_on : S_thumb_off), g.f_body,
-                         b.left + 12, b.top + 25, h.touch ? kBrass : kMuted, bw - 24);
+                         b.left + 12, b.top + 23, h.touch ? kBrass : kMuted, bw - 24);
     }
 
-    // per hand settings
-    D2D1_RECT_F well = {x0 + 22, ry + 70, x0 + 470 - 22, ry + 70 + 156};
+    // per hand settings: four rows
+    const float rh = 46;
+    D2D1_RECT_F well = {x0 + 22, ry + 60, x0 + 470 - 22, ry + 60 + 4 * rh};
     fill_round(t, well, 12, kWell);
-    D2D1_RECT_F gate = {well.left, well.top, well.right, well.top + 52};
-    text(t, tr(S_set_gate), g.f_body, gate.left + 14, gate.top + 15, kText, gate.right - gate.left - 90);
-    draw_switch(t, gate.right - 14 - 46, gate.top + 13, hc.touch_gate);
+    auto row = [&](int n) { return D2D1_RECT_F{well.left, well.top + n * rh, well.right, well.top + (n + 1) * rh}; };
+    D2D1_RECT_F gate = row(0);
+    text(t, tr(S_set_gate), g.f_body, gate.left + 14, gate.top + rh / 2 - 11, kText, gate.right - gate.left - 90);
+    draw_switch(t, gate.right - 14 - 46, gate.top + rh / 2 - 13, hc.touch_gate);
     if (focused(ID_GATE, i)) ring(t, gate, 12);
     region(gate, ID_GATE, i);
-    line(t, well.left, well.top + 52, well.right, well.top + 52, kLine);
+    for (int n = 1; n < 4; ++n) line(t, well.left, well.top + n * rh, well.right, well.top + n * rh, kLine);
 
     float label_w = std::fmax(measure(tr(S_set_smoothing), g.f_body), measure(tr(S_set_deadzone), g.f_body));
-    draw_slider(t, {well.left, well.top + 52, well.right, well.top + 104}, tr(S_set_smoothing),
+    draw_slider(t, row(1), tr(S_set_smoothing),
                 hc.average_ms > 0 ? sub(tr(S_value_ms), {{L"n", std::to_wstring(hc.average_ms)}}) : tr(S_value_off),
                 hc.average_ms > 0, hc.average_ms / (float)kMaxAverageMs, ID_AVERAGE, i, label_w);
-    line(t, well.left, well.top + 104, well.right, well.top + 104, kLine);
-    draw_slider(t, {well.left, well.top + 104, well.right, well.bottom}, tr(S_set_deadzone),
+    draw_slider(t, row(2), tr(S_set_deadzone),
                 // the whole "31%" as one left to right run, so the sign keeps to its number
                 hc.deadzone > 0 ? iso(sub(tr(S_value_percent), {{L"n", num(hc.deadzone * 100, 0)}})) : tr(S_value_off),
                 hc.deadzone > 0, hc.deadzone / 0.95f, ID_SLIDER, i, label_w);
+
+    // edge stretch: a switch once measured, else a pointer to the Tune page
+    D2D1_RECT_F edge = row(3);
+    text(t, tr(S_set_edge), g.f_body, edge.left + 14, edge.top + rh / 2 - 11, kText, edge.right - edge.left - 200);
+    if (hc.edge.on) {
+        draw_switch(t, edge.right - 14 - 46, edge.top + rh / 2 - 13, hc.edge_on, kBrass);
+    } else {
+        text(t, tr(S_edge_not_measured), g.f_body, edge.right - 194, edge.top + rh / 2 - 11, kMuted, 180,
+             DWRITE_TEXT_ALIGNMENT_TRAILING);
+    }
+    if (focused(ID_EDGE_ON, i)) ring(t, edge, 12);
+    region(edge, ID_EDGE_ON, i);
 }
 
 void draw_status(ID2D1RenderTarget* t, uint64_t now) {
@@ -1028,12 +1198,29 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
     D2D1_RECT_F left = {292, 84, 672, kH - kFootH - 24};
     fill_round(t, left, 18, kCard);
     float R = 150, lcx = (left.left + left.right) / 2, cy = (left.top + left.bottom - 40) / 2;
-    bool review = g_tune.stage == TUNE_REVIEW;
+    int st = g_tune.stage;
+    bool review = st == TUNE_REVIEW, edge_review = st == TUNE_EDGE_REVIEW;
+    bool edge_mode = st == TUNE_EDGE || edge_review;
+    const HandConfig& hc = g.cfg.hand[g_tune.hand];
     float cx = physical(t, lcx);
     draw_target(t, cx, cy, R, review ? g_tune.result.suggested : 0, true);
-    for (const Point& p : g_tune.pts) circle(t, cx + p.x * R, cy - p.y * R, 3, kRaw, 0.8f);
+    if (edge_review) {
+        draw_edge(t, cx, cy, R, g_tune.edge_result, 2.2f, 1.0f);
+    } else if (st == TUNE_EDGE) {
+        // every direction: brass once settled, red while it still needs a pass, a dim
+        // mark on the rim where the stick has not been yet
+        for (int b = 0; b < kEdgeBins; ++b) {
+            float r = g_tune.edge.bin[b], a = b * 2 * 3.14159265f / kEdgeBins, c = std::cos(a), s = std::sin(a);
+            if (r <= 0) circle(t, cx + c * R, cy - s * R, 2.5f, kDim, 0.8f);
+            else circle(t, cx + c * r * R, cy - s * r * R, 3.5f, g_tune.edge.settled(b) ? kBrass : kRaw);
+        }
+    } else if (st == TUNE_IDLE && hc.edge.on) {
+        draw_edge(t, cx, cy, R, hc.edge, 1.2f, 0.6f);
+    }
+    if (!edge_mode)
+        for (const Point& p : g_tune.pts) circle(t, cx + p.x * R, cy - p.y * R, 3, kRaw, 0.8f);
     const AncoraHandState& h = g_live.snap.hand[g_tune.hand];
-    if (live_now(now) && connected(h, now) && !review)
+    if (live_now(now) && connected(h, now) && !review && !edge_review)
         circle(t, cx + h.raw_x * R, cy - h.raw_y * R, 7, kRaw, 1, false, 2);
     unphysical(t);
     if (review && g_tune.result.suggested > 0)
@@ -1041,37 +1228,72 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
              cy + R * g_tune.result.suggested + 6, kOut, 200, DWRITE_TEXT_ALIGNMENT_CENTER);
     // legend, centred under the plot
     float ly = left.bottom - 34;
-    float w1 = measure(tr(S_legend_rests), g.f_small), w2 = measure(tr(S_legend_suggested), g.f_small);
-    float avail = left.right - left.left - 40 - 12 - 22 - 24;
-    float k = w1 + w2 > avail ? avail / (w1 + w2) : 1.0f;
-    w1 *= k; w2 *= k;
-    float lx = lcx - (12 + w1 + 24 + 22 + w2) / 2;
-    circle(t, lx + 4.5f, ly + 9, 4.5f, kRaw);
-    text(t, tr(S_legend_rests), g.f_small, lx + 12, ly, kMuted, w1 + 1);
-    lx += 12 + w1 + 24;
-    line(t, lx, ly + 9, lx + 14, ly + 9, kOut, 2);
-    text(t, tr(S_legend_suggested), g.f_small, lx + 22, ly, kMuted, w2 + 1);
+    if (edge_review) {
+        float w = std::fmin(measure(tr(S_legend_reach), g.f_small), left.right - left.left - 80);
+        float lx = lcx - (22 + w) / 2;
+        line(t, lx, ly + 9, lx + 14, ly + 9, kBrass, 2);
+        text(t, tr(S_legend_reach), g.f_small, lx + 22, ly, kMuted, w + 1);
+    } else if (edge_mode) {
+        float w1 = measure(tr(S_legend_edge_done), g.f_small), w2 = measure(tr(S_legend_edge_more), g.f_small);
+        float avail = left.right - left.left - 40 - 12 - 12 - 24;
+        float k = w1 + w2 > avail ? avail / (w1 + w2) : 1.0f;
+        w1 *= k; w2 *= k;
+        float lx = lcx - (12 + w1 + 24 + 12 + w2) / 2;
+        circle(t, lx + 4.5f, ly + 9, 4.5f, kBrass);
+        text(t, tr(S_legend_edge_done), g.f_small, lx + 12, ly, kMuted, w1 + 1);
+        lx += 12 + w1 + 24;
+        circle(t, lx + 4.5f, ly + 9, 4.5f, kRaw);
+        text(t, tr(S_legend_edge_more), g.f_small, lx + 12, ly, kMuted, w2 + 1);
+    } else {
+        float w1 = measure(tr(S_legend_rests), g.f_small), w2 = measure(tr(S_legend_suggested), g.f_small);
+        float avail = left.right - left.left - 40 - 12 - 22 - 24;
+        float k = w1 + w2 > avail ? avail / (w1 + w2) : 1.0f;
+        w1 *= k; w2 *= k;
+        float lx = lcx - (12 + w1 + 24 + 22 + w2) / 2;
+        circle(t, lx + 4.5f, ly + 9, 4.5f, kRaw);
+        text(t, tr(S_legend_rests), g.f_small, lx + 12, ly, kMuted, w1 + 1);
+        lx += 12 + w1 + 24;
+        line(t, lx, ly + 9, lx + 14, ly + 9, kOut, 2);
+        text(t, tr(S_legend_suggested), g.f_small, lx + 22, ly, kMuted, w2 + 1);
+    }
 
     // steps
     float x0 = 692, x1 = kW - 32, y = 84;
-    int st = g_tune.stage;
-    float rest_p = st == TUNE_REST ? std::fmin(1.0f, (now - g_tune.t0) / (float)kRestMs) : -1;
-    draw_step(t, {x0, y, x1, y + 56}, 1, st == TUNE_REST ? 1 : st > TUNE_REST ? 2 : 0, tr(S_step_rest),
-              st == TUNE_REST ? tr(S_step_rest_active) :
-              st > TUNE_REST ? sub(tr(S_step_rest_done), {{L"n", std::to_wstring(kRestMs / 1000)}}) : L"", rest_p);
-    y += 64;
-    std::wstring n = std::to_wstring(g_tune.flicks), total = std::to_wstring(kFlicks);
-    draw_step(t, {x0, y, x1, y + 56}, 2, st == TUNE_FLICK ? 1 : st > TUNE_FLICK ? 2 : 0, tr(S_step_flick),
-              st == TUNE_FLICK ? sub(tr(g_tune.armed && g_tune.release_t ? S_step_flick_settle
-                                        : g_tune.armed ? S_step_flick_release : S_step_flick_push),
-                                     {{L"n", n}, {L"total", total}}) :
-              st > TUNE_FLICK ? sub(tr(S_step_flick_done), {{L"total", total}}) : L"",
-              st == TUNE_FLICK ? g_tune.flicks / (float)kFlicks : -1);
-    y += 64;
-    draw_step(t, {x0, y, x1, y + 56}, 3, review ? 1 : 0, tr(S_step_review), L"", -1);
-    y += 72;
+    static const Str dir_names[8] = {S_dir_right, S_dir_forward_right, S_dir_forward, S_dir_forward_left,
+                                     S_dir_left, S_dir_back_left, S_dir_back, S_dir_back_right};
+    if (edge_mode) {
+        const EdgeMeasure& em = g_tune.edge;
+        std::wstring total = std::to_wstring(kEdgeBins);
+        int done = em.settled_count();
+        draw_step(t, {x0, y, x1, y + 56}, 1, edge_review ? 2 : 1, tr(S_step_edge),
+                  edge_review ? sub(tr(S_step_edge_done), {{L"total", total}})
+                              : sub(tr(S_step_edge_active), {{L"n", std::to_wstring(done)}, {L"total", total}}),
+                  edge_review ? -1 : done / (float)kEdgeBins);
+        y += 64;
+        draw_step(t, {x0, y, x1, y + 56}, 2, edge_review ? 1 : 0, tr(S_step_review), L"", -1);
+        y += 72;
+    } else {
+        float rest_p = st == TUNE_REST ? std::fmin(1.0f, (now - g_tune.t0) / (float)kRestMs) : -1;
+        draw_step(t, {x0, y, x1, y + 56}, 1, st == TUNE_REST ? 1 : st > TUNE_REST ? 2 : 0, tr(S_step_rest),
+                  st == TUNE_REST ? tr(S_step_rest_active) :
+                  st > TUNE_REST ? sub(tr(S_step_rest_done), {{L"n", std::to_wstring(kRestMs / 1000)}}) : L"", rest_p);
+        y += 64;
+        std::wstring n = std::to_wstring(g_tune.flicks), total = std::to_wstring(kFlicks);
+        draw_step(t, {x0, y, x1, y + 56}, 2, st == TUNE_FLICK ? 1 : st > TUNE_FLICK ? 2 : 0, tr(S_step_flick),
+                  st == TUNE_FLICK ? sub(tr(g_tune.armed && g_tune.release_t ? S_step_flick_settle
+                                            : g_tune.armed ? S_step_flick_release : S_step_flick_push),
+                                         {{L"n", n}, {L"total", total}}) :
+                  st > TUNE_FLICK ? sub(tr(S_step_flick_done), {{L"total", total}}) : L"",
+                  st == TUNE_FLICK ? g_tune.flicks / (float)kFlicks : -1);
+        y += 64;
+        draw_step(t, {x0, y, x1, y + 56}, 3, review ? 1 : 0, tr(S_step_review), L"", -1);
+        y += 72;
+    }
 
     // results and findings
+    int short_k = edge_shortest(g_tune.edge_result);
+    float short_r = g_tune.edge_result.r[short_k];
+    Str short_dir = dir_names[(int)std::lround(short_k * (360.0 / kEdgeSectors) / 45.0) % 8];
     if (review) {
         const TuneResult& r = g_tune.result;
         D2D1_RECT_F box = {x0, y, x1, y + 168};
@@ -1085,28 +1307,54 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
         text(t, tr(S_res_direction), g.f_small, x0 + 16 + 2 * cw, y + 46, kMuted, cw);
         float fy = y + 76;
         if (r.peak < 0.03f) {
-            text(t, L"\u2713", g.f_h2, x0 + 16, fy, kOut, 20);
+            text(t, L"✓", g.f_h2, x0 + 16, fy, kOut, 20);
             para(t, tr(S_find_none), g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText, 84);
         } else {
-            text(t, r.gate_ok ? L"\u2713" : L"!", g.f_h2, x0 + 16, fy, r.gate_ok ? kOut : kBrass, 20);
+            text(t, r.gate_ok ? L"✓" : L"!", g.f_h2, x0 + 16, fy, r.gate_ok ? kOut : kBrass, 20);
             para(t, tr(r.gate_ok ? S_find_gate_ok : r.has_sensor ? S_find_gate_fail : S_find_no_sensor),
                  g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText, 42);
             text(t, L"!", g.f_h2, x0 + 16, fy + 46, kBrass, 20);
             para(t, sub(tr(S_find_creep), {{L"value", num(r.suggested, 2)}}), g.f_body, x0 + 40, fy + 48,
                  x1 - x0 - 56, kText, 42);
         }
+    } else if (edge_review) {
+        D2D1_RECT_F box = {x0, y, x1, y + 168};
+        fill_round(t, box, 14, kCard);
+        float cw = (x1 - x0 - 32) / 3;
+        text(t, fmt1(L"%.2f", short_r), g.f_mono_big, x0 + 16, y + 12, short_r < kEdgeFine ? kBrass : kOut, cw - 8);
+        text(t, tr(S_res_reach), g.f_small, x0 + 16, y + 46, kMuted, cw - 8);
+        text(t, tr(short_dir), g.f_big, x0 + 16 + cw, y + 12, kText, 2 * cw);
+        text(t, tr(S_res_direction), g.f_small, x0 + 16 + cw, y + 46, kMuted, 2 * cw);
+        float fy = y + 76;
+        bool fine = short_r >= kEdgeFine;
+        text(t, fine ? L"✓" : L"!", g.f_h2, x0 + 16, fy, fine ? kOut : kBrass, 20);
+        para(t, fine ? tr(S_find_edge_ok)
+                     : sub(tr(S_find_edge_short), {{L"value", num(short_r, 2)}, {L"direction", tr(short_dir)}}),
+             g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText, 84);
+    } else if (st == TUNE_EDGE) {
+        para(t, tr(S_edge_gap_hint), g.f_body, x0 + 4, y, x1 - x0 - 8, kMuted, 100);
     } else if (st == TUNE_IDLE) {
-        para(t, tr(S_tune_intro), g.f_body, x0 + 4, y, x1 - x0 - 8, kMuted, 120);
+        para(t, tr(S_tune_intro), g.f_body, x0 + 4, y, x1 - x0 - 8, kMuted, 84);
+        para(t, tr(S_edge_intro), g.f_body, x0 + 4, y + 80, x1 - x0 - 8, kMuted, 100);
     }
 
     // actions
     // buttons right to left in the steps column; long labels shrink to keep them inside it
-    struct Btn { std::wstring s; bool primary; Id id; };
+    struct Btn { std::wstring s; bool primary; Id id; uint32_t fill = 0; };   // edge actions are brass, like the edge outline
     std::vector<Btn> btns;
-    if (st == TUNE_IDLE) btns.push_back({tr(S_btn_start), true, ID_TUNE_START});
-    else if (review && g_tune.result.peak >= 0.03f)
-        btns.push_back({sub(tr(g_tune.hand ? S_btn_apply_right : S_btn_apply_left), {{L"value", num(g_tune.result.suggested, 2)}}),
+    bool right = g_tune.hand != 0;
+    if (st == TUNE_IDLE) {
+        btns.push_back({tr(S_btn_start), true, ID_TUNE_START});
+        btns.push_back({tr(S_btn_edge), false, ID_TUNE_EDGE, kBrass});
+        if (hc.edge.on) btns.push_back({tr(right ? S_btn_edge_clear_right : S_btn_edge_clear_left), false, ID_TUNE_EDGE_CLEAR});
+    } else if (review && g_tune.result.peak >= 0.03f) {
+        btns.push_back({sub(tr(right ? S_btn_apply_right : S_btn_apply_left), {{L"value", num(g_tune.result.suggested, 2)}}),
                         true, ID_TUNE_APPLY});
+    } else if (st == TUNE_EDGE && g_tune.edge.can_finish()) {
+        btns.push_back({tr(S_btn_edge_finish), false, ID_TUNE_EDGE_FINISH, kBrass});
+    } else if (edge_review && short_r < kEdgeFine) {
+        btns.push_back({tr(right ? S_btn_edge_apply_right : S_btn_edge_apply_left), false, ID_TUNE_EDGE_APPLY, kBrass});
+    }
     if (st != TUNE_IDLE) btns.push_back({tr(S_btn_restart), false, ID_TUNE_RESET});
     float need = 0;
     for (auto& b : btns) need += measure(b.s, g.f_h2) + 44;
@@ -1114,7 +1362,7 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
     float by = kH - kFootH - 24 - 48, bx = x1;
     for (auto& b : btns) {
         float w = (measure(b.s, g.f_h2) + 44) * fit;
-        draw_button(t, {bx - w, by, bx, by + 48}, b.s, b.primary, b.id);
+        draw_button(t, {bx - w, by, bx, by + 48}, b.s, b.primary, b.id, 0, b.fill);
         bx -= w + 10;
     }
 }
@@ -1401,6 +1649,33 @@ void activate(Id id, int hand) {
         set_deadzone(g_tune.hand, g_tune.result.suggested);
         commit_deadzone(g_tune.hand);
         break;
+    case ID_TUNE_EDGE: tune_start_edge(); break;
+    case ID_TUNE_EDGE_FINISH: tune_finish_edge_early(); break;
+    case ID_EDGE_ON:
+        if (!g.cfg.hand[hand].edge.on) {   // nothing measured yet: open the Tune page on this hand
+            g.page = PAGE_TUNE;
+            if (g_tune.hand != hand || !tune_measuring()) tune_reset(hand);
+            break;
+        }
+        ensure_file();
+        g.cfg.hand[hand].edge_on = !g.cfg.hand[hand].edge_on;
+        write_bool(g_ini, hand_key(hand, L"_edge_on"), g.cfg.hand[hand].edge_on);
+        saved(tr(hand ? S_what_right_edge : S_what_left_edge));
+        break;
+    case ID_TUNE_EDGE_APPLY:
+    case ID_TUNE_EDGE_CLEAR: {
+        int i = g_tune.hand;
+        g.cfg.hand[i].edge = id == ID_TUNE_EDGE_APPLY ? g_tune.edge_result : EdgeReach{};
+        ensure_file();
+        write_edge(g_ini, i, g.cfg.hand[i].edge);
+        if (id == ID_TUNE_EDGE_APPLY && !g.cfg.hand[i].edge_on) {   // a fresh measurement is meant to be used
+            g.cfg.hand[i].edge_on = true;
+            write_bool(g_ini, hand_key(i, L"_edge_on"), true);
+        }
+        saved(tr(i ? S_what_right_edge : S_what_left_edge));
+        if (id == ID_TUNE_EDGE_APPLY) tune_reset(i);
+        break;
+    }
     case ID_LANG:     language_menu(); break;
     case ID_COPY:     copy_diagnostics(); break;
     case ID_OPEN_CFG: ensure_file(); ShellExecuteW(g.hwnd, L"open", L"notepad.exe", g_ini.c_str(), nullptr, SW_SHOW); break;
@@ -1480,7 +1755,7 @@ void hide_panel() {
     ShowWindow(g.hwnd, SW_HIDE);
     KillTimer(g.hwnd, kTimerFrame);   // no drawing while hidden
     discard_target();                 // drop the back buffer and trim while in the tray
-    if (g_tune.stage == TUNE_REST || g_tune.stage == TUNE_FLICK) tune_reset(g_tune.hand);
+    if (tune_measuring()) tune_reset(g_tune.hand);
     SetProcessWorkingSetSize(GetCurrentProcess(), (SIZE_T)-1, (SIZE_T)-1);
 }
 
@@ -1643,6 +1918,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         if (wp) { g.exiting = true; DestroyWindow(h); }
         return 0;
     case WM_DESTROY:
+        edge_sampler_stop();
         Shell_NotifyIconW(NIM_DELETE, &g.nid);
         PostQuitMessage(0);
         return 0;
@@ -1805,7 +2081,7 @@ int screenshot(const std::wstring& out, const std::wstring& page, const std::wst
     g.cfg = read_config(g_ini);
     g.ini_time = file_time(g_ini);   // refresh_slow below must not re-read it and undo --lang
     apply_language(lang.empty() ? g.cfg.language : lang);
-    g.page = page == L"tune" ? PAGE_TUNE : page == L"diag" ? PAGE_DIAG : PAGE_STATUS;
+    g.page = page == L"tune" || page == L"edge" ? PAGE_TUNE : page == L"diag" ? PAGE_DIAG : PAGE_STATUS;
     if (g_fake) {
         g.cfg.enable = true; g.cfg.hand[0] = {true, true, 0.0f, 0}; g.cfg.hand[1] = {true, false, 0.20f, 100};
         g.steamvr = true; g.registered = true;
@@ -1830,6 +2106,21 @@ int screenshot(const std::wstring& out, const std::wstring& page, const std::wst
         g_tune.result = tune_compute(g_tune.pts, 0, 300, true);
         g_tune.stage = TUNE_REVIEW;
         g_tune.flicks = kFlicks;
+        {   // a finished edge measurement of a right stick short toward forward left, saved for the right hand
+            Tune keep = g_tune;
+            g_tune = Tune{};
+            g_tune.hand = 1;
+            for (int b = 0; b < kEdgeBins; ++b) {
+                float deg = b * 360.0f / kEdgeBins, d = std::fabs(deg - 150.0f);
+                if (d > 180) d = 360 - d;
+                g_tune.edge.bin[b] = d >= 80 ? 0.999f : 0.65f + 0.349f * d / 80.0f;
+            }
+            for (int b = 0; b < kEdgeBins; ++b) { g_tune.edge.passes[b] = kEdgePasses; g_tune.edge.start[b] = g_tune.edge.bin[b]; }
+            g_tune.edge_result = g_tune.edge.result();
+            g_tune.stage = TUNE_EDGE_REVIEW;
+            g.cfg.hand[1].edge = g_tune.edge_result;
+            if (page != L"edge") g_tune = keep;
+        }
         saved(tr(S_what_right_deadzone));
         g.note_until = ~0ull;
     } else {
@@ -2026,27 +2317,41 @@ int selftest() {
     check(!tune_compute(pts, 0, 100, false).gate_ok, "tune: no touch sensor -> gate not enough");
     check(tune_compute({{0.0f, 0.95f}}, 0, 10, true).suggested <= 0.95f, "tune suggestion never above 0.95");
 
-    // moving average: window in time, not in update count
-    static StickAverage av;
-    for (int k = 0; k <= 1000; ++k) av.add(k <= 500 ? 0.0f : 1.0f, 0.5f, (double)k, 100.0);
-    check(std::fabs(av.avg_x() - 1.0f) < 1e-4 && std::fabs(av.avg_y() - 0.5f) < 1e-4, "average settles on a steady value");
-    av.reset();
-    for (int k = 0; k <= 500; ++k) av.add(0.0f, 0.0f, (double)k, 100.0);
-    for (int k = 501; k <= 550; ++k) av.add(1.0f, 0.0f, (double)k, 100.0);
-    check(av.avg_x() > 0.4f && av.avg_x() < 0.6f, "average is about half way, half a window after a step");
-    float fast, slow;
-    av.reset();
-    for (int k = 0; k <= 500; ++k) av.add(k > 450 ? 1.0f : 0.0f, 0, k * 1.0, 100.0);
-    fast = av.avg_x();
-    av.reset();
-    for (int k = 0; k <= 50; ++k) av.add(k > 45 ? 1.0f : 0.0f, 0, k * 10.0, 100.0);
-    slow = av.avg_x();
-    check(std::fabs(fast - slow) < 0.1f, "same result at 1000 and 100 updates per second");
-    av.reset();
-    for (int k = 0; k <= 200; ++k) av.add(((k / 3) & 1) ? 0.6f : 0.4f, 0, k * 1.0, 100.0);
-    check(std::fabs(av.avg_x() - 0.5f) < 0.03f, "average removes fast jitter");
-    av.reset();
-    check(av.count == 0 && av.avg_x() == 0.0f, "reset empties the average");
+    // the edge stretch math, measuring, learning and smoothing are tested in
+    // test\ancora_test.cpp; here: the Tune page flow and the ini keys
+    {
+        const float pi = 3.14159265f;
+        auto reach_at = [&](float deg) {   // simulated worn stick: 0.999, dipping to 0.65 at 135 deg
+            float d = std::fabs(deg - 135.0f);
+            if (d > 180) d = 360 - d;
+            return d >= 90 ? 0.999f : 0.65f + (0.999f - 0.65f) * d / 90.0f;
+        };
+        tune_reset(1);
+        tune_start_edge(false);
+        for (int k = 0; k < 1200 && g_tune.stage == TUNE_EDGE; ++k) {   // up to 13 turns, 4 deg a frame
+            float deg = std::fmod(k * 4.0f, 360.0f), m = reach_at(deg);
+            tune_feed_edge(m * std::cos(deg * pi / 180), m * std::sin(deg * pi / 180));
+        }
+        check(g_tune.stage == TUNE_EDGE_REVIEW && g_tune.edge_result.on, "tune edge: finishes once every direction has settled");
+        const EdgeReach e = g_tune.edge_result;
+        int sk = edge_shortest(e);
+        check(sk == kEdgeSectors * 3 / 8 && std::fabs(e.r[sk] - 0.65f) < 0.02f, "tune edge: review shows the shortest reach, 0.65 at 135 deg");
+        tune_reset(1);
+        tune_start_edge(false);
+        for (int k = 0; k < 300; ++k) tune_feed_edge(0.9f * std::cos(k * 0.05f), 0.0f);   // left and right only
+        check(g_tune.stage == TUNE_EDGE, "tune edge: never finishes without reaching every direction");
+        tune_reset(0);
+        write_edge(p, 1, e);
+        check(read_config(p).hand[1].edge.on && !read_config(p).hand[0].edge.on, "edge: ini write and read back per hand");
+        write_edge(p, 1, EdgeReach{});
+        check(!read_config(p).hand[1].edge.on, "edge: cleared edge reads as off");
+        check(read_config(p).hand[1].edge_on, "edge: switch reads on when the key is missing");
+        write_edge(p, 1, e);
+        write_bool(p, L"right_edge_on", false);
+        c = read_config(p);
+        check(c.hand[1].edge.on && !c.hand[1].edge_on, "edge: switched off keeps the measured values");
+        DeleteFileW(p.c_str());
+    }
 
     // tune run on a simulated stick that never centers: it creeps forward and jitters
     // every frame, and after each flick it settles off center, never still

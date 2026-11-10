@@ -41,6 +41,8 @@
   <set_gate>Daumensperre</set_gate>
   <set_smoothing>Glättung</set_smoothing>
   <set_deadzone>Totzone</set_deadzone>
+  <set_edge>Randausgleich</set_edge>
+  <edge_not_measured>nicht gemessen, abstimmen</edge_not_measured>
   <value_off>aus</value_off>
   <value_ms>{n} ms</value_ms>
   <value_percent>{n} %</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>{value} links übernehmen</btn_apply_left>
   <btn_apply_right>{value} rechts übernehmen</btn_apply_right>
   <btn_restart>Neu beginnen</btn_restart>
+  <edge_intro>Randausgleich: Erreicht der Stick in manchen Richtungen nicht den vollen Ausschlag, den Stick am Rand entlang kreisen lassen. ancora streckt diese Richtungen dann auf vollen Ausschlag.</edge_intro>
+  <btn_edge>Rand messen</btn_edge>
+  <btn_edge_apply_left>Linken Stick strecken</btn_edge_apply_left>
+  <btn_edge_apply_right>Rechten Stick strecken</btn_edge_apply_right>
+  <btn_edge_clear_left>Ausgleich links entfernen</btn_edge_clear_left>
+  <btn_edge_clear_right>Ausgleich rechts entfernen</btn_edge_clear_right>
+  <step_edge>Stick am Rand entlang kreisen</step_edge>
+  <res_reach>kürzester Ausschlag</res_reach>
+  <find_edge_ok>Der Stick erreicht in jeder Richtung den vollen Ausschlag. Kein Ausgleich nötig.</find_edge_ok>
+  <find_edge_short>Richtung {direction}: Der Stick erreicht nur {value}. Der Ausgleich bringt ihn dort auf vollen Ausschlag, nahe am Rand etwas empfindlicher.</find_edge_short>
+  <legend_reach>Wie weit er reicht</legend_reach>
+  <step_edge_active>Ganz durchdrücken und langsam kreisen. {n} von {total} Richtungen fertig.</step_edge_active>
+  <step_edge_done>Alle {total} Richtungen haben den Rand erreicht.</step_edge_done>
+  <legend_edge_done>Rand erreicht</legend_edge_done>
+  <legend_edge_more>Hier noch einmal</legend_edge_more>
+  <btn_edge_finish>Damit abschließen</btn_edge_finish>
+  <edge_gap_hint>Manche Richtungen nicht erreichbar? Sind die Lücken klein, füllt „Damit abschließen“ sie aus den Nachbarrichtungen auf.</edge_gap_hint>
   <tile_driver>Treiber</tile_driver>
   <drv_loaded>Geladen</drv_loaded>
   <drv_registered>Registriert</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>Glättung rechts</what_right_smoothing>
   <what_left_deadzone>Totzone links</what_left_deadzone>
   <what_right_deadzone>Totzone rechts</what_right_deadzone>
+  <what_left_edge>Randausgleich links</what_left_edge>
+  <what_right_edge>Randausgleich rechts</what_right_edge>
   <what_language>Sprache</what_language>
   <note_copied>Diagnose kopiert</note_copied>
   <note_no_log>Ort des SteamVR-Logs unbekannt</note_no_log>

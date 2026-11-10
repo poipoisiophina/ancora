@@ -43,6 +43,8 @@
   <set_gate>lupa luka</set_gate>
   <set_smoothing>tawa suwi</set_smoothing>
   <set_deadzone>ma moli</set_deadzone>
+  <set_edge>suli selo</set_edge>
+  <edge_not_measured>lukin ala, o pona</edge_not_measured>
   <value_off>ala</value_off>
   <value_ms>{n} ms</value_ms>
   <value_percent>{n}%</value_percent>
@@ -82,6 +84,23 @@
   <btn_apply_left>o pana e {value} tawa soto</btn_apply_left>
   <btn_apply_right>o pana e {value} tawa teje</btn_apply_right>
   <btn_restart>o open sin</btn_restart>
+  <edge_intro>suli selo: palisa li ken ala tawa ale lon nasin mute la, o tawa sike e ona lon selo. ancora li suli e nasin ni tawa ale.</edge_intro>
+  <btn_edge>o lukin e selo</btn_edge>
+  <btn_edge_apply_left>o suli e palisa soto</btn_edge_apply_left>
+  <btn_edge_apply_right>o suli e palisa teje</btn_edge_apply_right>
+  <btn_edge_clear_left>o weka e suli soto</btn_edge_clear_left>
+  <btn_edge_clear_right>o weka e suli teje</btn_edge_clear_right>
+  <step_edge>o tawa sike e palisa lon selo</step_edge>
+  <res_reach>tawa lili nanpa wan</res_reach>
+  <find_edge_ok>palisa li tawa ale lon nasin ale. suli li wile ala.</find_edge_ok>
+  <find_edge_short>nasin {direction} la palisa li tawa {value} taso. suli li pana e tawa ale lon ni. poka selo la ona li pilin mute lili.</find_edge_short>
+  <legend_reach>ona li tawa seme</legend_reach>
+  <step_edge_active>o tawa e ona ale, o tawa sike lili. nasin {n} tan {total} li pini.</step_edge_active>
+  <step_edge_done>nasin ale {total} li kama lon selo.</step_edge_done>
+  <legend_edge_done>ona li kama lon selo</legend_edge_done>
+  <legend_edge_more>o tawa e ona lon ni sin</legend_edge_more>
+  <btn_edge_finish>o pini kepeken ni</btn_edge_finish>
+  <edge_gap_hint>sina ken ala tawa nasin mute anu seme? lupa li lili la, "o pini kepeken ni" li pana e ijo tan nasin poka.</edge_gap_hint>
   <tile_driver>ilo anpa</tile_driver>
   <drv_loaded>ona li lon</drv_loaded>
   <drv_registered>nimi ona li lon</drv_registered>
@@ -116,6 +135,8 @@
   <what_right_smoothing>tawa suwi teje</what_right_smoothing>
   <what_left_deadzone>ma moli soto</what_left_deadzone>
   <what_right_deadzone>ma moli teje</what_right_deadzone>
+  <what_left_edge>suli selo soto</what_left_edge>
+  <what_right_edge>suli selo teje</what_right_edge>
   <what_language>toki</what_language>
   <note_copied>lukin insa li sama</note_copied>
   <note_no_log>mi sona ala e ma pi lipu SteamVR</note_no_log>

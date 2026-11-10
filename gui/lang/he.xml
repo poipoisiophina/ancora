@@ -41,6 +41,8 @@
   <set_gate>שער אגודל</set_gate>
   <set_smoothing>החלקה</set_smoothing>
   <set_deadzone>אזור מת</set_deadzone>
+  <set_edge>מתיחת קצה</set_edge>
+  <edge_not_measured>לא נמדד, כוונון</edge_not_measured>
   <value_off>כבוי</value_off>
   <value_ms>{n} מ"ש</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>החלת {value} על השמאלי</btn_apply_left>
   <btn_apply_right>החלת {value} על הימני</btn_apply_right>
   <btn_restart>התחלה מחדש</btn_restart>
+  <edge_intro>מתיחת קצה: אם הסטיק לא מגיע עד הסוף בחלק מהכיוונים, סובבו אותו לאורך הקצה ו-ancora ימתח את הכיוונים האלה עד הסוף.</edge_intro>
+  <btn_edge>מדידת קצה</btn_edge>
+  <btn_edge_apply_left>מתיחת הסטיק השמאלי</btn_edge_apply_left>
+  <btn_edge_apply_right>מתיחת הסטיק הימני</btn_edge_apply_right>
+  <btn_edge_clear_left>הסרת מתיחה שמאלית</btn_edge_clear_left>
+  <btn_edge_clear_right>הסרת מתיחה ימנית</btn_edge_clear_right>
+  <step_edge>סובבו את הסטיק לאורך הקצה</step_edge>
+  <res_reach>הטווח הקצר ביותר</res_reach>
+  <find_edge_ok>הסטיק מגיע עד הסוף בכל כיוון. אין צורך במתיחה.</find_edge_ok>
+  <find_edge_short>כיוון {direction}: הסטיק מגיע רק עד {value}. המתיחה תביא אותו עד הסוף שם, מעט רגיש יותר ליד הקצה.</find_edge_short>
+  <legend_reach>עד כמה הוא מגיע</legend_reach>
+  <step_edge_active>הטו עד הסוף וסובבו לאט. הושלמו {n} מתוך {total} כיוונים.</step_edge_active>
+  <step_edge_done>כל {total} הכיוונים הגיעו לקצה.</step_edge_done>
+  <legend_edge_done>הגיע לקצה</legend_edge_done>
+  <legend_edge_more>הטו לכאן שוב</legend_edge_more>
+  <btn_edge_finish>סיום עם אלה</btn_edge_finish>
+  <edge_gap_hint>יש כיוונים שאי אפשר להגיע אליהם? כשהפערים קטנים, "סיום עם אלה" ימלא אותם מהכיוונים השכנים.</edge_gap_hint>
   <tile_driver>מנהל התקן</tile_driver>
   <drv_loaded>נטען</drv_loaded>
   <drv_registered>רשום</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>החלקה ימנית</what_right_smoothing>
   <what_left_deadzone>אזור מת שמאלי</what_left_deadzone>
   <what_right_deadzone>אזור מת ימני</what_right_deadzone>
+  <what_left_edge>מתיחת קצה שמאלית</what_left_edge>
+  <what_right_edge>מתיחת קצה ימנית</what_right_edge>
   <what_language>שפה</what_language>
   <note_copied>האבחון הועתק</note_copied>
   <note_no_log>מיקום היומן של SteamVR לא ידוע</note_no_log>

@@ -39,6 +39,10 @@
     X(dir_left) X(dir_back_left) X(dir_back) X(dir_back_right) \
     X(find_none) X(find_gate_ok) X(find_gate_fail) X(find_no_sensor) X(find_creep) \
     X(tune_intro) X(btn_start) X(btn_apply_left) X(btn_apply_right) X(btn_restart) \
+    X(edge_intro) X(btn_edge) X(btn_edge_apply_left) X(btn_edge_apply_right) \
+    X(btn_edge_clear_left) X(btn_edge_clear_right) X(step_edge) X(step_edge_active) X(step_edge_done) \
+    X(res_reach) X(find_edge_ok) X(find_edge_short) X(legend_reach) X(legend_edge_done) X(legend_edge_more) \
+    X(set_edge) X(edge_not_measured) X(btn_edge_finish) X(edge_gap_hint) \
     X(tile_driver) X(drv_loaded) X(drv_registered) X(drv_missing) X(drv_patched) X(drv_not_seen) \
     X(tile_logic) X(logic_gen) X(logic_none) X(logic_loaded) \
     X(tile_config) X(cfg_pending) X(cfg_applied) \
@@ -48,6 +52,7 @@
     X(btn_copy) X(btn_open_cfg) X(btn_open_log) \
     X(note_saved) X(what_anchoring) X(what_left_gate) X(what_right_gate) \
     X(what_left_smoothing) X(what_right_smoothing) X(what_left_deadzone) X(what_right_deadzone) \
+    X(what_left_edge) X(what_right_edge) \
     X(what_language) X(note_copied) X(note_no_log) \
     X(tray_open) X(tray_exit)
 

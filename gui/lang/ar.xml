@@ -41,6 +41,8 @@
   <set_gate>بوابة الإبهام</set_gate>
   <set_smoothing>التنعيم</set_smoothing>
   <set_deadzone>المنطقة الميتة</set_deadzone>
+  <set_edge>مدّ الحافة</set_edge>
+  <edge_not_measured>لم تُقَس، اضبط</edge_not_measured>
   <value_off>متوقف</value_off>
   <value_ms>{n} ملي ث</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>طبّق {value} على اليسرى</btn_apply_left>
   <btn_apply_right>طبّق {value} على اليمنى</btn_apply_right>
   <btn_restart>البدء من جديد</btn_restart>
+  <edge_intro>مدّ الحافة: إذا كانت العصا لا تصل إلى آخرها في بعض الاتجاهات، فأدِرها على طول حافتها وسيمدّ ancora تلك الاتجاهات حتى آخرها.</edge_intro>
+  <btn_edge>قياس الحافة</btn_edge>
+  <btn_edge_apply_left>مدّ العصا اليسرى</btn_edge_apply_left>
+  <btn_edge_apply_right>مدّ العصا اليمنى</btn_edge_apply_right>
+  <btn_edge_clear_left>إزالة مدّ اليسرى</btn_edge_clear_left>
+  <btn_edge_clear_right>إزالة مدّ اليمنى</btn_edge_clear_right>
+  <step_edge>أدِر العصا على طول حافتها</step_edge>
+  <res_reach>أقصر مدى</res_reach>
+  <find_edge_ok>العصا تصل إلى آخرها في كل اتجاه. لا حاجة إلى المدّ.</find_edge_ok>
+  <find_edge_short>الاتجاه {direction}: العصا تصل إلى {value} فقط. المدّ يجعلها تصل إلى آخرها هناك، مع حساسية أعلى قليلًا قرب الحافة.</find_edge_short>
+  <legend_reach>إلى أين تصل</legend_reach>
+  <step_edge_active>ادفعها إلى آخرها وأدِرها ببطء. اكتمل {n} من {total} اتجاهًا.</step_edge_active>
+  <step_edge_done>وصلت كل الاتجاهات ({total}) إلى الحافة.</step_edge_done>
+  <legend_edge_done>وصلت الحافة</legend_edge_done>
+  <legend_edge_more>ادفع هنا مرة أخرى</legend_edge_more>
+  <btn_edge_finish>إنهاء بهذا</btn_edge_finish>
+  <edge_gap_hint>لا تصل إلى بعض الاتجاهات؟ عندما تصغر الفجوات، يملؤها «إنهاء بهذا» من الاتجاهات المجاورة.</edge_gap_hint>
   <tile_driver>برنامج التشغيل</tile_driver>
   <drv_loaded>محمَّل</drv_loaded>
   <drv_registered>مسجَّل</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>التنعيم الأيمن</what_right_smoothing>
   <what_left_deadzone>المنطقة الميتة اليسرى</what_left_deadzone>
   <what_right_deadzone>المنطقة الميتة اليمنى</what_right_deadzone>
+  <what_left_edge>مدّ الحافة اليسرى</what_left_edge>
+  <what_right_edge>مدّ الحافة اليمنى</what_right_edge>
   <what_language>اللغة</what_language>
   <note_copied>نُسخ التشخيص</note_copied>
   <note_no_log>موقع سجل SteamVR غير معروف</note_no_log>

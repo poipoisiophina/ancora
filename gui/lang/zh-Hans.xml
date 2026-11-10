@@ -41,6 +41,8 @@
   <set_gate>拇指门控</set_gate>
   <set_smoothing>平滑</set_smoothing>
   <set_deadzone>死区</set_deadzone>
+  <set_edge>边缘拉伸</set_edge>
+  <edge_not_measured>未测量，去调校</edge_not_measured>
   <value_off>关</value_off>
   <value_ms>{n} 毫秒</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>将 {value} 应用到左侧</btn_apply_left>
   <btn_apply_right>将 {value} 应用到右侧</btn_apply_right>
   <btn_restart>重新开始</btn_restart>
+  <edge_intro>边缘拉伸：如果摇杆在某些方向推不到底，沿边缘转动摇杆，ancora 会把这些方向拉伸到满幅。</edge_intro>
+  <btn_edge>测量边缘</btn_edge>
+  <btn_edge_apply_left>拉伸左摇杆</btn_edge_apply_left>
+  <btn_edge_apply_right>拉伸右摇杆</btn_edge_apply_right>
+  <btn_edge_clear_left>移除左侧拉伸</btn_edge_clear_left>
+  <btn_edge_clear_right>移除右侧拉伸</btn_edge_clear_right>
+  <step_edge>沿边缘转动摇杆</step_edge>
+  <res_reach>最短行程</res_reach>
+  <find_edge_ok>摇杆在每个方向都能推到底，无需拉伸。</find_edge_ok>
+  <find_edge_short>{direction}方向：摇杆只能到 {value}。拉伸后该方向可达满幅，靠近边缘时稍微更灵敏。</find_edge_short>
+  <legend_reach>能到达的范围</legend_reach>
+  <step_edge_active>推到底并慢慢转圈。已完成 {n} / {total} 个方向。</step_edge_active>
+  <step_edge_done>全部 {total} 个方向都已到达边缘。</step_edge_done>
+  <legend_edge_done>已到边缘</legend_edge_done>
+  <legend_edge_more>这里再推一次</legend_edge_more>
+  <btn_edge_finish>就这样完成</btn_edge_finish>
+  <edge_gap_hint>有些方向推不到？空缺较小时，“就这样完成”会用相邻方向补齐。</edge_gap_hint>
   <tile_driver>驱动</tile_driver>
   <drv_loaded>已加载</drv_loaded>
   <drv_registered>已注册</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>右平滑</what_right_smoothing>
   <what_left_deadzone>左死区</what_left_deadzone>
   <what_right_deadzone>右死区</what_right_deadzone>
+  <what_left_edge>左边缘拉伸</what_left_edge>
+  <what_right_edge>右边缘拉伸</what_right_edge>
   <what_language>语言</what_language>
   <note_copied>诊断已复制</note_copied>
   <note_no_log>SteamVR 日志位置未知</note_no_log>

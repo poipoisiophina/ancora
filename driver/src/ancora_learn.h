@@ -1,0 +1,67 @@
+// ancora_learn.h
+// The parts of the logic dll's stick handling that need no SteamVR or Windows,
+// kept here so test\ancora_test.cpp can run them: forming whole x/y pairs from
+// separate axis updates, and the bookkeeping of edge learning during play (when
+// learned reach is saved, and what a config reload keeps).
+
+#pragma once
+#include <cstdint>
+#include <string>
+#include "ancora_edge.h"
+
+// x and y arrive as two separate updates. A pair is whole once both axes are in;
+// the same axis twice in a row means the other one did not change, so the pair
+// so far is whole too. Only whole pairs are used for edge learning and published
+// to the panel's edge measurement, never a new x with an old y.
+struct StickPair {
+    float raw_x = 0, raw_y = 0;         // latest value of each axis
+    unsigned fresh = 0;                 // bit0 x, bit1 y updated since the last pair
+    uint32_t seq = 0;                   // bumps on every pair
+    float x = 0, y = 0;                 // the latest whole pair
+
+    // one axis update; returns how many pairs it completed (0, 1 or 2)
+    int update(bool is_x, float v) {
+        int made = 0;
+        unsigned bit = is_x ? 1u : 2u;
+        if (fresh & bit) { make(); ++made; }
+        (is_x ? raw_x : raw_y) = v;
+        fresh |= bit;
+        if (fresh == 3) { make(); ++made; }
+        return made;
+    }
+
+private:
+    void make() { x = raw_x; y = raw_y; ++seq; fresh = 0; }
+};
+
+const uint64_t kEdgeSaveMs = 5000;      // learned reach is saved this long after the last raise
+
+// per hand bookkeeping of edge learning
+struct EdgeLearnState {
+    EdgeLearner learner;
+    bool dirty = false;                 // learned reach not saved yet
+    uint64_t last_ms = 0;               // last raise
+    std::string text;                   // <hand>_edge as last read from the ini
+
+    // a whole pair; returns true when it raised the reach
+    bool on_pair(EdgeReach& e, float x, float y, uint64_t now) {
+        if (!learner.feed(e, x, y)) return false;
+        dirty = true;
+        last_ms = now;
+        return true;
+    }
+
+    // time to save: learned something, and nothing more for kEdgeSaveMs
+    bool save_due(uint64_t now) const { return dirty && now - last_ms >= kEdgeSaveMs; }
+
+    // the config file was read again. loaded: the edge as read; current: the one in
+    // use, with any learning not saved yet. When only other keys changed, unsaved
+    // learning is kept; a changed edge in the file (a new measurement, removed, or
+    // learned values just saved) replaces it.
+    void reload(EdgeReach& loaded, const EdgeReach& current, const std::string& loaded_text) {
+        bool same = loaded_text == text;
+        if (dirty && same && loaded.on) loaded = current;
+        else dirty = false;
+        text = loaded_text;
+    }
+};

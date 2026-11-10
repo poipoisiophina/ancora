@@ -81,6 +81,32 @@ Not sure about the deadzone? Let ancora measure your stick:
    second each time after letting go.
 4. Read the result and press **Apply** if you want the suggested deadzone.
 
+### Stick does not reach full in some directions?
+
+A worn stick can stop short on one side: for example, you push it all the way
+to the top left, but the game only gets about two thirds. ancora can stretch
+those directions back to full:
+
+1. On the Tune page, pick the controller, press **Measure edge**.
+2. **Push the stick all the way and circle slowly** along its edge. Dots turn
+   yellow where the edge is reached and stay red where it needs another pass;
+   it finishes by itself once every direction is yellow.
+3. The plot shows how far the stick reaches in each direction. Press
+   **Stretch ... stick** to apply it.
+
+A worn stick does not stop at the same place every time, so the measurement
+can come out short in places. While you play, ancora keeps watching: when the
+stick goes further than the measured edge in some direction, that direction
+is raised to match, and saved a few seconds later. The stretch only ever gets
+gentler this way, never stronger. Only that direction and its close neighbours
+change, so a worn spot stays stretched even when the stick goes further right
+beside it, and a single odd reading is ignored. Games get full a little (4 %)
+before the furthest edge seen, so an ordinary full push still counts as full.
+
+The stretched directions get a little more sensitive near the edge. Your
+deadzone keeps working as before. The Status page draws the outline in yellow
+while a stretch is on. To undo it, press **Remove ... stretch** on the Tune page.
+
 ### Diagnostics page
 
 Only needed when something is wrong. **Copy diagnostics** copies a report you
@@ -177,10 +203,22 @@ Everything is rebuilt from source; the repo holds no binaries.
 
 Needs Visual Studio 2022 Build Tools with C++ (x64), git, and Windows 10 or 11.
 
+Tests run on every build, and a failure stops it, so nothing untested is
+deployed into a running SteamVR or packed into an installer:
+
+- `test/ancora_test.cpp`, driver side: edge stretch, edge measuring, edge
+  learning, whole x/y pairs, saving learned reach, smoothing. Runs before any
+  dll is built, also in the quick logic only build.
+- `ancora.exe --selftest`, panel side: ini files, the Tune page flow, every
+  language file. Runs in `build_driver.bat all`, so also in `package.bat`.
+
 Layout:
 
 - `driver/src/driver_ancora.cpp` fixed loader: hooks SteamVR's driver input calls.
 - `driver/src/ancora_logic.cpp` the behaviour, hot reloadable.
+- `driver/src/ancora_edge.h`, `ancora_learn.h`, `ancora_average.h` the stick math,
+  shared by the logic dll, the panel and the tests.
+- `test/ancora_test.cpp` driver side tests.
 - `gui/src/ancora_panel.cpp` the panel.
 - `gui/src/ancora_lang.h` panel text loading; `gui/lang/*.xml` one file per language.
 - `steamvr.ps1` SteamVR registration, used by the scripts and the installer.

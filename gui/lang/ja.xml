@@ -41,6 +41,8 @@
   <set_gate>親指ゲート</set_gate>
   <set_smoothing>スムージング</set_smoothing>
   <set_deadzone>デッドゾーン</set_deadzone>
+  <set_edge>端の補正</set_edge>
+  <edge_not_measured>未測定、調整へ</edge_not_measured>
   <value_off>オフ</value_off>
   <value_ms>{n} ms</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>左に {value} を適用</btn_apply_left>
   <btn_apply_right>右に {value} を適用</btn_apply_right>
   <btn_restart>やり直す</btn_restart>
+  <edge_intro>端の補正: スティックが一部の方向でいっぱいまで届かない場合、端に沿って回すと、ancora がその方向をいっぱいまで届くように広げます。</edge_intro>
+  <btn_edge>端を測定</btn_edge>
+  <btn_edge_apply_left>左スティックを補正</btn_edge_apply_left>
+  <btn_edge_apply_right>右スティックを補正</btn_edge_apply_right>
+  <btn_edge_clear_left>左の補正を解除</btn_edge_clear_left>
+  <btn_edge_clear_right>右の補正を解除</btn_edge_clear_right>
+  <step_edge>スティックを端に沿って回す</step_edge>
+  <res_reach>最短の届く範囲</res_reach>
+  <find_edge_ok>スティックはすべての方向でいっぱいまで届きます。補正は不要です。</find_edge_ok>
+  <find_edge_short>{direction} 方向ではスティックが {value} までしか届きません。補正でいっぱいまで届くようになり、端の近くでは少し敏感になります。</find_edge_short>
+  <legend_reach>届く範囲</legend_reach>
+  <step_edge_active>いっぱいまで倒してゆっくり回してください。{n} / {total} 方向完了。</step_edge_active>
+  <step_edge_done>{total} 方向すべてが端に届きました。</step_edge_done>
+  <legend_edge_done>端に到達</legend_edge_done>
+  <legend_edge_more>ここをもう一度</legend_edge_more>
+  <btn_edge_finish>これで完了</btn_edge_finish>
+  <edge_gap_hint>届かない方向がありますか? 隙間が小さくなれば、「これで完了」で隣の方向から補います。</edge_gap_hint>
   <tile_driver>ドライバー</tile_driver>
   <drv_loaded>読み込み済み</drv_loaded>
   <drv_registered>登録済み</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>右のスムージング</what_right_smoothing>
   <what_left_deadzone>左のデッドゾーン</what_left_deadzone>
   <what_right_deadzone>右のデッドゾーン</what_right_deadzone>
+  <what_left_edge>左の端の補正</what_left_edge>
+  <what_right_edge>右の端の補正</what_right_edge>
   <what_language>言語</what_language>
   <note_copied>診断をコピーしました</note_copied>
   <note_no_log>SteamVR ログの場所が不明です</note_no_log>

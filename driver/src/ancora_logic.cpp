@@ -2,7 +2,8 @@
 // Hot swappable ancora behaviour, loaded by driver_ancora.dll. Tracks each
 // hand's /input/joystick/{x,y,touch} components and rewrites stick values per
 // ancora.ini, in this order: touch gate (thumb off the cap -> 0,0), optional
-// moving average, optional radial deadzone. Publishes live state to shared memory for the ancora panel.
+// moving average, optional radial deadzone and edge stretch (ancora_edge.h).
+// Publishes live state to shared memory for the ancora panel.
 // Rebuild this dll while SteamVR runs; the loader swaps it in.
 
 #include <openvr_driver.h>
@@ -16,6 +17,8 @@
 #include "ancora_host_api.h"
 #include "ancora_state.h"
 #include "ancora_average.h"
+#include "ancora_edge.h"
+#include "ancora_learn.h"
 
 using namespace vr;
 
@@ -30,6 +33,7 @@ struct Config {
     bool  touch_gate[2] = {true, true};
     float deadzone[2]   = {0.0f, 0.0f};
     int   average_ms[2] = {0, 0};          // moving average window, 0 = off
+    EdgeReach edge[2];                     // edge stretch, off unless measured
 };
 
 struct Stick {
@@ -38,6 +42,8 @@ struct Stick {
     bool  touch = false;
     void* iface = nullptr;
     uint64_t last_ms = 0;               // last update from the controller driver
+    StickPair pair;                     // whole x/y pairs (ancora_learn.h)
+    EdgeLearnState learn;               // edge learning during play
     StickAverage avg;
 };
 
@@ -104,10 +110,11 @@ float output(const Stick& s, int i, bool want_x) {
         if (s.avg.count) { x = s.avg.avg_x(); y = s.avg.avg_y(); }
         float m = std::sqrt(x * x + y * y);
         float dz = g_cfg.deadzone[i];
-        if (dz > 0.0f && dz < 1.0f) {
-            if (m < dz) return 0.0f;
-            float k = (m - dz) / (1.0f - dz) / m;
-            x *= k; y *= k;
+        if (!(dz > 0.0f && dz < 1.0f)) dz = 0.0f;
+        if (dz > 0.0f || g_cfg.edge[i].on) {
+            float o = edge_map(g_cfg.edge[i], x, y, m, dz);
+            if (o <= 0.0f) return 0.0f;
+            x *= o / m; y *= o / m;
         }
     }
     return want_x ? x : y;
@@ -135,6 +142,7 @@ void publish() {
         h.gated = moving && h.out_x == 0.0f && h.out_y == 0.0f;
         h.updates = g_updates[i];
         h.last_update_ms = s.last_ms;
+        h.pair_seq = s.pair.seq; h.pair_x = s.pair.x; h.pair_y = s.pair.y;
         strncpy_s(h.model, g_model[i].c_str(), _TRUNCATE);
     }
     MemoryBarrier();
@@ -190,6 +198,7 @@ void load_config(bool force) {
     g_ini_time = fa.ftLastWriteTime;
     const char* f = g_ini.c_str();
     Config c;
+    std::string edge_text[2];
     c.enable  = GetPrivateProfileIntA("ancora", "enable", 0, f) != 0;
     c.hand[0] = GetPrivateProfileIntA("ancora", "left", 1, f) != 0;
     c.hand[1] = GetPrivateProfileIntA("ancora", "right", 0, f) != 0;
@@ -199,16 +208,26 @@ void load_config(bool force) {
         c.deadzone[i]   = read_deadzone(f, (k + "_deadzone").c_str());
         int ms = GetPrivateProfileIntA("ancora", (k + "_average_ms").c_str(), 0, f);
         c.average_ms[i] = ms < 0 ? 0 : ms > kMaxAverageMs ? kMaxAverageMs : ms;
+        char edge[512]{};
+        GetPrivateProfileStringA("ancora", (k + "_edge").c_str(), "", edge, sizeof(edge), f);
+        c.edge[i] = edge_parse(edge);
+        if (edge[0] && !c.edge[i].on) log(k + "_edge unreadable, edge stretch off");
+        // switched off from the panel: the measured values stay in the file for later
+        if (!GetPrivateProfileIntA("ancora", (k + "_edge_on").c_str(), 1, f)) c.edge[i].on = false;
+        edge_text[i] = edge;
     }
     std::lock_guard<std::mutex> lk(g_mu);
+    for (int i = 0; i < 2; ++i) g_s[i].learn.reload(c.edge[i], g_cfg.edge[i], edge_text[i]);
     g_cfg = c;
     for (int i = 0; i < 2; ++i) { update_average(g_s[i], i); repush(i, 0); }
     publish();
-    char line[200];
+    char line[240];
     std::snprintf(line, sizeof(line),
-                  "config enable=%d left=%d gate=%d avg=%dms dz=%.2f right=%d gate=%d avg=%dms dz=%.2f",
+                  "config enable=%d left=%d gate=%d avg=%dms dz=%.2f edge=%.2f right=%d gate=%d avg=%dms dz=%.2f edge=%.2f",
                   c.enable, c.hand[0], c.touch_gate[0], c.average_ms[0], c.deadzone[0],
-                  c.hand[1], c.touch_gate[1], c.average_ms[1], c.deadzone[1]);
+                  c.edge[0].on ? c.edge[0].r[edge_shortest(c.edge[0])] : 0.0f,
+                  c.hand[1], c.touch_gate[1], c.average_ms[1], c.deadzone[1],
+                  c.edge[1].on ? c.edge[1].r[edge_shortest(c.edge[1])] : 0.0f);
     log(line);
 }
 
@@ -245,6 +264,31 @@ void on_bool(void*, uint64_t h, bool* v, double dt) {
     }
 }
 
+// edge learning during play: a whole x/y pair further out than the stored reach
+// raises it (ancora_edge.h); saved to the ini kEdgeSaveMs after the last raise; g_mu held
+void learn_edge(int i) {
+    if (!g_cfg.enable || !g_cfg.hand[i] || !g_cfg.edge[i].on) return;
+    g_s[i].learn.on_pair(g_cfg.edge[i], g_s[i].pair.x, g_s[i].pair.y, GetTickCount64());
+}
+
+// write learned reach to the ini once the stick has stopped raising it; the
+// file change reloads the config, which then holds the same values
+void save_learned(uint64_t now) {
+    for (int i = 0; i < 2; ++i) {
+        std::string text;
+        {
+            std::lock_guard<std::mutex> lk(g_mu);
+            if (!g_s[i].learn.save_due(now)) continue;
+            g_s[i].learn.dirty = false;
+            text = edge_format(g_cfg.edge[i]);
+        }
+        if (text.empty()) continue;
+        std::string key = std::string(kHand[i]) + "_edge";
+        WritePrivateProfileStringA("ancora", key.c_str(), text.c_str(), g_ini.c_str());
+        log(std::string(kHand[i]) + " edge learned during play, saved");
+    }
+}
+
 void on_scalar(void*, uint64_t h, float* v, double) {
     for (int i = 0; i < 2; ++i) {
         Stick& s = g_s[i];
@@ -252,6 +296,7 @@ void on_scalar(void*, uint64_t h, float* v, double) {
         if (!is_x && !is_y) continue;
         std::lock_guard<std::mutex> lk(g_mu);
         (is_x ? s.raw_x : s.raw_y) = *v;
+        if (s.pair.update(is_x, *v)) learn_edge(i);
         update_average(s, i);
         *v = output(s, i, is_x);
         ++g_updates[i];
@@ -270,6 +315,7 @@ void on_frame() {
     uint64_t now = GetTickCount64();
     if (now - g_last_check >= kConfigPollMs) {
         g_last_check = now;
+        save_learned(now);
         load_config(false);
         // heartbeat, so the panel can tell an idle stick from a stopped driver
         std::lock_guard<std::mutex> lk(g_mu);

@@ -5,6 +5,8 @@ rem   build_driver.bat         logic only: driver\ancora\logic\ancora_logic.dll
 rem                            (hot reloaded by the running driver, no restart)
 rem   build_driver.bat all     also the loader driver_ancora.dll (needs SteamVR closed),
 rem                            the panel and the probe/reader tools in src\bin
+rem Both run the driver tests (test\ancora_test.cpp) first; "all" also runs the
+rem panel self test. Any failure stops the build, so package.bat never packs it.
 rem Fetches the OpenVR SDK into external\openvr first if it is missing.
 setlocal
 cd /d %~dp0
@@ -31,6 +33,16 @@ if /i "%1"=="all" (
 )
 if not exist driver\obj mkdir driver\obj
 if not exist driver\ancora\logic mkdir driver\ancora\logic
+rem driver side tests first (test\ancora_test.cpp): a failing test stops the build
+rem before any dll is copied or deployed into a running SteamVR
+cl /nologo /std:c++17 /O2 /EHsc /MT /W3 /Fodriver\obj\ test\ancora_test.cpp /Fe:driver\obj\ancora_test.exe >nul || (echo driver tests did not compile & exit /b 1)
+driver\obj\ancora_test.exe > driver\obj\ancora_test.log
+if errorlevel 1 (
+    findstr /b FAIL driver\obj\ancora_test.log
+    echo driver tests failed, nothing built or deployed, full output in driver\obj\ancora_test.log
+    exit /b 1
+)
+for /f "delims=" %%l in ('findstr /c:"test(s)" driver\obj\ancora_test.log') do echo driver tests: %%l
 set CL_OPTS=/nologo /std:c++17 /O2 /EHsc /MT /LD /W3 /Iexternal\openvr\headers /Fodriver\obj\
 rem build to obj first, then copy, so the loader never sees a half written dll
 cl %CL_OPTS% driver\src\ancora_logic.cpp /Fe:driver\obj\ancora_logic.dll /link /NOIMPLIB /NOEXP || exit /b 1
@@ -63,6 +75,14 @@ link /nologo /SUBSYSTEM:WINDOWS /OUT:gui\bin\ancora.exe driver\obj\ancora_panel.
    d2d1.lib dwrite.lib windowscodecs.lib shell32.lib user32.lib gdi32.lib ole32.lib || exit /b 1
 copy /y gui\ancora.vrmanifest gui\bin\ >nul
 echo built gui\bin\ancora.exe
+rem panel self test: ini files, the Tune page flow and every language file
+gui\bin\ancora.exe --selftest > driver\obj\panel_test.log
+if errorlevel 1 (
+    findstr /b FAIL driver\obj\panel_test.log
+    echo panel self test failed, full output in driver\obj\panel_test.log
+    exit /b 1
+)
+for /f "delims=" %%l in ('findstr /c:"failure(s)" driver\obj\panel_test.log') do echo panel self test: %%l
 rem diagnostic tools: they use the OpenVR client api, so the SDK's openvr_api.dll
 rem goes next to them, with the reader's manifest and bindings
 if exist src\bin rmdir /s /q src\bin

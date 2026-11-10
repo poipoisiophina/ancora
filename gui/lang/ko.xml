@@ -41,6 +41,8 @@
   <set_gate>엄지 게이트</set_gate>
   <set_smoothing>스무딩</set_smoothing>
   <set_deadzone>데드존</set_deadzone>
+  <set_edge>가장자리 보정</set_edge>
+  <edge_not_measured>측정 안 됨, 조정</edge_not_measured>
   <value_off>끔</value_off>
   <value_ms>{n}ms</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>왼쪽에 {value} 적용</btn_apply_left>
   <btn_apply_right>오른쪽에 {value} 적용</btn_apply_right>
   <btn_restart>다시 시작</btn_restart>
+  <edge_intro>가장자리 보정: 스틱이 일부 방향에서 끝까지 닿지 않으면 가장자리를 따라 돌리세요. ancora가 그 방향을 끝까지 늘려 줍니다.</edge_intro>
+  <btn_edge>가장자리 측정</btn_edge>
+  <btn_edge_apply_left>왼쪽 스틱 보정</btn_edge_apply_left>
+  <btn_edge_apply_right>오른쪽 스틱 보정</btn_edge_apply_right>
+  <btn_edge_clear_left>왼쪽 보정 제거</btn_edge_clear_left>
+  <btn_edge_clear_right>오른쪽 보정 제거</btn_edge_clear_right>
+  <step_edge>스틱을 가장자리를 따라 돌리기</step_edge>
+  <res_reach>가장 짧은 도달 거리</res_reach>
+  <find_edge_ok>스틱이 모든 방향에서 끝까지 닿습니다. 보정이 필요 없습니다.</find_edge_ok>
+  <find_edge_short>{direction} 방향: 스틱이 {value}까지만 닿습니다. 보정하면 그 방향도 끝까지 닿고, 가장자리 근처에서 조금 더 민감해집니다.</find_edge_short>
+  <legend_reach>닿는 거리</legend_reach>
+  <step_edge_active>끝까지 밀고 천천히 돌리세요. {n}/{total} 방향 완료.</step_edge_active>
+  <step_edge_done>{total}개 방향 모두 가장자리에 닿았습니다.</step_edge_done>
+  <legend_edge_done>가장자리 도달</legend_edge_done>
+  <legend_edge_more>여기 한 번 더</legend_edge_more>
+  <btn_edge_finish>이대로 완료</btn_edge_finish>
+  <edge_gap_hint>닿지 않는 방향이 있나요? 빈 곳이 작아지면 '이대로 완료'가 옆 방향으로 채웁니다.</edge_gap_hint>
   <tile_driver>드라이버</tile_driver>
   <drv_loaded>로드됨</drv_loaded>
   <drv_registered>등록됨</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>오른쪽 스무딩</what_right_smoothing>
   <what_left_deadzone>왼쪽 데드존</what_left_deadzone>
   <what_right_deadzone>오른쪽 데드존</what_right_deadzone>
+  <what_left_edge>왼쪽 가장자리 보정</what_left_edge>
+  <what_right_edge>오른쪽 가장자리 보정</what_right_edge>
   <what_language>언어</what_language>
   <note_copied>진단 복사됨</note_copied>
   <note_no_log>SteamVR 로그 위치를 알 수 없음</note_no_log>

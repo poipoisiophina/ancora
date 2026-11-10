@@ -41,6 +41,8 @@
   <set_gate>Blokada kciuka</set_gate>
   <set_smoothing>Wygładzanie</set_smoothing>
   <set_deadzone>Martwa strefa</set_deadzone>
+  <set_edge>Rozciągnięcie krawędzi</set_edge>
+  <edge_not_measured>nie zmierzono, dostrój</edge_not_measured>
   <value_off>wył.</value_off>
   <value_ms>{n} ms</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>Zastosuj {value} do lewego</btn_apply_left>
   <btn_apply_right>Zastosuj {value} do prawego</btn_apply_right>
   <btn_restart>Od nowa</btn_restart>
+  <edge_intro>Rozciągnięcie krawędzi: jeśli gałka nie dochodzi do końca w niektórych kierunkach, obróć ją po krawędzi, a ancora rozciągnie te kierunki do pełnego wychylenia.</edge_intro>
+  <btn_edge>Zmierz krawędź</btn_edge>
+  <btn_edge_apply_left>Rozciągnij lewą gałkę</btn_edge_apply_left>
+  <btn_edge_apply_right>Rozciągnij prawą gałkę</btn_edge_apply_right>
+  <btn_edge_clear_left>Usuń rozciągnięcie lewej</btn_edge_clear_left>
+  <btn_edge_clear_right>Usuń rozciągnięcie prawej</btn_edge_clear_right>
+  <step_edge>Obracaj gałkę po krawędzi</step_edge>
+  <res_reach>najkrótszy zasięg</res_reach>
+  <find_edge_ok>Gałka dochodzi do końca w każdym kierunku. Rozciągnięcie niepotrzebne.</find_edge_ok>
+  <find_edge_short>Kierunek {direction}: gałka dochodzi tylko do {value}. Rozciągnięcie da tam pełne wychylenie, nieco czulsze przy krawędzi.</find_edge_short>
+  <legend_reach>Jak daleko sięga</legend_reach>
+  <step_edge_active>Wychyl do końca i obracaj powoli. Gotowe kierunki: {n} z {total}.</step_edge_active>
+  <step_edge_done>Wszystkie kierunki ({total}) doszły do krawędzi.</step_edge_done>
+  <legend_edge_done>Krawędź osiągnięta</legend_edge_done>
+  <legend_edge_more>Wychyl tu jeszcze raz</legend_edge_more>
+  <btn_edge_finish>Zakończ tak</btn_edge_finish>
+  <edge_gap_hint>Nie da się dojść w niektórych kierunkach? Gdy luki są małe, Zakończ tak uzupełni je z sąsiednich kierunków.</edge_gap_hint>
   <tile_driver>Sterownik</tile_driver>
   <drv_loaded>Załadowany</drv_loaded>
   <drv_registered>Zarejestrowany</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>prawe wygładzanie</what_right_smoothing>
   <what_left_deadzone>lewa martwa strefa</what_left_deadzone>
   <what_right_deadzone>prawa martwa strefa</what_right_deadzone>
+  <what_left_edge>lewe rozciągnięcie krawędzi</what_left_edge>
+  <what_right_edge>prawe rozciągnięcie krawędzi</what_right_edge>
   <what_language>język</what_language>
   <note_copied>Skopiowano diagnostykę</note_copied>
   <note_no_log>Nieznane położenie logu SteamVR</note_no_log>

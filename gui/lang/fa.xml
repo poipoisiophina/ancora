@@ -41,6 +41,8 @@
   <set_gate>دروازهٔ شست</set_gate>
   <set_smoothing>نرم‌سازی</set_smoothing>
   <set_deadzone>ناحیهٔ مرده</set_deadzone>
+  <set_edge>کشش لبه</set_edge>
+  <edge_not_measured>اندازه‌گیری نشده، تنظیم</edge_not_measured>
   <value_off>خاموش</value_off>
   <value_ms>{n} میلی‌ثانیه</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>اعمال {value} روی چپ</btn_apply_left>
   <btn_apply_right>اعمال {value} روی راست</btn_apply_right>
   <btn_restart>شروع دوباره</btn_restart>
+  <edge_intro>کشش لبه: اگر استیک در بعضی جهت‌ها تا انتها نمی‌رسد، آن را در امتداد لبه‌اش بچرخانید تا ancora آن جهت‌ها را تا انتها بکشد.</edge_intro>
+  <btn_edge>اندازه‌گیری لبه</btn_edge>
+  <btn_edge_apply_left>کشش استیک چپ</btn_edge_apply_left>
+  <btn_edge_apply_right>کشش استیک راست</btn_edge_apply_right>
+  <btn_edge_clear_left>حذف کشش چپ</btn_edge_clear_left>
+  <btn_edge_clear_right>حذف کشش راست</btn_edge_clear_right>
+  <step_edge>استیک را در امتداد لبه بچرخانید</step_edge>
+  <res_reach>کوتاه‌ترین برد</res_reach>
+  <find_edge_ok>استیک در همهٔ جهت‌ها تا انتها می‌رسد. کشش لازم نیست.</find_edge_ok>
+  <find_edge_short>جهت {direction}: استیک فقط تا {value} می‌رسد. کشش باعث می‌شود آنجا تا انتها برسد، نزدیک لبه کمی حساس‌تر.</find_edge_short>
+  <legend_reach>تا کجا می‌رسد</legend_reach>
+  <step_edge_active>تا انتها فشار دهید و آرام بچرخانید. {n} از {total} جهت انجام شد.</step_edge_active>
+  <step_edge_done>همهٔ {total} جهت به لبه رسیدند.</step_edge_done>
+  <legend_edge_done>به لبه رسید</legend_edge_done>
+  <legend_edge_more>اینجا دوباره فشار دهید</legend_edge_more>
+  <btn_edge_finish>پایان با همین</btn_edge_finish>
+  <edge_gap_hint>به بعضی جهت‌ها نمی‌رسید؟ وقتی فاصله‌ها کوچک شد، «پایان با همین» آن‌ها را از جهت‌های کناری پر می‌کند.</edge_gap_hint>
   <tile_driver>درایور</tile_driver>
   <drv_loaded>بارگذاری شد</drv_loaded>
   <drv_registered>ثبت شده</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>نرم‌سازی راست</what_right_smoothing>
   <what_left_deadzone>ناحیهٔ مردهٔ چپ</what_left_deadzone>
   <what_right_deadzone>ناحیهٔ مردهٔ راست</what_right_deadzone>
+  <what_left_edge>کشش لبهٔ چپ</what_left_edge>
+  <what_right_edge>کشش لبهٔ راست</what_right_edge>
   <what_language>زبان</what_language>
   <note_copied>عیب‌یابی کپی شد</note_copied>
   <note_no_log>محل گزارش SteamVR نامعلوم است</note_no_log>

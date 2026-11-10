@@ -41,6 +41,8 @@
   <set_gate>Trava do polegar</set_gate>
   <set_smoothing>Suavização</set_smoothing>
   <set_deadzone>Zona morta</set_deadzone>
+  <set_edge>Ajuste de borda</set_edge>
+  <edge_not_measured>não medido, ajustar</edge_not_measured>
   <value_off>desligado</value_off>
   <value_ms>{n} ms</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>Aplicar {value} à esquerda</btn_apply_left>
   <btn_apply_right>Aplicar {value} à direita</btn_apply_right>
   <btn_restart>Recomeçar</btn_restart>
+  <edge_intro>Ajuste de borda: se o analógico não chega ao máximo em algumas direções, gire-o pela borda e o ancora estica essas direções até o máximo.</edge_intro>
+  <btn_edge>Medir borda</btn_edge>
+  <btn_edge_apply_left>Esticar analógico esquerdo</btn_edge_apply_left>
+  <btn_edge_apply_right>Esticar analógico direito</btn_edge_apply_right>
+  <btn_edge_clear_left>Remover ajuste esquerdo</btn_edge_clear_left>
+  <btn_edge_clear_right>Remover ajuste direito</btn_edge_clear_right>
+  <step_edge>Gire o analógico pela borda</step_edge>
+  <res_reach>menor alcance</res_reach>
+  <find_edge_ok>O analógico chega ao máximo em todas as direções. Nenhum ajuste necessário.</find_edge_ok>
+  <find_edge_short>Direção {direction}: o analógico só chega a {value}. O ajuste faz ele chegar ao máximo ali, um pouco mais sensível perto da borda.</find_edge_short>
+  <legend_reach>Até onde chega</legend_reach>
+  <step_edge_active>Empurre até o fim e gire devagar. {n} de {total} direções feitas.</step_edge_active>
+  <step_edge_done>As {total} direções chegaram à borda.</step_edge_done>
+  <legend_edge_done>Borda alcançada</legend_edge_done>
+  <legend_edge_more>Empurre aqui de novo</legend_edge_more>
+  <btn_edge_finish>Concluir assim</btn_edge_finish>
+  <edge_gap_hint>Não alcança algumas direções? Quando as lacunas forem pequenas, Concluir assim as preenche com as direções ao lado.</edge_gap_hint>
   <tile_driver>Driver</tile_driver>
   <drv_loaded>Carregado</drv_loaded>
   <drv_registered>Registrado</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>Suavização direita</what_right_smoothing>
   <what_left_deadzone>Zona morta esquerda</what_left_deadzone>
   <what_right_deadzone>Zona morta direita</what_right_deadzone>
+  <what_left_edge>Ajuste de borda esquerdo</what_left_edge>
+  <what_right_edge>Ajuste de borda direito</what_right_edge>
   <what_language>Idioma</what_language>
   <note_copied>Diagnóstico copiado</note_copied>
   <note_no_log>Local do log do SteamVR desconhecido</note_no_log>

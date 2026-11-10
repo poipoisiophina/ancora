@@ -56,6 +56,8 @@
   <set_gate>Thumb gate</set_gate>
   <set_smoothing>Smoothing</set_smoothing>
   <set_deadzone>Deadzone</set_deadzone>
+  <set_edge>Edge stretch</set_edge>
+  <edge_not_measured>not measured, tune</edge_not_measured>
   <!-- a setting that is switched off -->
   <value_off>off</value_off>
   <value_ms>{n} ms</value_ms>
@@ -99,6 +101,23 @@
   <btn_apply_left>Apply {value} deadzone to left</btn_apply_left>
   <btn_apply_right>Apply {value} deadzone to right</btn_apply_right>
   <btn_restart>Start over</btn_restart>
+  <edge_intro>Edge stretch: if the stick cannot reach full in some directions, roll it around its edge and ancora stretches those directions to full.</edge_intro>
+  <btn_edge>Measure edge</btn_edge>
+  <btn_edge_apply_left>Stretch left stick</btn_edge_apply_left>
+  <btn_edge_apply_right>Stretch right stick</btn_edge_apply_right>
+  <btn_edge_clear_left>Remove left stretch</btn_edge_clear_left>
+  <btn_edge_clear_right>Remove right stretch</btn_edge_clear_right>
+  <step_edge>Roll the stick around its edge</step_edge>
+  <res_reach>shortest reach</res_reach>
+  <find_edge_ok>The stick reaches full in every direction. No stretch needed.</find_edge_ok>
+  <find_edge_short>Toward {direction} the stick only reaches {value}. The stretch makes it reach full there, a little more sensitive near the edge.</find_edge_short>
+  <legend_reach>How far it reaches</legend_reach>
+  <step_edge_active>Push it all the way and circle slowly. {n} of {total} directions done.</step_edge_active>
+  <step_edge_done>All {total} directions reached the edge.</step_edge_done>
+  <legend_edge_done>Edge reached</legend_edge_done>
+  <legend_edge_more>Push here again</legend_edge_more>
+  <btn_edge_finish>Finish with these</btn_edge_finish>
+  <edge_gap_hint>Some directions you cannot reach? Once the gaps are small, Finish with these fills them in from the directions next to them.</edge_gap_hint>
 
   <!-- diagnostics page -->
   <tile_driver>Driver</tile_driver>
@@ -139,6 +158,8 @@
   <what_right_smoothing>Right smoothing</what_right_smoothing>
   <what_left_deadzone>Left deadzone</what_left_deadzone>
   <what_right_deadzone>Right deadzone</what_right_deadzone>
+  <what_left_edge>Left edge stretch</what_left_edge>
+  <what_right_edge>Right edge stretch</what_right_edge>
   <what_language>Language</what_language>
   <note_copied>Diagnostics copied</note_copied>
   <note_no_log>SteamVR log location unknown</note_no_log>

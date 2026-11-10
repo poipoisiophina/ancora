@@ -41,6 +41,8 @@
   <set_gate>Détection du pouce</set_gate>
   <set_smoothing>Lissage</set_smoothing>
   <set_deadzone>Zone morte</set_deadzone>
+  <set_edge>Extension du bord</set_edge>
+  <edge_not_measured>non mesuré, régler</edge_not_measured>
   <value_off>désactivé</value_off>
   <value_ms>{n} ms</value_ms>
   <value_percent>{n} %</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>Appliquer {value} à gauche</btn_apply_left>
   <btn_apply_right>Appliquer {value} à droite</btn_apply_right>
   <btn_restart>Recommencer</btn_restart>
+  <edge_intro>Extension du bord : si le stick n’atteint pas le maximum dans certaines directions, faites-le tourner le long de son bord et ancora étend ces directions jusqu’au maximum.</edge_intro>
+  <btn_edge>Mesurer le bord</btn_edge>
+  <btn_edge_apply_left>Étendre le stick gauche</btn_edge_apply_left>
+  <btn_edge_apply_right>Étendre le stick droit</btn_edge_apply_right>
+  <btn_edge_clear_left>Retirer l’extension gauche</btn_edge_clear_left>
+  <btn_edge_clear_right>Retirer l’extension droite</btn_edge_clear_right>
+  <step_edge>Faites tourner le stick le long du bord</step_edge>
+  <res_reach>portée la plus courte</res_reach>
+  <find_edge_ok>Le stick atteint le maximum dans toutes les directions. Aucune extension nécessaire.</find_edge_ok>
+  <find_edge_short>Direction {direction} : le stick n’atteint que {value}. L’extension lui fait atteindre le maximum, un peu plus sensible près du bord.</find_edge_short>
+  <legend_reach>Jusqu’où il va</legend_reach>
+  <step_edge_active>Poussez à fond et tournez lentement. {n} directions sur {total} faites.</step_edge_active>
+  <step_edge_done>Les {total} directions ont atteint le bord.</step_edge_done>
+  <legend_edge_done>Bord atteint</legend_edge_done>
+  <legend_edge_more>Poussez encore ici</legend_edge_more>
+  <btn_edge_finish>Terminer ainsi</btn_edge_finish>
+  <edge_gap_hint>Certaines directions inatteignables ? Quand les trous sont petits, Terminer ainsi les comble à partir des directions voisines.</edge_gap_hint>
   <tile_driver>Pilote</tile_driver>
   <drv_loaded>Chargé</drv_loaded>
   <drv_registered>Enregistré</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>Lissage droit</what_right_smoothing>
   <what_left_deadzone>Zone morte gauche</what_left_deadzone>
   <what_right_deadzone>Zone morte droite</what_right_deadzone>
+  <what_left_edge>Extension du bord gauche</what_left_edge>
+  <what_right_edge>Extension du bord droit</what_right_edge>
   <what_language>Langue</what_language>
   <note_copied>Diagnostic copié</note_copied>
   <note_no_log>Emplacement du journal SteamVR inconnu</note_no_log>

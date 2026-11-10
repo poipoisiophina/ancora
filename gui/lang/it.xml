@@ -41,6 +41,8 @@
   <set_gate>Blocco pollice</set_gate>
   <set_smoothing>Levigatura</set_smoothing>
   <set_deadzone>Zona morta</set_deadzone>
+  <set_edge>Estensione bordo</set_edge>
+  <edge_not_measured>non misurato, regola</edge_not_measured>
   <value_off>off</value_off>
   <value_ms>{n} ms</value_ms>
   <value_percent>{n}%</value_percent>
@@ -80,6 +82,23 @@
   <btn_apply_left>Applica {value} a sinistra</btn_apply_left>
   <btn_apply_right>Applica {value} a destra</btn_apply_right>
   <btn_restart>Ricomincia</btn_restart>
+  <edge_intro>Estensione del bordo: se la levetta non arriva al massimo in alcune direzioni, falla girare lungo il bordo e ancora estende quelle direzioni fino al massimo.</edge_intro>
+  <btn_edge>Misura il bordo</btn_edge>
+  <btn_edge_apply_left>Estendi levetta sinistra</btn_edge_apply_left>
+  <btn_edge_apply_right>Estendi levetta destra</btn_edge_apply_right>
+  <btn_edge_clear_left>Rimuovi estensione sinistra</btn_edge_clear_left>
+  <btn_edge_clear_right>Rimuovi estensione destra</btn_edge_clear_right>
+  <step_edge>Fai girare la levetta lungo il bordo</step_edge>
+  <res_reach>portata più corta</res_reach>
+  <find_edge_ok>La levetta arriva al massimo in ogni direzione. Nessuna estensione necessaria.</find_edge_ok>
+  <find_edge_short>Direzione {direction}: la levetta arriva solo a {value}. L’estensione la porta al massimo, un po’ più sensibile vicino al bordo.</find_edge_short>
+  <legend_reach>Fin dove arriva</legend_reach>
+  <step_edge_active>Spingi fino in fondo e gira piano. {n} di {total} direzioni fatte.</step_edge_active>
+  <step_edge_done>Tutte le {total} direzioni hanno raggiunto il bordo.</step_edge_done>
+  <legend_edge_done>Bordo raggiunto</legend_edge_done>
+  <legend_edge_more>Spingi qui di nuovo</legend_edge_more>
+  <btn_edge_finish>Termina così</btn_edge_finish>
+  <edge_gap_hint>Alcune direzioni non raggiungibili? Quando i vuoti sono piccoli, Termina così li riempie dalle direzioni vicine.</edge_gap_hint>
   <tile_driver>Driver</tile_driver>
   <drv_loaded>Caricato</drv_loaded>
   <drv_registered>Registrato</drv_registered>
@@ -114,6 +133,8 @@
   <what_right_smoothing>Levigatura destra</what_right_smoothing>
   <what_left_deadzone>Zona morta sinistra</what_left_deadzone>
   <what_right_deadzone>Zona morta destra</what_right_deadzone>
+  <what_left_edge>Estensione bordo sinistra</what_left_edge>
+  <what_right_edge>Estensione bordo destra</what_right_edge>
   <what_language>Lingua</what_language>
   <note_copied>Diagnostica copiata</note_copied>
   <note_no_log>Posizione del log di SteamVR sconosciuta</note_no_log>
