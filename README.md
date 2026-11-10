@@ -26,7 +26,7 @@ Nothing else. No extra runtimes, no admin rights.
 ## Install
 
 1. **Close SteamVR** completely.
-2. Run PreRelease **`ancora-setup-0.1.2.exe`**.
+2. Run PreRelease **`ancora-setup-0.1.3.exe`**.
    - If Windows says "Windows protected your PC", click **More info**, then
      **Run anyway**. (This happens because the installer is not signed with a
      paid certificate.)
@@ -224,7 +224,9 @@ Layout:
 - `test/ancora_test.cpp` driver side tests.
 - `gui/src/ancora_panel.cpp` the panel.
 - `gui/src/ancora_lang.h` panel text loading; `gui/lang/*.xml` one file per language.
-- `steamvr.ps1` SteamVR registration, used by the scripts and the installer.
+- `gui/src/ancora_steamvr.h` SteamVR registration (`ancora.exe --check`,
+  `--register`, `--unregister`), used by the scripts and the installer, so the
+  installer runs no PowerShell.
 - `packaging/ancora.iss` installer script; `packaging/messages.iss` its translated messages.
 
 ### Translate ancora

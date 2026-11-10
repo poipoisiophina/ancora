@@ -2,10 +2,11 @@
 ; Inno Setup 7 script (open source, https://jrsoftware.org/isinfo.php) for the
 ; ancora installer. Built by package.bat after build_driver.bat all.
 ; Per user install to %LOCALAPPDATA%\ancora, no admin rights, no Start Menu
-; entries. SteamVR registration runs steamvr.ps1, the same script install.ps1
-; uses. SteamVR must be closed to install or uninstall.
+; entries. SteamVR registration runs ancora.exe --register / --unregister, the
+; same switches install.ps1 and uninstall.ps1 use, so no PowerShell script runs.
+; SteamVR must be closed to install or uninstall.
 
-#define AppVersion "0.1.2"
+#define AppVersion "0.1.3"
 
 [Setup]
 AppId={{6AB13E94-DDD3-4AAB-B3FE-6965F0462422}
@@ -75,7 +76,6 @@ Name: "swedish"; MessagesFile: "compiler:Languages\Swedish.isl"
 [Files]
 Source: "..\gui\bin\ancora.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\gui\ancora.vrmanifest"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\steamvr.ps1"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\driver\ancora\driver.vrdrivermanifest"; DestDir: "{app}\driver\ancora"; Flags: ignoreversion
 Source: "..\driver\ancora\bin\win64\driver_ancora.dll"; DestDir: "{app}\driver\ancora\bin\win64"; Flags: ignoreversion
 Source: "..\driver\ancora\logic\ancora_logic.dll"; DestDir: "{app}\driver\ancora\logic"; Flags: ignoreversion
@@ -87,15 +87,15 @@ Source: "..\driver\ancora\ancora.ini"; DestDir: "{app}"; Flags: onlyifdoesntexis
 [InstallDelete]
 ; stale hot reload copies of the logic dll
 Type: files; Name: "{app}\driver\ancora\logic\ancora_logic_live*.dll"
+; registration script of 0.1.2 and older, replaced by ancora.exe --register
+Type: files; Name: "{app}\steamvr.ps1"
 
 [Run]
-Filename: "powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\steamvr.ps1"" register -Root ""{app}"""; \
+Filename: "{app}\ancora.exe"; Parameters: "--register --root ""{app}"""; \
   StatusMsg: "{cm:Registering}"; Flags: runhidden waituntilterminated
 
 [UninstallRun]
-Filename: "powershell.exe"; \
-  Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\steamvr.ps1"" unregister -Root ""{app}"""; \
+Filename: "{app}\ancora.exe"; Parameters: "--unregister --root ""{app}"""; \
   RunOnceId: "ancoraUnregister"; Flags: runhidden waituntilterminated
 
 [UninstallDelete]

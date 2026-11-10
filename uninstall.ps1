@@ -1,6 +1,8 @@
 # uninstall.ps1
 # Removes everything ancora put into SteamVR and onto this PC outside the repo:
-#   - SteamVR side through steamvr.ps1: driver registration, Steam\config\ancora,
+#   - SteamVR side through ancora.exe --unregister (the repo build, else the
+#     installed one; Steam file backups go to the repo's backup folder):
+#     driver registration, Steam\config\ancora,
 #     ancora sections in steamvr.vrsettings, app manifest path and vrappconfig files
 #   - a development registration of the repo copy of the driver
 #   - %LOCALAPPDATA%\ancora (driver, control panel, config)
@@ -13,13 +15,16 @@ param([switch]$KeepConfig)
 $ErrorActionPreference = 'Stop'
 
 $root = Join-Path $env:LOCALAPPDATA 'ancora'
-$steamvr = Join-Path $PSScriptRoot 'steamvr.ps1'
+$exe = @((Join-Path $PSScriptRoot 'gui\bin\ancora.exe'), (Join-Path $root 'ancora.exe') | Where-Object { Test-Path $_ })[0]
+if (-not $exe) { throw 'no ancora.exe found, run build_driver.bat all first' }
+$backups = Join-Path $PSScriptRoot 'backup'
 
 Write-Host '== SteamVR'
-& powershell -NoProfile -ExecutionPolicy Bypass -File $steamvr unregister -Root $root
-if ($LASTEXITCODE -ne 0) { throw 'SteamVR is running. Close it, then run uninstall again.' }
+# ancora.exe is a GUI program: the pipe makes PowerShell wait for it and get its output
+& $exe --unregister --root $root --backup-dir $backups | Write-Host
+if ($LASTEXITCODE -ne 0) { throw 'SteamVR unregister failed (see above). Close SteamVR if it runs, then run uninstall again.' }
 # a development build registered straight from the repo
-& powershell -NoProfile -ExecutionPolicy Bypass -File $steamvr unregister -Root $PSScriptRoot | Out-Null
+& $exe --unregister --root $PSScriptRoot --backup-dir $backups | Out-Null
 
 Write-Host '== installed files'
 Get-Process ancora -ErrorAction SilentlyContinue | Stop-Process -Force   # a running panel locks its files

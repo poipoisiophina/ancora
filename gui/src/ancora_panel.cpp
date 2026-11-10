@@ -23,6 +23,12 @@
 //   ancora.exe --icon-png f.png   write the 16/32/48/256 px icons side by side, exit
 //   ancora.exe --icon-ico f.ico   write the app icon file that the build embeds, exit
 //   ancora.exe --selftest         check ini read/write and the tune math, exit code 0 = pass
+//   ancora.exe --check | --register | --unregister [--root dir] [--backup-dir dir]
+//                                 SteamVR side of an install (ancora_steamvr.h), exit code
+//                                 0 = done, 1 = SteamVR running or failed. --root is the
+//                                 install folder (default %LOCALAPPDATA%\ancora), Steam
+//                                 file backups go to --backup-dir (default "backup" next
+//                                 to ancora.exe)
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -49,6 +55,7 @@
 #include "../../driver/src/ancora_average.h"
 #include "../../driver/src/ancora_edge.h"
 #include "ancora_lang.h"
+#include "ancora_steamvr.h"
 // written by build_driver.bat from AppVersion in packaging\ancora.iss
 #if __has_include("ancora_version.h")
 #include "ancora_version.h"
@@ -2437,6 +2444,62 @@ int selftest() {
     LangInfo bi;
     Lang bl;
     check(!lang_parse(bad, bi, &bl), "a language file with a DTD is refused");
+
+    // SteamVR registration edits (ancora_steamvr.h), on temp copies of Steam files
+    {
+        svr::Json j;
+        std::string src = "\xEF\xBB\xBF{\"a\":[1,-2.5e3,true,null,\"x\\\"\\\\\\u00e9\\ud83d\\ude00\\n\"],\"b\":{},\"c\":[]}";
+        check(svr::json_parse(src, j) && j.o.size() == 3 && j.o[0].second.a[1].s == "-2.5e3" &&
+              j.o[0].second.a[4].s == "x\"\\\xC3\xA9\xF0\x9F\x98\x80\n", "json reads BOM, numbers as text, escapes and surrogates");
+        std::string w;
+        svr::json_write(w, j);
+        svr::Json back;
+        std::string w2;
+        check(svr::json_parse(w, back) && (svr::json_write(w2, back), w2 == w) && back.o[0].first == "a" &&
+              back.o[2].first == "c", "json write round trips and keeps key order");
+        check(!svr::json_parse("{\"a\":1,}", j) && !svr::json_parse("{\"a\":1} x", j) && !svr::json_parse("", j) &&
+              !svr::json_parse(std::string(200, '['), j), "broken or too deep json is refused");
+
+        std::wstring dir = std::wstring(tmp) + L"ancora_selftest_steam";
+        svr::remove_tree(dir);
+        svr::make_dirs(dir);
+        std::wstring bak = dir + L"\\backup", app = dir + L"\\appconfig.json", set = dir + L"\\steamvr.vrsettings";
+        std::wstring man = L"C:\\Users\\T\\AppData\\Local\\ancora\\ancora.vrmanifest";
+        std::string mu = svr::utf8(man);
+        auto load = [](const std::wstring& p) { std::string s; svr::Json r; svr::read_all(p, s); svr::json_parse(s, r); return r; };
+        auto backups = [&]() { int n = 0; WIN32_FIND_DATAW fd; HANDLE f = FindFirstFileW((bak + L"\\*.bak").c_str(), &fd);
+                               if (f != INVALID_HANDLE_VALUE) { do ++n; while (FindNextFileW(f, &fd)); FindClose(f); } return n; };
+
+        check(svr::appconfig_register(app, man, bak) && load(app).find("manifest_paths")->a.size() == 1 &&
+              load(app).find("manifest_paths")->a[0].s == mu && backups() == 0, "register creates a missing appconfig.json");
+        svr::write_all(app, "{\"manifest_paths\":[\"D:\\\\other\\\\x.vrmanifest\",\"E:\\\\old\\\\ANCORA.vrmanifest\"],\"keep\":7}");
+        check(svr::appconfig_register(app, man, bak), "register edits an existing appconfig.json");
+        svr::Json a = load(app);
+        check(a.find("manifest_paths")->a.size() == 2 && a.find("manifest_paths")->a[0].s == "D:\\other\\x.vrmanifest" &&
+              a.find("manifest_paths")->a[1].s == mu && a.find("keep")->s == "7" && backups() == 1,
+              "old ancora manifest replaced, others kept, backup made");
+        check(svr::appconfig_register(app, man, bak) && backups() == 1, "repeated register writes nothing");
+        svr::write_all(app, "{ broken");
+        check(!svr::appconfig_register(app, man, bak) && load(app).type == svr::Json::Null, "unreadable appconfig.json left alone");
+
+        svr::write_all(app, "{\"manifest_paths\":[\"D:\\\\other\\\\x.vrmanifest\",\"" + std::string("C:\\\\a\\\\ancora.vrmanifest") + "\"]}");
+        svr::write_all(set, "{\"driver_ancora\":{\"x\":1},\"ancora.panel\":{},\"steamvr\":{\"y\":2},"
+                            "\"system.generated.probe.exe\":{}}");
+        int before = backups();
+        auto unapp = [](svr::Json& x) { return svr::appconfig_set(x, std::string()); };
+        check(svr::edit_json(set, bak, svr::vrsettings_strip) == svr::Edit::Written &&
+              svr::edit_json(app, bak, unapp) == svr::Edit::Written && backups() == before + 2,
+              "unregister strips both files with backups");
+        svr::Json s = load(set);
+        check(s.o.size() == 1 && s.o[0].first == "steamvr" && s.find("steamvr")->find("y")->s == "2" &&
+              load(app).find("manifest_paths")->a.size() == 1, "only ancora's entries removed");
+        check(svr::edit_json(set, bak, svr::vrsettings_strip) == svr::Edit::Unchanged &&
+              svr::edit_json(app, bak, unapp) == svr::Edit::Unchanged && backups() == before + 2,
+              "second unregister changes nothing and makes no backup");
+        check(svr::edit_json(dir + L"\\missing.json", bak, svr::vrsettings_strip) == svr::Edit::Unchanged,
+              "missing Steam file is skipped");
+        svr::remove_tree(dir);
+    }
     std::printf("%d failure(s)\n", fails);
     return fails ? 1 : 0;
 }
@@ -2467,6 +2530,16 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
     if (has(L"--selftest")) { attach_console(); return selftest(); }
+    for (const wchar_t* action : {L"check", L"register", L"unregister"}) {
+        if (!has((std::wstring(L"--") + action).c_str())) continue;
+        attach_console();
+        wchar_t exe[MAX_PATH]{};
+        GetModuleFileNameW(nullptr, exe, MAX_PATH);
+        std::wstring root = arg_after(L"--root", (local_appdata() + L"\\ancora").c_str());
+        std::wstring backups = arg_after(L"--backup-dir", (svr::leaf_dir(exe) + L"\\backup").c_str());
+        while (root.size() > 3 && (root.back() == L'\\' || root.back() == L'/')) root.pop_back();
+        return svr::run(action, root, backups);
+    }
     if (has(L"--icon-png")) return icon_sheet(arg_after(L"--icon-png", L"ancora_icon.png"));
     if (has(L"--icon-ico")) return write_ico(arg_after(L"--icon-ico", L"ancora.ico"));
     if (has(L"--screenshot")) {

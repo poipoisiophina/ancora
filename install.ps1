@@ -1,12 +1,13 @@
 # install.ps1
 # Builds ancora (build_driver.bat all, which fetches the OpenVR SDK if missing)
 # and installs it to %LOCALAPPDATA%\ancora:
-#   ancora.exe, ancora.vrmanifest, steamvr.ps1      control panel
+#   ancora.exe, ancora.vrmanifest                    control panel
 #   ancora.ini                                       config (an existing one is kept)
 #   driver\ancora\                                   SteamVR driver
 #   diag\                                            probe.exe, reader.exe with the SDK's
 #                                                    openvr_api.dll, manifest and bindings
-# Then registers it with SteamVR through steamvr.ps1. SteamVR must be closed.
+# Then registers it with SteamVR through ancora.exe --register (Steam file backups
+# go to the repo's backup folder). SteamVR must be closed.
 # For an installer exe instead, see package.bat.
 # Usage: powershell -ExecutionPolicy Bypass -File install.ps1 [-PanelOnly]
 #   -PanelOnly   build, then swap only the panel (ancora.exe, ancora.vrmanifest) into an
@@ -21,7 +22,6 @@ $src  = Join-Path $repo 'driver\ancora'
 $gui  = Join-Path $repo 'gui\bin'
 $root = Join-Path $env:LOCALAPPDATA 'ancora'
 $dest = Join-Path $root 'driver\ancora'
-$steamvr = Join-Path $repo 'steamvr.ps1'
 
 # a running panel locks ancora.exe and only hides to the tray on a normal close;
 # WM_CLOSE with wParam 1 makes it exit cleanly (tray icon removed). Ended after 3 s.
@@ -60,8 +60,9 @@ if ($PanelOnly) {
     exit 0
 }
 
-& powershell -NoProfile -ExecutionPolicy Bypass -File $steamvr check
-if ($LASTEXITCODE -ne 0) { throw 'SteamVR is running. Close it, then run install again.' }
+if (Get-Process vrserver, vrmonitor -ErrorAction SilentlyContinue) {
+    throw 'SteamVR is running. Close it, then run install again.'
+}
 
 Write-Host '== build'
 & cmd /c "`"$repo\build_driver.bat`" all"
@@ -86,7 +87,8 @@ Copy-Item $files.drvman $dest -Force
 Copy-Item $files.loader (Join-Path $dest 'bin\win64') -Force
 Copy-Item $files.logic  (Join-Path $dest 'logic') -Force
 Remove-Item (Join-Path $dest 'logic\ancora_logic_live*.dll') -ErrorAction SilentlyContinue   # stale hot reload copies
-Copy-Item $files.panel, $files.appman, $steamvr $root -Force
+Copy-Item $files.panel, $files.appman $root -Force
+Remove-Item (Join-Path $root 'steamvr.ps1') -ErrorAction SilentlyContinue   # registration script of 0.1.2 and older
 $diag = Join-Path $root 'diag'
 if (Test-Path $diag) { Remove-Item $diag -Recurse -Force }
 Copy-Item $files.diag $diag -Recurse
@@ -100,7 +102,8 @@ if (Test-Path $ini) {
 }
 
 Write-Host '== register with SteamVR'
-& powershell -NoProfile -ExecutionPolicy Bypass -File $steamvr register -Root $root
+# ancora.exe is a GUI program: the pipe makes PowerShell wait for it and get its output
+& (Join-Path $root 'ancora.exe') --register --root $root --backup-dir (Join-Path $repo 'backup') | Write-Host
 if ($LASTEXITCODE -ne 0) { throw 'SteamVR registration failed' }
 
 Write-Host "ancora installed to $root. Start SteamVR; the panel starts with it (tray icon)."
