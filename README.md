@@ -30,7 +30,9 @@ Nothing else. No extra runtimes, no admin rights.
 ## Install
 
 1. **Close SteamVR** completely.
-2. Run PreRelease **`ancora-setup-0.1.4.exe`**.
+2. Download the newest **`ancora-setup-<version>.exe`** from
+   [Releases](https://github.com/poipoisiophina/ancora/releases) (a
+   pre-release is fine) and run it.
    - If Windows says "Windows protected your PC", click **More info**, then
      **Run anyway**. (This happens because the installer is not signed with a
      paid certificate.)
@@ -236,6 +238,12 @@ deployed into a running SteamVR or packed into an installer:
 GitHub Actions runs `package.bat` on pushes to `main` and on pull requests,
 skipping changes that only touch `.md` files (`.github/workflows/build.yml`),
 and keeps the installer and test logs for 7 days.
+
+Releasing: raise `AppVersion` in `packaging/ancora.iss` and push to `main`.
+When that version has no tag yet and the build passes, the workflow tags the
+commit `v<version>` and publishes the tested installer as the pre-release
+`ancora <version>` with generated notes. A version that already has a tag is
+never released again. Mark a pre-release as a full release by hand on GitHub.
 
 Layout:
 

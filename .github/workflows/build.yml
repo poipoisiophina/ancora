@@ -1,9 +1,14 @@
 # Builds ancora on pushes to main and on pull requests: package.bat runs
 # build_driver.bat all (driver tests, panel self test; any failure fails the job)
-# and packs the installer. Windows runners count double against private repo
-# minutes, so: main and PRs only (a PR branch push is not built twice), a newer
-# push cancels the older run, docs-only changes are skipped, a hung run stops
-# after 20 minutes, and artifacts are kept 7 days.
+# and packs the installer. Main and PRs only (a PR branch push is not built twice),
+# docs-only changes are skipped, a hung run stops after 20 minutes, and artifacts
+# are kept 7 days.
+#
+# Pre-release: when a push to main carries an AppVersion (packaging/ancora.iss)
+# that has no tag yet, the prerelease job tags that commit v<version> and publishes
+# the tested installer as the pre-release "ancora <version>" with generated notes,
+# like the releases made by hand before. A version that is already tagged is never
+# released again, so bumping AppVersion is the only step a release needs.
 name: build
 
 on:
@@ -13,9 +18,11 @@ on:
   pull_request:
     paths-ignore: ['**.md']
 
+# a newer push to a PR cancels its older run; pushes to main queue instead, so a
+# release in progress is never cut off half way
 concurrency:
   group: build-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -24,8 +31,19 @@ jobs:
   build:
     runs-on: windows-2025
     timeout-minutes: 20
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v7
+      - name: Read the version
+        id: version
+        shell: pwsh
+        run: |
+          $m = Select-String -Path packaging/ancora.iss -Pattern '^#define AppVersion "([0-9]+\.[0-9]+\.[0-9]+)"'
+          if (-not $m) { throw 'no AppVersion "x.y.z" in packaging/ancora.iss' }
+          $v = $m.Matches[0].Groups[1].Value
+          "version=$v" >> $env:GITHUB_OUTPUT
+          "ancora $v"
       # the output also goes to package.log and into the test-logs artifact: job logs
       # need a GitHub sign in to read, artifacts of a public repo do not
       - name: Build, test and package
@@ -51,4 +69,44 @@ jobs:
         with:
           name: ancora-setup
           path: dist/*.exe
+          if-no-files-found: error
           retention-days: 7
+
+  prerelease:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write   # create the tag and the release
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Only a version without a tag
+        id: check
+        run: |
+          if git ls-remote --exit-code --tags "https://github.com/$GITHUB_REPOSITORY.git" "refs/tags/v$VERSION" > /dev/null; then
+            echo "v$VERSION is already tagged: nothing to release (bump AppVersion to release)"
+            echo "new=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "v$VERSION is new: releasing it"
+            echo "new=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Get the tested installer
+        if: steps.check.outputs.new == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: ancora-setup
+          path: dist
+      - name: Tag and pre-release
+        if: steps.check.outputs.new == 'true'
+        run: |
+          file="dist/ancora-setup-$VERSION.exe"
+          test -f "$file" || { echo "missing $file"; ls -la dist; exit 1; }
+          gh release create "v$VERSION" "$file" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "ancora $VERSION" \
+            --prerelease \
+            --generate-notes

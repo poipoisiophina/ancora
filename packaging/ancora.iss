@@ -6,7 +6,7 @@
 ; same switches install.ps1 and uninstall.ps1 use, so no PowerShell script runs.
 ; SteamVR must be closed to install or uninstall.
 
-#define AppVersion "0.1.4"
+#define AppVersion "0.1.5"
 
 [Setup]
 AppId={{6AB13E94-DDD3-4AAB-B3FE-6965F0462422}

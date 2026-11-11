@@ -327,8 +327,15 @@ inline bool ends_with_nocase(const std::string& s, const char* tail) {
     return true;
 }
 
+// true while the panel self test runs the edits, so its log holds only PASS/FAIL lines
+inline bool& quiet() {
+    static bool q = false;
+    return q;
+}
+
 // output goes to stdout: the console or pipe of whoever started ancora.exe
 inline void say(const std::wstring& s) {
+    if (quiet()) return;
     std::string u = utf8(s + L"\n");
     std::fwrite(u.data(), 1, u.size(), stdout);
     std::fflush(stdout);

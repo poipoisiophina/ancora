@@ -2215,8 +2215,12 @@ int selftest() {
     GetTempPathW(MAX_PATH, tmp);
     std::wstring p = std::wstring(tmp) + L"ancora_selftest.ini";
     DeleteFileW(p.c_str());
-    int fails = 0;
-    auto check = [&](bool ok, const char* what) { std::printf("%s %s\n", ok ? "PASS" : "FAIL", what); if (!ok) ++fails; };
+    int fails = 0, count = 0;
+    auto check = [&](bool ok, const char* what) {
+        ++count;
+        std::printf("%s %s\n", ok ? "PASS" : "FAIL", what);
+        if (!ok) ++fails;
+    };
 
     Config c = read_config(p);
     check(!c.exists && !c.enable && c.hand[0].enable && c.hand[1].enable && c.hand[0].touch_gate &&
@@ -2372,8 +2376,11 @@ int selftest() {
     Lang bl;
     check(!lang_parse(bad, bi, &bl), "a language file with a DTD is refused");
 
-    // SteamVR registration edits (ancora_steamvr.h), on temp copies of Steam files
+    // SteamVR registration edits (ancora_steamvr.h), on temp copies of Steam files;
+    // their progress messages (including the expected "cannot read" of the broken
+    // file case) are kept out of the test log
     {
+        svr::quiet() = true;
         svr::Json j;
         std::string src = "\xEF\xBB\xBF{\"a\":[1,-2.5e3,true,null,\"x\\\"\\\\\\u00e9\\ud83d\\ude00\\n\"],\"b\":{},\"c\":[]}";
         check(svr::json_parse(src, j) && j.o.size() == 3 && j.o[0].second.a[1].s == "-2.5e3" &&
@@ -2427,8 +2434,9 @@ int selftest() {
         check(svr::edit_json(dir + L"\\missing.json", bak, svr::vrsettings_strip) == svr::Edit::Unchanged,
               "missing Steam file is skipped");
         svr::remove_tree(dir);
+        svr::quiet() = false;
     }
-    std::printf("%d failure(s)\n", fails);
+    std::printf("%d test(s), %d failure(s)\n", count, fails);
     return fails ? 1 : 0;
 }
 

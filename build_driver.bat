@@ -14,9 +14,16 @@ cd /d %~dp0
 set "OPENVR_TAG=v2.15.6"
 set "OPENVR_COMMIT=0924064316de3effbcd1acf1e309182a2deb1c05"
 where git >nul 2>nul || (echo git not found, install git & exit /b 1)
+rem fetched by its commit id rather than the tag name: the exact files, and no
+rem "tag is not a commit" warning that a shallow clone of the annotated tag gives
 if not exist external\openvr\headers\openvr_driver.h (
     echo fetching OpenVR SDK %OPENVR_TAG% into external\openvr
-    git -c advice.detachedHead=false clone --depth 1 --branch %OPENVR_TAG% https://github.com/ValveSoftware/openvr.git external\openvr || exit /b 1
+    if exist external\openvr rmdir /s /q external\openvr
+    mkdir external\openvr || exit /b 1
+    git -C external\openvr init -q || exit /b 1
+    git -C external\openvr remote add origin https://github.com/ValveSoftware/openvr.git || exit /b 1
+    git -C external\openvr fetch -q --depth 1 origin %OPENVR_COMMIT% || exit /b 1
+    git -C external\openvr -c advice.detachedHead=false checkout -q FETCH_HEAD || exit /b 1
 )
 set "GOT_COMMIT="
 for /f "delims=" %%c in ('git -C external\openvr rev-parse HEAD 2^>nul') do set "GOT_COMMIT=%%c"
@@ -34,7 +41,11 @@ if not defined VSINSTALL (echo no Visual Studio install with the C++ x64 tools f
 rem no Visual Studio telemetry: vcvars64.bat otherwise starts vctip.exe, which
 rem outlives the build (GitHub ends it as an orphan process after the job)
 set "VSCMD_SKIP_SENDTELEMETRY=1"
+rem vcvars64.bat calls vswhere by name; its folder is not always on PATH
+set "PATH=%PATH%;%ProgramFiles(x86)%\Microsoft Visual Studio\Installer"
 call "%VSINSTALL%\VC\Auxiliary\Build\vcvars64.bat" >nul || exit /b 1
+rem which compiler built this, so a CI log can be compared with a local build
+echo MSVC %VCToolsVersion% from %VSINSTALL%
 rem start from clean outputs: intermediates always, every built binary for "all"
 if exist driver\obj rmdir /s /q driver\obj
 if /i "%1"=="all" (
