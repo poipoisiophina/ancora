@@ -91,6 +91,7 @@ const float kNavW = 260, kFootH = 56;
 const int kTrail = 120;                     // raw trail points per stick
 const uint64_t kTrailMs = 2000;
 const UINT WM_TRAY = WM_APP + 1;
+const UINT WM_SHOW_PANEL = WM_APP + 2;   // from a second launch: show the running panel
 const UINT kTimerFrame = 1, kTimerSlow = 2;
 const UINT kFrameMs = 33;                   // at most 30 redraws a second
 
@@ -1729,6 +1730,7 @@ void show_panel() {
     live_poll();      // the update count the rate starts from is the current one
     refresh_slow();   // the tray runs only the SteamVR check
     ShowWindow(g.hwnd, SW_SHOW);
+    if (IsIconic(g.hwnd)) ShowWindow(g.hwnd, SW_RESTORE);   // minimised to the taskbar
     SetForegroundWindow(g.hwnd);
     SetTimer(g.hwnd, kTimerFrame, kFrameMs, nullptr);
 }
@@ -1780,7 +1782,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     case WM_TIMER:
         if (wp == kTimerFrame && refresh_fast()) redraw();
         if (wp == kTimerSlow) {
-            bool shown = IsWindowVisible(h) != FALSE;
+            bool shown = IsWindowVisible(h) && !IsIconic(h);   // not in the tray, not minimised
             refresh_slow(shown);
             if (shown) redraw();
         }
@@ -1794,6 +1796,16 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     }
     case WM_SIZE:
         discard_target();   // recreated at the new scale on the next paint
+        // minimised to the taskbar: idle like the tray (no frames, no full refresh)
+        if (wp == SIZE_MINIMIZED) {
+            KillTimer(h, kTimerFrame);
+            if (tune_measuring()) tune_reset(g_tune.hand);
+            SetProcessWorkingSetSize(GetCurrentProcess(), (SIZE_T)-1, (SIZE_T)-1);
+        } else if (wp == SIZE_RESTORED && IsWindowVisible(h)) {
+            live_poll();
+            refresh_slow();
+            SetTimer(h, kTimerFrame, kFrameMs, nullptr);
+        }
         return 0;
     case WM_DPICHANGED: {
         g.dpi = HIWORD(wp);
@@ -1877,7 +1889,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         redraw();
         break;                 // DefWindowProc passes it on to child windows
     case WM_TRAY:
-        if (LOWORD(lp) == WM_LBUTTONUP) { IsWindowVisible(h) ? hide_panel() : show_panel(); }
+        if (LOWORD(lp) == WM_LBUTTONUP) { IsWindowVisible(h) && !IsIconic(h) ? hide_panel() : show_panel(); }
         if (LOWORD(lp) == WM_RBUTTONUP) {
             HMENU menu = CreatePopupMenu();
             UINT mf = MF_STRING | (g.rtl ? MFT_RIGHTORDER | MFT_RIGHTJUSTIFY : 0);
@@ -1890,6 +1902,9 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
             if (cmd == 1) show_panel();
             if (cmd == 2) { g.exiting = true; DestroyWindow(h); }
         }
+        return 0;
+    case WM_SHOW_PANEL:
+        show_panel();
         return 0;
     case WM_CLOSE:
         // wParam 1: really exit (SteamVR quit, or the installer closing a running panel)
@@ -2538,8 +2553,12 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     HANDLE single = CreateMutexW(nullptr, TRUE, L"ancora_panel_single");
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
         if (HWND other = FindWindowW(L"ancora_panel", nullptr)) {
+            // the running panel shows itself, so its frame timer starts too; a panel
+            // older than 0.1.7 ignores the message, the plain show covers it
+            AllowSetForegroundWindow(ASFW_ANY);
+            PostMessageW(other, WM_SHOW_PANEL, 0, 0);
             ShowWindow(other, SW_SHOW);
-            SetForegroundWindow(other);
+            if (IsIconic(other)) ShowWindow(other, SW_RESTORE);
         }
         return 0;
     }
