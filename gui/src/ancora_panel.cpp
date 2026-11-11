@@ -541,7 +541,8 @@ struct App {
     ID2D1SolidColorBrush* br = nullptr;
     ID2D1StrokeStyle* dash = nullptr;
     IDWriteTextFormat *f_title = nullptr, *f_logo = nullptr, *f_h2 = nullptr, *f_big = nullptr, *f_body = nullptr,
-                      *f_small = nullptr, *f_label = nullptr, *f_mono = nullptr, *f_mono_big = nullptr, *f_nav = nullptr;
+                      *f_small = nullptr, *f_label = nullptr, *f_mono = nullptr, *f_mono_big = nullptr, *f_nav = nullptr,
+                      *f_path = nullptr;   // file paths: a Latin font, see make_formats
     float dpi = 96;
 
     Page page = PAGE_STATUS;
@@ -640,11 +641,12 @@ void region(D2D1_RECT_F r, Id id, int hand = 0) { g_regions.push_back({r, id, ha
 // ---- drawing helpers -----------------------------------------------------------------
 // ui text uses the language's font and direction; mono is for numbers and log
 // lines and always reads left to right
-IDWriteTextFormat* make_format(float size, DWRITE_FONT_WEIGHT w, bool mono = false) {
+IDWriteTextFormat* make_format(float size, DWRITE_FONT_WEIGHT w, bool mono = false, const wchar_t* font = nullptr) {
     IDWriteTextFormat* f = nullptr;
     const wchar_t* locale = lang_code_ok(g.lang.info.code) && g.lang.info.code.rfind(L"qps-", 0) != 0
                                 ? g.lang.info.code.c_str() : L"en-us";
-    g.dw->CreateTextFormat(mono ? L"Consolas" : g.lang.info.font.c_str(), nullptr, w, DWRITE_FONT_STYLE_NORMAL,
+    if (!font) font = mono ? L"Consolas" : g.lang.info.font.c_str();
+    g.dw->CreateTextFormat(font, nullptr, w, DWRITE_FONT_STYLE_NORMAL,
                            DWRITE_FONT_STRETCH_NORMAL, size, locale, &f);
     f->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
     f->SetReadingDirection(g.rtl && !mono ? DWRITE_READING_DIRECTION_RIGHT_TO_LEFT : DWRITE_READING_DIRECTION_LEFT_TO_RIGHT);
@@ -1323,21 +1325,29 @@ void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
     text(t, iso(std::wstring(L"ancora ") + ANCORA_VERSION), g.f_body, x1 - 300, 36, kMuted, 300,
          DWRITE_TEXT_ALIGNMENT_TRAILING);
     const LogFacts& lf = g.log;
-    struct Tile { Str head; std::wstring main, sub; };
+    // the live shared state first: the log facts come from the end of SteamVR's log,
+    // and a long session (Steam Link logs every few seconds) pushes the driver's
+    // load lines out of the part read, while the driver runs fine
+    bool live = live_now(now);
+    int generation = live && g_live.snap.generation > 0 ? (int)g_live.snap.generation : lf.generation;
+    bool same_gen = lf.generation == generation;   // the log's load line is this logic's
+    bool driver_running = live || lf.tables > 0;
+    struct Tile { Str head; std::wstring main, sub; IDWriteTextFormat* sub_font; };
     Tile tiles[3] = {
-        {S_tile_driver, tr(g.registered ? (lf.tables > 0 ? S_drv_loaded : S_drv_registered) : S_drv_missing),
-         lf.tables > 0 ? sub(tr(S_drv_patched), {{L"n", std::to_wstring(lf.tables)}}) : tr(S_drv_not_seen)},
-        {S_tile_logic, lf.generation > 0 ? sub(tr(S_logic_gen), {{L"n", std::to_wstring(lf.generation)}}) : tr(S_logic_none),
-         lf.generation > 0 ? sub(tr(S_logic_loaded), {{L"time", lf.gen_time}, {L"n", std::to_wstring(lf.replayed)}})
-                           : std::wstring()},
+        {S_tile_driver, tr(g.registered ? (driver_running ? S_drv_loaded : S_drv_registered) : S_drv_missing),
+         lf.tables > 0 ? sub(tr(S_drv_patched), {{L"n", std::to_wstring(lf.tables)}})
+                       : driver_running ? std::wstring() : tr(S_drv_not_seen), g.f_small},
+        {S_tile_logic, generation > 0 ? sub(tr(S_logic_gen), {{L"n", std::to_wstring(generation)}}) : tr(S_logic_none),
+         generation > 0 && same_gen ? sub(tr(S_logic_loaded), {{L"time", lf.gen_time}, {L"n", std::to_wstring(lf.replayed)}})
+                                    : std::wstring(), g.f_small},
         {S_tile_config, lf.config_time.empty() ? tr(S_cfg_pending) : sub(tr(S_cfg_applied), {{L"time", lf.config_time}}),
-         iso(L"%LOCALAPPDATA%\\ancora\\ancora.ini")}};
+         iso(L"%LOCALAPPDATA%\\ancora\\ancora.ini"), g.f_path}};
     for (int k = 0; k < 3; ++k) {
         D2D1_RECT_F b = {x0 + k * (tw + 12), y, x0 + k * (tw + 12) + tw, y + 80};
         fill_round(t, b, 14, kCard);
         text(t, tr(tiles[k].head), g.f_small, b.left + 16, b.top + 12, kMuted, tw - 32);
         text(t, tiles[k].main, g.f_h2, b.left + 16, b.top + 30, kText, tw - 32);
-        text(t, tiles[k].sub, g.f_small, b.left + 16, b.top + 56, kMuted, tw - 32);
+        text(t, tiles[k].sub, tiles[k].sub_font, b.left + 16, b.top + 56, kMuted, tw - 32);
     }
     y += 96;
 
@@ -1348,7 +1358,6 @@ void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
     const Str heads[6] = {S_col_controller, S_col_inputs, S_col_thumb, S_read_reports, S_read_games, S_col_updates};
     for (int k = 0; k < 5; ++k) text(t, tr(heads[k]), g.f_small, cols[k], y + 12, kMuted, cols[k + 1] - cols[k] - 12);
     text(t, tr(heads[5]), g.f_small, cols[5] - 20, y + 12, kMuted, 114, DWRITE_TEXT_ALIGNMENT_TRAILING);
-    bool live = live_now(now);
     for (int i = 0; i < 2; ++i) {
         float ry = y + 40 + i * 46;
         line(t, x0, ry, x1, ry, kLine);
@@ -1894,7 +1903,7 @@ Lang load_lang(const std::wstring& code) {
 
 void make_formats() {
     IDWriteTextFormat** all[] = {&g.f_title, &g.f_logo, &g.f_nav, &g.f_h2, &g.f_big, &g.f_body,
-                                 &g.f_small, &g.f_label, &g.f_mono, &g.f_mono_big};
+                                 &g.f_small, &g.f_label, &g.f_mono, &g.f_mono_big, &g.f_path};
     for (auto f : all) if (*f) { (*f)->Release(); *f = nullptr; }
     g.f_title    = make_format(28, DWRITE_FONT_WEIGHT_BOLD);
     g.f_logo     = make_format(24, DWRITE_FONT_WEIGHT_BOLD);
@@ -1906,6 +1915,10 @@ void make_formats() {
     g.f_label    = make_format(13, DWRITE_FONT_WEIGHT_SEMI_BOLD);
     g.f_mono     = make_format(14, DWRITE_FONT_WEIGHT_NORMAL, true);
     g.f_mono_big = make_format(26, DWRITE_FONT_WEIGHT_NORMAL, true);
+    // Japanese fonts (Yu Gothic, Meiryo) draw the backslash as a yen sign and Korean
+    // ones (Malgun Gothic) as a won sign, so a path in the language's font shows those
+    // between its folders; paths use Segoe UI in every language
+    g.f_path     = make_format(13, DWRITE_FONT_WEIGHT_NORMAL, false, L"Segoe UI");
 }
 
 // setting: "auto" or a language code, as in the ini; also reloads the files, so an
