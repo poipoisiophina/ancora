@@ -25,13 +25,15 @@ if exist dist rmdir /s /q dist
 for %%f in (dist\*.exe) do echo built %%f
 exit /b 0
 
-rem the .nupkg is a zip; curl and tar ship with Windows 10 and later
+rem the .nupkg is a zip; curl and tar ship with Windows 10 and later. Both by full
+rem path: Git for Windows puts its own GNU tar on PATH (on GitHub's runners too),
+rem and that one reads "C:\..." as a remote host and fails
 :fetch_inno
 echo fetching Inno Setup %INNO_VER% compiler into tools\innosetup
 if exist "%INNO_DIR%" rmdir /s /q "%INNO_DIR%"
 mkdir "%INNO_DIR%" || exit /b 1
 set "PKG=%INNO_DIR%\innosetup.nupkg"
-curl -sSfL -o "%PKG%" "https://api.nuget.org/v3-flatcontainer/tools.innosetup/%INNO_VER%/tools.innosetup.%INNO_VER%.nupkg" || (echo download failed & exit /b 1)
+"%SystemRoot%\System32\curl.exe" -sSfL -o "%PKG%" "https://api.nuget.org/v3-flatcontainer/tools.innosetup/%INNO_VER%/tools.innosetup.%INNO_VER%.nupkg" || (echo download failed & exit /b 1)
 set "GOT="
 for /f "skip=1 delims=" %%h in ('certutil -hashfile "%PKG%" SHA256') do if not defined GOT set "GOT=%%h"
 set "GOT=%GOT: =%"
@@ -40,7 +42,7 @@ if /i not "%GOT%"=="%INNO_SHA%" (
     rmdir /s /q "%INNO_DIR%"
     exit /b 1
 )
-tar -xf "%PKG%" -C "%INNO_DIR%" tools || exit /b 1
+"%SystemRoot%\System32\tar.exe" -xf "%PKG%" -C "%INNO_DIR%" tools || exit /b 1
 del "%PKG%"
 type nul > "%INNO_DIR%\%INNO_VER%.ok"
 exit /b 0
