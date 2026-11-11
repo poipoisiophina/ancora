@@ -208,13 +208,27 @@ bool driver_registered() {
     return false;
 }
 
-bool process_running(const wchar_t* name) {
+// A process snapshot costs about 20 ms of CPU with several hundred processes, so a
+// found vrserver.exe is kept as a handle and later checks only wait on it (no cost).
+// The snapshot runs again only once that process has ended.
+HANDLE g_vrserver = nullptr;
+
+bool vrserver_running() {
+    if (g_vrserver) {
+        if (WaitForSingleObject(g_vrserver, 0) == WAIT_TIMEOUT) return true;
+        CloseHandle(g_vrserver);
+        g_vrserver = nullptr;
+    }
     HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (snap == INVALID_HANDLE_VALUE) return false;
     PROCESSENTRY32W pe{sizeof(pe)};
     bool found = false;
     for (BOOL ok = Process32FirstW(snap, &pe); ok; ok = Process32NextW(snap, &pe))
-        if (_wcsicmp(pe.szExeFile, name) == 0) { found = true; break; }
+        if (_wcsicmp(pe.szExeFile, L"vrserver.exe") == 0) {
+            found = true;
+            g_vrserver = OpenProcess(SYNCHRONIZE, FALSE, pe.th32ProcessID);   // null: scan again next time
+            break;
+        }
     CloseHandle(snap);
     return found;
 }
@@ -1492,8 +1506,16 @@ void refresh_log() {
     g.log = std::move(f);
 }
 
-void refresh_slow() {
-    g.steamvr = process_running(L"vrserver.exe");
+// full: false while the panel is in the tray. Only a panel SteamVR started checks
+// there, to close when SteamVR quits, and that check waits on a held handle. The
+// panel opened by hand does nothing in the tray; show_panel refreshes fully first.
+void refresh_slow(bool full = true) {
+    if (full || g.from_steamvr) g.steamvr = vrserver_running();
+    if (g.from_steamvr && !g.steamvr) PostMessageW(g.hwnd, WM_CLOSE, 1, 0);   // SteamVR quit
+    if (!full) {
+        g_live.rate_tick = 0;   // the update rate starts over when the panel shows
+        return;
+    }
     g.registered = driver_registered();
     FILETIME ft = file_time(g_ini);
     if (CompareFileTime(&ft, &g.ini_time) != 0 && g.drag_hand < 0) {
@@ -1503,16 +1525,14 @@ void refresh_slow() {
     }
     refresh_log();
     uint64_t now = GetTickCount64();
-    if (g_live.rate_tick) {
-        float dt = (now - g_live.rate_tick) / 1000.0f;
-        for (int i = 0; i < 2; ++i) {
-            uint32_t u = g_live.snap.hand[i].updates;
-            g_live.rate[i] = dt > 0 ? (u - g_live.last_updates[i]) / dt : 0;
-            g_live.last_updates[i] = u;
-        }
+    float dt = g_live.rate_tick ? (now - g_live.rate_tick) / 1000.0f : 0;
+    for (int i = 0; i < 2; ++i) {
+        uint32_t u = g_live.snap.hand[i].updates;
+        // first run after a start or the tray: take the count, rate from the next second
+        if (dt >= 0.5f) g_live.rate[i] = (u - g_live.last_updates[i]) / dt;
+        g_live.last_updates[i] = u;
     }
     g_live.rate_tick = now;
-    if (g.from_steamvr && !g.steamvr) PostMessageW(g.hwnd, WM_CLOSE, 1, 0);   // SteamVR quit
 }
 
 // ---- actions ---------------------------------------------------------------------------------------
@@ -1706,6 +1726,8 @@ void tray_add() {
 }
 
 void show_panel() {
+    live_poll();      // the update count the rate starts from is the current one
+    refresh_slow();   // the tray runs only the SteamVR check
     ShowWindow(g.hwnd, SW_SHOW);
     SetForegroundWindow(g.hwnd);
     SetTimer(g.hwnd, kTimerFrame, kFrameMs, nullptr);
@@ -1757,7 +1779,11 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     switch (m) {
     case WM_TIMER:
         if (wp == kTimerFrame && refresh_fast()) redraw();
-        if (wp == kTimerSlow) { refresh_slow(); if (IsWindowVisible(h)) redraw(); }
+        if (wp == kTimerSlow) {
+            bool shown = IsWindowVisible(h) != FALSE;
+            refresh_slow(shown);
+            if (shown) redraw();
+        }
         return 0;
     case WM_PAINT: {
         PAINTSTRUCT ps;
@@ -2559,6 +2585,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     refresh_slow();
     SetTimer(g.hwnd, kTimerSlow, 1000, nullptr);
     if (!start_hidden) show_panel();
+    else SetProcessWorkingSetSize(GetCurrentProcess(), (SIZE_T)-1, (SIZE_T)-1);   // trimmed like hide_panel
 
     MSG msg;
     while (GetMessageW(&msg, nullptr, 0, 0)) { TranslateMessage(&msg); DispatchMessageW(&msg); }
