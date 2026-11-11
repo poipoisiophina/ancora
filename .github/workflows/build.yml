@@ -25,7 +25,7 @@ jobs:
     runs-on: windows-2025
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # the output also goes to package.log and into the test-logs artifact: job logs
       # need a GitHub sign in to read, artifacts of a public repo do not
       - name: Build, test and package
@@ -37,7 +37,7 @@ jobs:
           exit /b %RC%
       - name: Keep the logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-logs
           path: |
@@ -47,7 +47,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
       - name: Keep the installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ancora-setup
           path: dist/*.exe

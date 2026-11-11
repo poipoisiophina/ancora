@@ -31,6 +31,9 @@ if not exist "%VSWHERE%" (echo vswhere not found, install Visual Studio Build To
 set "VSINSTALL="
 for /f "usebackq delims=" %%i in (`"%VSWHERE%" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSINSTALL=%%i"
 if not defined VSINSTALL (echo no Visual Studio install with the C++ x64 tools found & exit /b 1)
+rem no Visual Studio telemetry: vcvars64.bat otherwise starts vctip.exe, which
+rem outlives the build (GitHub ends it as an orphan process after the job)
+set "VSCMD_SKIP_SENDTELEMETRY=1"
 call "%VSINSTALL%\VC\Auxiliary\Build\vcvars64.bat" >nul || exit /b 1
 rem start from clean outputs: intermediates always, every built binary for "all"
 if exist driver\obj rmdir /s /q driver\obj

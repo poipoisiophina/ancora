@@ -1,0 +1,14 @@
+# Keeps the GitHub Actions in .github/workflows current: when an action ships a new
+# major version (as they do when GitHub moves to a newer Node.js LTS), Dependabot
+# opens one pull request with the bump, and the build workflow tests it on that PR.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: 'ancora'
