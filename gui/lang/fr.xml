@@ -38,6 +38,7 @@
   <thumb_no_sensor>sans capteur</thumb_no_sensor>
   <thumb_on>sur le stick</thumb_on>
   <thumb_off>levé</thumb_off>
+  <thumb_suspect>capteur ignoré</thumb_suspect>
   <set_gate>Détection du pouce</set_gate>
   <set_smoothing>Lissage</set_smoothing>
   <set_deadzone>Zone morte</set_deadzone>

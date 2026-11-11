@@ -46,6 +46,16 @@ EdgeReach flat(float r) {
     return e;
 }
 
+// a learner with its own furthest-reach record, as the logic dll keeps one per hand
+struct Learn {
+    EdgeLearner L;
+    EdgeReach best;
+    bool feed(EdgeReach& e, float x, float y, double t) {
+        if (!best.on) best = e;
+        return L.feed(e, best, x, y, t);
+    }
+};
+
 void test_average() {
     static StickAverage av;
     for (int k = 0; k <= 1000; ++k) av.add(k <= 500 ? 0.0f : 1.0f, 0.5f, (double)k, 100.0);
@@ -173,15 +183,15 @@ void test_learn() {
           "learn: a reading half way between two directions teaches nothing");
 
     // a push held at (x, y) for ms milliseconds, a reading every step ms, from t
-    auto hold = [](EdgeLearner& L, EdgeReach& e, float x, float y, double& t, double ms, double step = 1.0) {
+    auto hold = [](Learn& L, EdgeReach& e, float x, float y, double& t, double ms, double step = 1.0) {
         bool changed = false;
         for (double end = t + ms; t < end; t += step) changed |= L.feed(e, x, y, t);
         return changed;
     };
-    auto centre = [](EdgeLearner& L, EdgeReach& e, double& t) { L.feed(e, 0, 0, t); t += 50; };
+    auto centre = [](Learn& L, EdgeReach& e, double& t) { L.feed(e, 0, 0, t); t += 50; };
 
     EdgeReach s = flat(0.6f);
-    EdgeLearner L;
+    Learn L;
     double t = 0;
     L.feed(s, 0.5f, 0.0f, t); t += 1;
     L.feed(s, 1.0f, 0.0f, t); t += 1;
@@ -208,7 +218,7 @@ void test_learn() {
     // playing on the simulated worn stick, starting from a measurement that came out short:
     // rolling round the rim, a little slower each turn (about 330 to 140 deg a second)
     EdgeReach play = flat(0.55f);
-    EdgeLearner P;
+    Learn P;
     t = 0;
     for (int r = 0; r < 5; ++r)
         for (int k = 0; k < 360; ++k) {
@@ -222,7 +232,7 @@ void test_learn() {
 
     // the stick wears: full pushes right now stop at 0.85, the stored reach says 0.98
     EdgeReach worn = flat(0.98f);
-    EdgeLearner W;
+    Learn W;
     t = 0;
     bool lowered = false;
     for (int p = 0; p < kEdgeLowerPushes - 1; ++p) { lowered |= hold(W, worn, 0.85f, 0.0f, t, 200); centre(W, worn, t); }
@@ -232,10 +242,11 @@ void test_learn() {
     check(lowered && std::fabs(worn.r[0] - (0.98f + 0.85f) / 2) < 1e-4f && worn.r[kEdgeSectors / 2] == 0.98f,
           "learn: enough short full pushes lower that direction half way, and only it");
     for (int p = 0; p < kEdgeLowerPushes * 4; ++p) { hold(W, worn, 0.85f, 0.0f, t, 200); centre(W, worn, t); }
-    check(worn.r[0] < 0.86f + kEdgeLowerGap && worn.r[0] >= 0.85f, "learn: repeated wear settles on the new reach");
+    check(std::fabs(worn.r[0] - (0.98f - kEdgeLowerMaxDrop)) < 1e-4f,
+          "learn: repeated wear stops at the floor, 0.10 below the furthest reach seen");
 
     EdgeReach keep = flat(0.98f);
-    EdgeLearner K;
+    Learn K;
     t = 0;
     for (int p = 0; p < kEdgeLowerPushes * 3; ++p) {
         hold(K, keep, p % 10 == 9 ? 0.975f : 0.85f, 0.0f, t, 200);   // every tenth push reaches the edge
@@ -243,10 +254,50 @@ void test_learn() {
     }
     check(std::fabs(keep.r[0] - 0.98f) < 1e-6f, "learn: a push that still reaches the edge keeps the reach");
     EdgeReach soft = flat(0.98f);
-    EdgeLearner S;
+    Learn S;
     t = 0;
     for (int p = 0; p < kEdgeLowerPushes * 3; ++p) { hold(S, soft, 0.6f, 0.0f, t, 200); centre(S, soft, t); }
     check(std::fabs(soft.r[0] - 0.98f) < 1e-6f, "learn: gentle half pushes never lower the reach");
+
+    // a stick reporting slowly: learning must not depend on the update rate
+    bool all_rates = true;
+    for (double hz : {1000.0, 250.0, 144.0, 120.0, 90.0, 72.0, 60.0}) {
+        EdgeReach slow = flat(0.6f);
+        Learn R;
+        double ts = 0;
+        hold(R, slow, 0.95f, 0.0f, ts, 2000, 1000.0 / hz);
+        all_rates = all_rates && std::fabs(slow.r[0] - 0.95f) < 1e-3f;
+    }
+    check(all_rates, "learn: a held push raises the reach at 1000 down to 60 updates a second");
+    EdgeReach slow_glitch = flat(0.6f);
+    Learn G;
+    t = 0;
+    hold(G, slow_glitch, 0.5f, 0.0f, t, 200, 1000.0 / 72);
+    hold(G, slow_glitch, 0.95f, 0.0f, t, 1000.0 / 72 * 2, 1000.0 / 72);
+    hold(G, slow_glitch, 0.5f, 0.0f, t, 200, 1000.0 / 72);
+    check(slow_glitch.r[0] <= 0.6f + 1e-4f, "learn: at 72 updates a second, a two reading spike still teaches nothing");
+
+    // a player who always holds 90 % of the current reach: the stretch makes that
+    // stronger, the player pushes less, and so on; the floor stops the ratchet
+    EdgeReach part = flat(0.98f);
+    Learn Q;
+    t = 0;
+    for (int p = 0; p < 400; ++p) { hold(Q, part, 0.9f * part.r[0], 0.0f, t, 200); centre(Q, part, t); }
+    check(part.r[0] >= 0.98f - kEdgeLowerMaxDrop - 1e-4f,
+          "learn: 400 part pushes that follow the reach down stop at the floor");
+
+    // the push starts at 0 deg and is held at 11.25 deg (direction 2): the held
+    // direction is lowered, not the one the push started in
+    EdgeReach moved = flat(0.98f);
+    Learn M;
+    t = 0;
+    const float held_deg = 2 * 360.0f / kEdgeSectors;
+    for (int p = 0; p < kEdgeLowerPushes; ++p) {
+        hold(M, moved, 0.85f, 0.0f, t, 5);
+        hold(M, moved, 0.85f * std::cos(rad(held_deg)), 0.85f * std::sin(rad(held_deg)), t, 200);
+        centre(M, moved, t);
+    }
+    check(moved.r[0] == 0.98f && moved.r[2] < 0.98f, "learn: wear counts for the direction the push was held in");
 }
 
 void test_pairs() {
@@ -287,20 +338,20 @@ void test_learn_state() {
 
     // another key in the file changed before the save: learned reach is kept
     EdgeReach loaded = edge_parse(st.text.c_str());
-    st.reload(loaded, e, st.text);
+    st.reload(loaded, e, st.text, EdgeReach{});
     check(st.dirty && std::fabs(edge_reach(loaded, 1, 0) - 0.9f) < 1e-3f, "state: a reload for another key keeps unsaved learning");
 
     // a new measurement in the file: it wins
     EdgeReach fresh = flat(0.8f);
     std::string ft = edge_format(fresh);
     EdgeReach got = edge_parse(ft.c_str());
-    st.reload(got, e, ft);
+    st.reload(got, e, ft, EdgeReach{});
     check(!st.dirty && std::fabs(edge_reach(got, 1, 0) - 0.8f) < 1e-3f, "state: a new measurement replaces unsaved learning");
 
     // removed in the panel: stays off
     for (t = 2000; t < 2040; t += 1) st.on_pair(got, 0.95f, 0.0f, t);
     EdgeReach removed;
-    st.reload(removed, got, "");
+    st.reload(removed, got, "", EdgeReach{});
     check(!st.dirty && !removed.on, "state: removing the stretch is not undone by unsaved learning");
 
     // saved by the dll itself: the file now holds the learned values
@@ -309,8 +360,17 @@ void test_learn_state() {
     st.text = edge_format(flat(0.6f));
     std::string saved = edge_format(mine);
     EdgeReach reread = edge_parse(saved.c_str());
-    st.reload(reread, mine, saved);
+    st.reload(reread, mine, saved, EdgeReach{});
     check(!st.dirty && std::fabs(edge_reach(reread, 1, 0) - 0.7f) < 1e-3f, "state: reading back its own save keeps the values");
+
+    EdgeLearnState sb;
+    EdgeReach le = flat(0.7f);
+    sb.reload(le, le, edge_format(le), flat(0.9f));
+    check(sb.best.on && std::fabs(sb.best.r[0] - 0.9f) < 1e-6f, "state: the furthest reach comes from the file");
+    EdgeLearnState so;
+    EdgeReach lo = flat(0.7f);
+    so.reload(lo, lo, edge_format(lo), EdgeReach{});
+    check(so.best.on && std::fabs(so.best.r[0] - 0.7f) < 1e-6f, "state: without one in the file, the edge is the furthest reach");
 }
 
 void test_config() {
@@ -352,6 +412,11 @@ void test_config() {
     Config back = parse(format(e));
     check(back.hand[0].edge.on && !effective_edge(back.hand[0]).on && std::fabs(back.hand[0].edge.r[5] - 0.8f) < 1e-3f,
           "config: an edge switched off keeps its values but is not used");
+    e.hand[1].edge = flat(0.7f);
+    e.hand[1].edge_base = flat(0.9f);
+    back = parse(format(e));
+    check(back.hand[1].edge_base.on && std::fabs(back.hand[1].edge_base.r[3] - 0.9f) < 1e-3f && !back.hand[0].edge_base.on,
+          "config: the furthest reach per direction is kept per hand");
 }
 
 void test_output() {

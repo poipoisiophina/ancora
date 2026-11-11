@@ -27,7 +27,7 @@
     X(state_not_corrected) X(sub_unchanged) X(state_anchored) X(sub_drifting) X(sub_thumb_off) \
     X(state_in_deadzone) X(sub_in_deadzone) X(state_following) X(sub_past_deadzone) X(sub_as_is) \
     X(read_reports) X(read_games) X(read_thumb) \
-    X(thumb_no_sensor) X(thumb_on) X(thumb_off) \
+    X(thumb_no_sensor) X(thumb_on) X(thumb_off) X(thumb_suspect) \
     X(set_gate) X(set_smoothing) X(set_deadzone) X(value_off) X(value_ms) X(value_percent) \
     X(master_on) X(master_off) \
     X(tune_suggested) X(legend_rests) X(legend_suggested) \

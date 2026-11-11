@@ -38,6 +38,7 @@
   <thumb_no_sensor>l-ebda sensor</thumb_no_sensor>
   <thumb_on>fuq il-lieva</thumb_on>
   <thumb_off>barra</thumb_off>
+  <thumb_suspect>sensor injorat</thumb_suspect>
   <set_gate>Bieb tas-saba'</set_gate>
   <set_smoothing>Twittija</set_smoothing>
   <set_deadzone>Żona mejta</set_deadzone>

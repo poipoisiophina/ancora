@@ -38,6 +38,7 @@
   <thumb_no_sensor>センサーなし</thumb_no_sensor>
   <thumb_on>スティック上</thumb_on>
   <thumb_off>離れている</thumb_off>
+  <thumb_suspect>センサー無視中</thumb_suspect>
   <set_gate>親指ゲート</set_gate>
   <set_smoothing>スムージング</set_smoothing>
   <set_deadzone>デッドゾーン</set_deadzone>

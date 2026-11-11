@@ -38,6 +38,7 @@
   <thumb_no_sensor>bez senzora</thumb_no_sensor>
   <thumb_on>na palici</thumb_on>
   <thumb_off>maknut</thumb_off>
+  <thumb_suspect>senzor zanemaren</thumb_suspect>
   <set_gate>Blokada palca</set_gate>
   <set_smoothing>Izglađivanje</set_smoothing>
   <set_deadzone>Mrtva zona</set_deadzone>

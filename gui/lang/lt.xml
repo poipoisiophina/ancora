@@ -38,6 +38,7 @@
   <thumb_no_sensor>nėra jutiklio</thumb_no_sensor>
   <thumb_on>ant svirties</thumb_on>
   <thumb_off>nuimtas</thumb_off>
+  <thumb_suspect>jutiklis nepaisomas</thumb_suspect>
   <set_gate>Nykščio užtvara</set_gate>
   <set_smoothing>Glotninimas</set_smoothing>
   <set_deadzone>Mirtina zona</set_deadzone>

@@ -38,6 +38,7 @@
   <thumb_no_sensor>brez senzorja</thumb_no_sensor>
   <thumb_on>na palici</thumb_on>
   <thumb_off>stran</thumb_off>
+  <thumb_suspect>senzor prezrt</thumb_suspect>
   <set_gate>Palčna zapora</set_gate>
   <set_smoothing>Glajenje</set_smoothing>
   <set_deadzone>Mrtvo območje</set_deadzone>

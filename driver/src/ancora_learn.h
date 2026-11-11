@@ -39,13 +39,14 @@ const double kEdgeSaveMs = 5000;        // learned reach is saved this long afte
 // per hand bookkeeping of edge learning
 struct EdgeLearnState {
     EdgeLearner learner;
+    EdgeReach best;                     // furthest reach ever confirmed (<hand>_edge_base)
     bool dirty = false;                 // learned reach not saved yet
     double last_ms = 0;                 // last change, ms
     std::string text;                   // <hand>_edge as last read from the ini
 
     // a whole pair at time now (ms); returns true when it changed the reach
     bool on_pair(EdgeReach& e, float x, float y, double now) {
-        if (!learner.feed(e, x, y, now)) return false;
+        if (!learner.feed(e, best, x, y, now)) return false;
         dirty = true;
         last_ms = now;
         return true;
@@ -55,13 +56,23 @@ struct EdgeLearnState {
     bool save_due(double now) const { return dirty && now - last_ms >= kEdgeSaveMs; }
 
     // the config file was read again. loaded: the edge as read; current: the one in
-    // use, with any learning not saved yet. When only other keys changed, unsaved
-    // learning is kept; a changed edge in the file (a new measurement, removed, or
-    // learned values just saved) replaces it.
-    void reload(EdgeReach& loaded, const EdgeReach& current, const std::string& loaded_text) {
+    // use, with any learning not saved yet; loaded_best: <hand>_edge_base as read
+    // (off when the key is missing, then the loaded edge is the best seen so far).
+    // When only other keys changed, unsaved learning is kept; a changed edge in the
+    // file (a new measurement, removed, or learned values just saved) replaces it.
+    void reload(EdgeReach& loaded, const EdgeReach& current, const std::string& loaded_text,
+                const EdgeReach& loaded_best) {
         bool same = loaded_text == text;
-        if (dirty && same && loaded.on) loaded = current;
-        else dirty = false;
+        if (dirty && same && loaded.on) {
+            loaded = current;
+        } else {
+            dirty = false;
+            best = loaded_best.on ? loaded_best : loaded;
+            // a best below the reach in use is out of date: the reach is the better floor
+            if (best.on && loaded.on)
+                for (int k = 0; k < kEdgeSectors; ++k) if (loaded.r[k] > best.r[k]) best.r[k] = loaded.r[k];
+        }
+        if (!loaded.on) best = EdgeReach{};
         text = loaded_text;
     }
 };

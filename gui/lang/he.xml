@@ -38,6 +38,7 @@
   <thumb_no_sensor>אין חיישן</thumb_no_sensor>
   <thumb_on>על הסטיק</thumb_on>
   <thumb_off>מורם</thumb_off>
+  <thumb_suspect>חיישן לא בשימוש</thumb_suspect>
   <set_gate>שער אגודל</set_gate>
   <set_smoothing>החלקה</set_smoothing>
   <set_deadzone>אזור מת</set_deadzone>

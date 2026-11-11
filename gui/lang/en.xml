@@ -53,6 +53,7 @@
   <thumb_no_sensor>no sensor</thumb_no_sensor>
   <thumb_on>on stick</thumb_on>
   <thumb_off>off</thumb_off>
+  <thumb_suspect>sensor ignored</thumb_suspect>
   <set_gate>Thumb gate</set_gate>
   <set_smoothing>Smoothing</set_smoothing>
   <set_deadzone>Deadzone</set_deadzone>

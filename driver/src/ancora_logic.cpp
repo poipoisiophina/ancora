@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <mutex>
+#include <thread>
 #include <string>
 #include "ancora_host_api.h"
 #include "ancora_state.h"
@@ -146,6 +147,7 @@ void publish() {
         h.updates = g_updates[i];
         h.last_update_ms = s.last_ms;
         h.pair_seq = s.pair.seq; h.pair_x = s.pair.x; h.pair_y = s.pair.y;
+        h.gate_suspect = s.ht && g_cfg.touch_gate[i] && s.gate.suspect;
         strncpy_s(h.model, g_model[i].c_str(), _TRUNCATE);
     }
     MemoryBarrier();
@@ -210,7 +212,7 @@ void load_config(bool force) {
         edge_text[i] = ancfg::get(text, (std::string(kHand[i]) + "_edge").c_str());
     }
     std::lock_guard<std::mutex> lk(g_mu);
-    for (int i = 0; i < 2; ++i) g_s[i].learn.reload(c.edge[i], g_cfg.edge[i], edge_text[i]);
+    for (int i = 0; i < 2; ++i) g_s[i].learn.reload(c.edge[i], g_cfg.edge[i], edge_text[i], f.hand[i].edge_base);
     g_cfg = c;
     double now = now_precise_ms();
     for (int i = 0; i < 2; ++i) { update_average(g_s[i], i, now); repush(i, 0, now); }
@@ -272,17 +274,35 @@ void learn_edge(int i, double now) {
 // file change reloads the config, which then holds the same values
 void save_learned(double now) {
     for (int i = 0; i < 2; ++i) {
-        std::string text;
+        EdgeReach edge, best;
         {
             std::lock_guard<std::mutex> lk(g_mu);
             if (!g_s[i].learn.save_due(now)) continue;
             g_s[i].learn.dirty = false;
-            text = edge_format(g_cfg.edge[i]);
+            edge = g_cfg.edge[i];
+            best = g_s[i].learn.best;
         }
-        if (text.empty()) continue;
-        std::string key = std::string(kHand[i]) + "_edge";
-        if (ancfg::set_key(g_ini, key.c_str(), text)) log(std::string(kHand[i]) + " edge learned during play, saved");
-        else log(std::string(kHand[i]) + " edge save failed " + std::to_string(GetLastError()));
+        if (!edge.on) continue;
+        if (ancfg::set_edge(g_ini, i, edge, best)) {
+            log(std::string(kHand[i]) + " edge learned during play, saved");
+        } else {
+            // kept for the next try; the ini lock or the file was busy
+            std::lock_guard<std::mutex> lk(g_mu);
+            g_s[i].learn.dirty = true;
+            log(std::string(kHand[i]) + " edge save failed " + std::to_string(GetLastError()) + ", will retry");
+        }
+    }
+}
+
+// file work (saving learned reach, reading the config) runs here, on its own
+// thread, so a slow disk or a held ini lock never stalls SteamVR's frame
+std::thread g_worker;
+HANDLE g_worker_stop = nullptr;
+
+void worker() {
+    while (WaitForSingleObject(g_worker_stop, (DWORD)kConfigPollMs) == WAIT_TIMEOUT) {
+        save_learned(now_precise_ms());
+        load_config(false);
     }
 }
 
@@ -334,8 +354,6 @@ void on_frame() {
     uint64_t tick = GetTickCount64();
     if (tick - g_last_check >= kConfigPollMs) {
         g_last_check = tick;
-        save_learned(now);
-        load_config(false);
         std::lock_guard<std::mutex> lk(g_mu);
         // components a controller driver created before ancora loaded are never seen
         for (int i = 0; i < 2; ++i)
@@ -353,9 +371,19 @@ void start(uint32_t generation) {
     g_start_ms = GetTickCount64();
     open_state(generation);
     load_config(true);
+    g_worker_stop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    if (g_worker_stop) g_worker = std::thread(worker);
 }
 
 void shutdown() {
+    // the worker first, before g_mu is taken, since it takes g_mu itself; a learned
+    // reach not saved yet is saved now rather than lost
+    if (g_worker.joinable()) {
+        SetEvent(g_worker_stop);
+        g_worker.join();
+    }
+    if (g_worker_stop) { CloseHandle(g_worker_stop); g_worker_stop = nullptr; }
+    save_learned(now_precise_ms() + kEdgeSaveMs);
     // hand the sticks back unfiltered so nothing stays parked at 0
     std::lock_guard<std::mutex> lk(g_mu);
     g_cfg.enable = false;

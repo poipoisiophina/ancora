@@ -38,6 +38,7 @@
   <thumb_no_sensor>ingen sensor</thumb_no_sensor>
   <thumb_on>på spaken</thumb_on>
   <thumb_off>borta</thumb_off>
+  <thumb_suspect>sensor ignoreras</thumb_suspect>
   <set_gate>Tumspärr</set_gate>
   <set_smoothing>Utjämning</set_smoothing>
   <set_deadzone>Dödzon</set_deadzone>

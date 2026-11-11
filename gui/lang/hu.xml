@@ -38,6 +38,7 @@
   <thumb_no_sensor>nincs érzékelő</thumb_no_sensor>
   <thumb_on>a karon</thumb_on>
   <thumb_off>nincs rajta</thumb_off>
+  <thumb_suspect>kihagyva</thumb_suspect>
   <set_gate>Ujjkapu</set_gate>
   <set_smoothing>Simítás</set_smoothing>
   <set_deadzone>Holtzóna</set_deadzone>

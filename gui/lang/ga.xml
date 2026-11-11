@@ -38,6 +38,7 @@
   <thumb_no_sensor>gan bhraiteoir</thumb_no_sensor>
   <thumb_on>ar an maide</thumb_on>
   <thumb_off>bainte</thumb_off>
+  <thumb_suspect>ar neamhaird</thumb_suspect>
   <set_gate>Geata ordóige</set_gate>
   <set_smoothing>Mínú</set_smoothing>
   <set_deadzone>Crios marbh</set_deadzone>

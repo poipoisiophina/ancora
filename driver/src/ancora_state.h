@@ -7,7 +7,7 @@
 
 #define ANCORA_STATE_NAME    "Local\\ancora_state_v1"
 #define ANCORA_STATE_MAGIC   0x41434F52u   // "ACOR"
-#define ANCORA_STATE_VERSION 5
+#define ANCORA_STATE_VERSION 6
 #define ANCORA_STATE_BYTES   4096          // section size; the struct must fit
 
 struct AncoraHandState {
@@ -29,6 +29,9 @@ struct AncoraHandState {
     // new x with an old y; pair_x/pair_y only change once both axes are in
     uint32_t pair_seq;          // bumps on every new pair
     float    pair_x, pair_y;
+    // the stick was held at its rim with touch reading off, so the gate stopped
+    // trusting the thumb sensor until it reads touch again (ancora_output.h)
+    uint32_t gate_suspect;
 };
 
 struct AncoraState {

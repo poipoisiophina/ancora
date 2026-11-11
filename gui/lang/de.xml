@@ -38,6 +38,7 @@
   <thumb_no_sensor>kein Sensor</thumb_no_sensor>
   <thumb_on>auf dem Stick</thumb_on>
   <thumb_off>weg</thumb_off>
+  <thumb_suspect>Sensor ignoriert</thumb_suspect>
   <set_gate>Daumensperre</set_gate>
   <set_smoothing>Glättung</set_smoothing>
   <set_deadzone>Totzone</set_deadzone>

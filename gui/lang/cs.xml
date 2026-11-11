@@ -38,6 +38,7 @@
   <thumb_no_sensor>bez senzoru</thumb_no_sensor>
   <thumb_on>na páčce</thumb_on>
   <thumb_off>mimo</thumb_off>
+  <thumb_suspect>senzor ignorován</thumb_suspect>
   <set_gate>Palcová brána</set_gate>
   <set_smoothing>Vyhlazení</set_smoothing>
   <set_deadzone>Mrtvá zóna</set_deadzone>

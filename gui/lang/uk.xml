@@ -38,6 +38,7 @@
   <thumb_no_sensor>немає датчика</thumb_no_sensor>
   <thumb_on>на стіку</thumb_on>
   <thumb_off>прибрано</thumb_off>
+  <thumb_suspect>датчик ігнорується</thumb_suspect>
   <set_gate>Блок за пальцем</set_gate>
   <set_smoothing>Згладжування</set_smoothing>
   <set_deadzone>Мертва зона</set_deadzone>

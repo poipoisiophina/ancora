@@ -38,6 +38,7 @@
   <thumb_no_sensor>لا مستشعر</thumb_no_sensor>
   <thumb_on>على العصا</thumb_on>
   <thumb_off>مرفوع</thumb_off>
+  <thumb_suspect>المستشعر متجاهل</thumb_suspect>
   <set_gate>بوابة الإبهام</set_gate>
   <set_smoothing>التنعيم</set_smoothing>
   <set_deadzone>المنطقة الميتة</set_deadzone>

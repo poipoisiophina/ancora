@@ -38,6 +38,7 @@
   <thumb_no_sensor>χωρίς αισθητήρα</thumb_no_sensor>
   <thumb_on>στο στικ</thumb_on>
   <thumb_off>μακριά</thumb_off>
+  <thumb_suspect>αγνοείται</thumb_suspect>
   <set_gate>Πύλη αντίχειρα</set_gate>
   <set_smoothing>Εξομάλυνση</set_smoothing>
   <set_deadzone>Νεκρή ζώνη</set_deadzone>

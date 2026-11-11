@@ -38,6 +38,7 @@
   <thumb_no_sensor>nav sensora</thumb_no_sensor>
   <thumb_on>uz sviras</thumb_on>
   <thumb_off>noņemts</thumb_off>
+  <thumb_suspect>sensors ignorēts</thumb_suspect>
   <set_gate>Īkšķa vārti</set_gate>
   <set_smoothing>Izlīdzināšana</set_smoothing>
   <set_deadzone>Mirusī zona</set_deadzone>

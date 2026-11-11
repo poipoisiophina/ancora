@@ -38,6 +38,7 @@
   <thumb_no_sensor>ei anturia</thumb_no_sensor>
   <thumb_on>tikulla</thumb_on>
   <thumb_off>irti</thumb_off>
+  <thumb_suspect>anturi ohitettu</thumb_suspect>
   <set_gate>Peukalolukko</set_gate>
   <set_smoothing>Tasoitus</set_smoothing>
   <set_deadzone>Kuollut alue</set_deadzone>

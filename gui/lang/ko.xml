@@ -38,6 +38,7 @@
   <thumb_no_sensor>센서 없음</thumb_no_sensor>
   <thumb_on>스틱 위</thumb_on>
   <thumb_off>뗌</thumb_off>
+  <thumb_suspect>센서 무시됨</thumb_suspect>
   <set_gate>엄지 게이트</set_gate>
   <set_smoothing>스무딩</set_smoothing>
   <set_deadzone>데드존</set_deadzone>

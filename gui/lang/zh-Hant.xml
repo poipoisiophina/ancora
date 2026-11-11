@@ -38,6 +38,7 @@
   <thumb_no_sensor>無感測器</thumb_no_sensor>
   <thumb_on>在搖桿上</thumb_on>
   <thumb_off>離開</thumb_off>
+  <thumb_suspect>感測器已忽略</thumb_suspect>
   <set_gate>拇指閘控</set_gate>
   <set_smoothing>平滑</set_smoothing>
   <set_deadzone>死區</set_deadzone>

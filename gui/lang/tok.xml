@@ -40,6 +40,7 @@
   <thumb_no_sensor>ilo pilin ala</thumb_no_sensor>
   <thumb_on>lon palisa</thumb_on>
   <thumb_off>weka</thumb_off>
+  <thumb_suspect>ilo pilin ike</thumb_suspect>
   <set_gate>lupa luka</set_gate>
   <set_smoothing>tawa suwi</set_smoothing>
   <set_deadzone>ma moli</set_deadzone>

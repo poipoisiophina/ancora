@@ -38,6 +38,7 @@
   <thumb_no_sensor>brak czujnika</thumb_no_sensor>
   <thumb_on>na gałce</thumb_on>
   <thumb_off>zdjęty</thumb_off>
+  <thumb_suspect>czujnik pominięty</thumb_suspect>
   <set_gate>Blokada kciuka</set_gate>
   <set_smoothing>Wygładzanie</set_smoothing>
   <set_deadzone>Martwa strefa</set_deadzone>

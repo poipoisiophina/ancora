@@ -27,6 +27,8 @@ struct HandConfig {
     EdgeReach edge;             // measured reach, off when the key is empty
     bool  edge_on = true;       // use the measured edge; off keeps the values for later
     bool  edge_bad = false;     // <hand>_edge had text that is not a valid reach list
+    EdgeReach edge_base;        // furthest reach ever confirmed per direction, the floor
+                                // for lowering by wear (ancora_edge.h); off when missing
 };
 
 struct Config {
@@ -128,6 +130,7 @@ inline Config parse(const std::string& text) {
         h.edge = edge_parse(edge.c_str());
         h.edge_bad = !edge.empty() && !h.edge.on;
         h.edge_on = get_int(text, (k + "_edge_on").c_str(), 1) != 0;
+        h.edge_base = edge_parse(get(text, (k + "_edge_base").c_str()).c_str());
     }
     bool found;
     std::string lang = get(text, "language", &found);
@@ -160,7 +163,9 @@ inline std::string format(const Config& c) {
         "; moving average for a shaky stick (0..300 ms, 0 = off, adds lag),\r\n"
         "; radial deadzone while touched (0..0.95, 0 = off),\r\n"
         "; edge stretch: " + std::to_string(kEdgeSectors) + " measured reach values, from right counterclockwise\r\n"
-        "; (the Tune page writes them; empty = off), and whether to use them (1 = on)\r\n";
+        "; (the Tune page writes them; empty = off), whether to use them (1 = on), and the\r\n"
+        "; furthest reach seen per direction (the driver keeps it; wear never lowers the\r\n"
+        "; stretch more than 0.10 below it)\r\n";
     for (int i = 0; i < 2; ++i) {
         const HandConfig& h = c.hand[i];
         std::string k = kHandKey[i];
@@ -170,6 +175,7 @@ inline std::string format(const Config& c) {
         s += k + "_deadzone=" + num2(h.deadzone) + "\r\n";
         s += k + "_edge=" + edge_format(h.edge) + "\r\n";
         s += k + "_edge_on=" + std::to_string(h.edge_on ? 1 : 0) + "\r\n";
+        s += k + "_edge_base=" + edge_format(h.edge_base) + "\r\n";
     }
     s += "; panel language: auto follows Windows, or a code such as de, ar, ja, zh-Hant\r\n";
     s += "language=" + c.language + "\r\n";

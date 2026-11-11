@@ -142,10 +142,10 @@ void write_deadzone(const std::wstring& path, int hand, float v) {
     write_key(path, hand_key(hand, L"_deadzone"), buf);
 }
 
-// empty value = edge stretch off
+// empty value = edge stretch off. A new measurement is also the new furthest reach
+// (<hand>_edge_base), so wear can lower the stretch again from there
 void write_edge(const std::wstring& path, int hand, const EdgeReach& e) {
-    std::string s = edge_format(e);
-    write_key(path, hand_key(hand, L"_edge"), std::wstring(s.begin(), s.end()));
+    ancfg::set_edge(path, hand, e, e);
 }
 
 // full file with comments, used when the file is missing (never replaces one)
@@ -262,6 +262,14 @@ const uint64_t kSilentMs = 5000;
 bool connected(const AncoraHandState& h, uint64_t now) {
     return (h.tracked & 3) == 3 && h.last_update_ms && now - h.last_update_ms < kSilentMs;
 }
+
+// thumb sensor column: no sensor, ignored (the gate's fallback is on), on or off
+Str thumb_label(const AncoraHandState& h) {
+    if (!(h.tracked & 4)) return S_thumb_no_sensor;
+    if (h.gate_suspect) return S_thumb_suspect;
+    return h.touch ? S_thumb_on : S_thumb_off;
+}
+uint32_t thumb_color(const AncoraHandState& h) { return h.gate_suspect ? kWarn : h.touch ? kBrass : kMuted; }
 
 void fake_state(uint64_t now) {
     AncoraState& s = g_live.snap;
@@ -1039,8 +1047,7 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
         if (!tracked) { text(t, L"--", g.f_mono, b.left + 12, b.top + 24, kDim, bw - 24); continue; }
         if (k == 0) text(t, fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y), g.f_mono, b.left + 12, b.top + 24, kRawText, bw - 24);
         if (k == 1) text(t, fmt2(L"%+.2f %+.2f", h.out_x, h.out_y), g.f_mono, b.left + 12, b.top + 24, kOut, bw - 24);
-        if (k == 2) text(t, tr(!(h.tracked & 4) ? S_thumb_no_sensor : h.touch ? S_thumb_on : S_thumb_off), g.f_body,
-                         b.left + 12, b.top + 23, h.touch ? kBrass : kMuted, bw - 24);
+        if (k == 2) text(t, tr(thumb_label(h)), g.f_body, b.left + 12, b.top + 23, thumb_color(h), bw - 24);
     }
 
     // per hand settings: four rows
@@ -1360,8 +1367,7 @@ void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
             text(t, inputs, g.f_mono, cols[1], ry + 14, ic, cols[2] - cols[1] - 12);
         }
         if (!tracked) text(t, L"--", g.f_mono, cols[2], ry + 14, kMuted, cols[3] - cols[2] - 12);
-        else text(t, tr(!(h.tracked & 4) ? S_thumb_no_sensor : h.touch ? S_thumb_on : S_thumb_off), g.f_body, cols[2],
-                  ry + 13, h.touch ? kBrass : kMuted, cols[3] - cols[2] - 12);
+        else text(t, tr(thumb_label(h)), g.f_body, cols[2], ry + 13, thumb_color(h), cols[3] - cols[2] - 12);
         text(t, tracked ? fmt2(L"%+.2f %+.2f", h.raw_x, h.raw_y) : L"--", g.f_mono, cols[3], ry + 14, kRawText,
              cols[4] - cols[3] - 12);
         text(t, tracked ? fmt2(L"%+.2f %+.2f", h.out_x, h.out_y) : L"--", g.f_mono, cols[4], ry + 14, kOut,
@@ -1549,7 +1555,8 @@ void copy_diagnostics() {
     for (int i = 0; i < 2; ++i) {
         const AncoraHandState& h = g_live.snap.hand[i];
         d += std::wstring(kHandKey[i]) + L": " + widen(h.model) +
-             fmt2(L" tracked=%.0f touch=%.0f", h.tracked, h.touch) + L"\r\n";
+             fmt2(L" tracked=%.0f touch=%.0f", h.tracked, h.touch) + fmt1(L" sensor_ignored=%.0f", h.gate_suspect) +
+             L"\r\n";
     }
     for (auto& l : g.log.lines) d += l + L"\r\n";
     if (OpenClipboard(g.hwnd)) {

@@ -38,6 +38,7 @@
   <thumb_no_sensor>sin sensor</thumb_no_sensor>
   <thumb_on>en el joystick</thumb_on>
   <thumb_off>fuera</thumb_off>
+  <thumb_suspect>sensor ignorado</thumb_suspect>
   <set_gate>Bloqueo por pulgar</set_gate>
   <set_smoothing>Suavizado</set_smoothing>
   <set_deadzone>Zona muerta</set_deadzone>

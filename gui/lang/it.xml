@@ -38,6 +38,7 @@
   <thumb_no_sensor>nessun sensore</thumb_no_sensor>
   <thumb_on>sulla levetta</thumb_on>
   <thumb_off>sollevato</thumb_off>
+  <thumb_suspect>sensore ignorato</thumb_suspect>
   <set_gate>Blocco pollice</set_gate>
   <set_smoothing>Levigatura</set_smoothing>
   <set_deadzone>Zona morta</set_deadzone>

@@ -38,6 +38,7 @@
   <thumb_no_sensor>fără senzor</thumb_no_sensor>
   <thumb_on>pe stick</thumb_on>
   <thumb_off>ridicat</thumb_off>
+  <thumb_suspect>senzor ignorat</thumb_suspect>
   <set_gate>Poarta degetului</set_gate>
   <set_smoothing>Netezire</set_smoothing>
   <set_deadzone>Zonă moartă</set_deadzone>

@@ -93,15 +93,22 @@ inline bool edge_learn(EdgeReach& e, float x, float y) {
 
 // Learning from a stream of x/y pairs, in pushes: a push is a run of readings past
 // kEdgeCountFrom that stay within kEdgeLearnSpread of where the run started.
-// - Raising: a reading teaches only once the push has lasted kEdgeLearnHoldMs, and
-//   then the shortest reading of the last kEdgeLearnHoldMs counts (at least
-//   kEdgeLearnHoldReads of them), so a glitch shorter than that teaches nothing.
-// - Lowering: a stick wears, so its reach can also shrink. A push that stays
+// - Raising: once a push has lasted kEdgeLearnHoldMs, the shortest reading of its
+//   last kEdgeLearnHoldMs counts, taking in at least kEdgeLearnHoldReads readings
+//   (further back when the stick reports slowly, so learning works at 72 updates a
+//   second as well as at 1000). A glitch shorter than that teaches nothing.
+// - Lowering: a stick wears, so its reach can also shrink. A push whose end stays
 //   within kEdgeLowerSteady for kEdgeLowerHoldMs, at kEdgeLowerFrom of the stored
-//   reach or more, is a full push. When kEdgeLowerPushes full pushes in a row
+//   reach or more, is a full push; the direction it was held in (not where it
+//   started) is the one it counts for. When kEdgeLowerPushes full pushes in a row
 //   toward one direction all stop more than kEdgeLowerGap short of its reach, it
 //   is lowered half way to the furthest of them. A push that does reach the
 //   stored edge starts the count over.
+// - Lowering has a floor: kEdgeLowerMaxDrop below the furthest reach ever confirmed
+//   in that direction (best, kept in the ini as <hand>_edge_base, reset by a new
+//   measurement). A player who settles on a part push, sees the stretch make it
+//   stronger and then pushes less, can therefore not ratchet the reach down; real
+//   wear beyond the floor needs a new measurement on the Tune page.
 const float  kEdgeLearnSpread = 360.0f / kEdgeSectors * 2;   // degrees
 const double kEdgeLearnHoldMs = 20.0;
 const int    kEdgeLearnHoldReads = 4;
@@ -110,6 +117,7 @@ const float  kEdgeLowerFrom = 0.85f;
 const float  kEdgeLowerSteady = 0.02f;
 const float  kEdgeLowerGap = 0.02f;
 const int    kEdgeLowerPushes = 25;
+const float  kEdgeLowerMaxDrop = 0.10f;
 const int    kEdgeRecent = 64;          // readings kept for the hold window
 
 struct EdgeLearner {
@@ -119,6 +127,7 @@ struct EdgeLearner {
     double t0 = 0;
     double held_t0 = 0;                 // start of the steady part at its end
     float  held_lo = 0, held_hi = 0;
+    double held_x = 0, held_y = 0;      // sum of the steady part's readings: its direction
     double recent_t[kEdgeRecent] = {};
     float  recent_m[kEdgeRecent] = {};
     int    recent_n = 0, recent_head = 0;
@@ -127,36 +136,44 @@ struct EdgeLearner {
     int    short_pushes[kEdgeSectors] = {};
     float  short_best[kEdgeSectors] = {};
 
-    // a whole pair at time now (ms); true when the reach changed
-    bool feed(EdgeReach& e, float x, float y, double now) {
+    // a whole pair at time now (ms); e is the reach in use, best the furthest reach
+    // ever confirmed per direction (raised along with e, the floor for lowering);
+    // true when e changed
+    bool feed(EdgeReach& e, EdgeReach& best, float x, float y, double now) {
         float m = std::sqrt(x * x + y * y);
         bool same = false;
         if (run && m > kEdgeCountFrom)
             same = (x * sx + y * sy) / m >= std::cos(kEdgeLearnSpread * 3.14159265f / 180);
         bool changed = false;
         if (!same) {
-            if (run) changed = end_push(e);
+            if (run) changed = end_push(e, best);
             run = m > kEdgeCountFrom;
             if (run) {
-                sx = x / m; sy = y / m; t0 = held_t0 = now;
-                held_lo = held_hi = m;
+                sx = x / m; sy = y / m; t0 = now;
+                start_held(x, y, m, now);
                 recent_n = recent_head = 0;
             }
         }
         if (!run) return changed;
         last_t = now;
-        if (m > held_lo + kEdgeLowerSteady || m < held_hi - kEdgeLowerSteady) { held_t0 = now; held_lo = held_hi = m; }
-        else { if (m < held_lo) held_lo = m; if (m > held_hi) held_hi = m; }
+        if (m > held_lo + kEdgeLowerSteady || m < held_hi - kEdgeLowerSteady) start_held(x, y, m, now);
+        else {
+            if (m < held_lo) held_lo = m;
+            if (m > held_hi) held_hi = m;
+            held_x += x; held_y += y;
+        }
         recent_t[recent_head] = now;
         recent_m[recent_head] = m;
         recent_head = (recent_head + 1) % kEdgeRecent;
         if (recent_n < kEdgeRecent) ++recent_n;
         if (now - t0 < kEdgeLearnHoldMs) return changed;
+        // shortest reading of the last kEdgeLearnHoldMs, and of the last
+        // kEdgeLearnHoldReads readings whatever their age
         float lo = m;
         int count = 0;
         for (int i = 0; i < recent_n; ++i) {
             int j = (recent_head - 1 - i + kEdgeRecent) % kEdgeRecent;
-            if (now - recent_t[j] > kEdgeLearnHoldMs) break;
+            if (count >= kEdgeLearnHoldReads && now - recent_t[j] > kEdgeLearnHoldMs) break;
             if (recent_m[j] < lo) lo = recent_m[j];
             ++count;
         }
@@ -164,22 +181,35 @@ struct EdgeLearner {
         int d = edge_learn_dir(x, y);
         if (d >= 0 && e.on && lo >= e.r[d] - kEdgeLowerGap) { short_pushes[d] = 0; short_best[d] = 0; }
         float use = lo / m;
-        if (edge_learn(e, x * use, y * use)) changed = true;
+        if (edge_learn(e, x * use, y * use)) {
+            changed = true;
+            if (d >= 0 && best.on && e.r[d] > best.r[d]) best.r[d] = e.r[d];
+        }
         return changed;
     }
 
 private:
-    bool end_push(EdgeReach& e) {
+    void start_held(float x, float y, float m, double now) {
+        held_t0 = now;
+        held_lo = held_hi = m;
+        held_x = x; held_y = y;
+    }
+
+    bool end_push(EdgeReach& e, const EdgeReach& best) {
         run = false;
         if (!e.on || last_t - held_t0 < kEdgeLowerHoldMs) return false;
-        int d = edge_learn_dir(sx, sy);
+        int d = edge_learn_dir((float)held_x, (float)held_y);
         if (d < 0 || held_hi < kEdgeLowerFrom * e.r[d] || held_hi >= e.r[d] - kEdgeLowerGap) return false;
         if (short_pushes[d] == 0 || held_hi > short_best[d]) short_best[d] = held_hi;
         if (++short_pushes[d] < kEdgeLowerPushes) return false;
-        float r = (e.r[d] + short_best[d]) / 2;
-        e.r[d] = r < kEdgeMinReach ? kEdgeMinReach : r;
         short_pushes[d] = 0;
+        float floor = (best.on ? best.r[d] : e.r[d]) - kEdgeLowerMaxDrop;
+        if (floor < kEdgeMinReach) floor = kEdgeMinReach;
+        float r = (e.r[d] + short_best[d]) / 2;
+        if (r < floor) r = floor;
         short_best[d] = 0;
+        if (r >= e.r[d]) return false;   // already at the floor
+        e.r[d] = r;
         return true;
     }
 };

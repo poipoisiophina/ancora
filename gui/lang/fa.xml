@@ -38,6 +38,7 @@
   <thumb_no_sensor>بدون حسگر</thumb_no_sensor>
   <thumb_on>روی استیک</thumb_on>
   <thumb_off>برداشته</thumb_off>
+  <thumb_suspect>حسگر نادیده</thumb_suspect>
   <set_gate>دروازهٔ شست</set_gate>
   <set_smoothing>نرم‌سازی</set_smoothing>
   <set_deadzone>ناحیهٔ مرده</set_deadzone>

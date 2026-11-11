@@ -52,6 +52,10 @@ struct Component {
     std::string name;
     VRInputComponentHandle_t handle;
     void* iface;
+    // last value of a boolean component, -1 = none yet: replayed to a reloaded
+    // logic, since a driver may send touch only when it changes, and a new logic
+    // that never saw it would keep the gate closed under a resting thumb
+    volatile LONG last_bool = -1;
 };
 
 SRWLOCK g_lock = SRWLOCK_INIT;      // shared in hooks, exclusive for reload
@@ -142,6 +146,11 @@ bool reload_logic() {
     g_logic->start((uint32_t)g_generation);
     for (const Component& c : g_components)
         if (g_logic->on_create) g_logic->on_create(c.kind, c.container, c.name.c_str(), c.handle, c.iface);
+    for (const Component& c : g_components)
+        if (c.kind == ANCORA_BOOL && c.last_bool >= 0 && g_logic->on_bool) {
+            bool v = c.last_bool != 0;
+            g_logic->on_bool(c.iface, c.handle, &v, 0);
+        }
     ReleaseSRWLockExclusive(&g_lock);
     log("logic loaded, generation " + std::to_string(g_generation) + ", replayed " +
         std::to_string(g_components.size()) + " component(s)");
@@ -189,6 +198,8 @@ EVRInputError hk_update_bool(void* self, VRInputComponentHandle_t h, bool v, dou
     Patched* t = table_of(self);
     if (!t) return VRInputError_InvalidHandle;
     AcquireSRWLockShared(&g_lock);
+    for (Component& c : g_components)   // a few dozen, and touch changes are rare
+        if (c.kind == ANCORA_BOOL && c.handle == h && c.iface == self) { InterlockedExchange(&c.last_bool, v ? 1 : 0); break; }
     if (g_logic && g_logic->on_bool) g_logic->on_bool(self, h, &v, dt);
     ReleaseSRWLockShared(&g_lock);
     return t->update_bool(self, h, v, dt);
@@ -244,9 +255,24 @@ void patch(void* iface, const char* version) {
     }
 }
 
-// puts the original calls back, so nothing calls into ancora once it is unloaded
+// puts the original calls back, so nothing calls into ancora once it is unloaded;
+// only slots that still hold ancora's hooks: another driver that hooked the same
+// table after ancora has its own entries there, and those are left as they are
 void unpatch_all() {
-    for (int i = 0; i < g_ntables; ++i) write_slots(g_tables[i].vtable, g_tables[i].original);
+    void* hooks[kSlots] = {(void*)&hk_create_bool, (void*)&hk_update_bool, (void*)&hk_create_scalar,
+                           (void*)&hk_update_scalar};
+    for (int i = 0; i < g_ntables; ++i) {
+        void** vt = g_tables[i].vtable;
+        void* restore[kSlots];
+        bool foreign = false;
+        for (int s = 0; s < kSlots; ++s) {
+            bool ours = vt[s] == hooks[s];
+            foreign |= !ours;
+            restore[s] = ours ? g_tables[i].original[s] : vt[s];
+        }
+        if (foreign) log("an input table was hooked again after ancora; its other entries are left alone");
+        write_slots(vt, restore);
+    }
 }
 
 } // namespace

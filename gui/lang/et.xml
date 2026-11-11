@@ -38,6 +38,7 @@
   <thumb_no_sensor>andurit pole</thumb_no_sensor>
   <thumb_on>kangil</thumb_on>
   <thumb_off>eemal</thumb_off>
+  <thumb_suspect>andurit eiratakse</thumb_suspect>
   <set_gate>Pöidlavärav</set_gate>
   <set_smoothing>Silumine</set_smoothing>
   <set_deadzone>Surnud tsoon</set_deadzone>

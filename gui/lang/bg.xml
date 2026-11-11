@@ -38,6 +38,7 @@
   <thumb_no_sensor>няма сензор</thumb_no_sensor>
   <thumb_on>на стика</thumb_on>
   <thumb_off>махнат</thumb_off>
+  <thumb_suspect>сензор игнориран</thumb_suspect>
   <set_gate>Палцова бариера</set_gate>
   <set_smoothing>Изглаждане</set_smoothing>
   <set_deadzone>Мъртва зона</set_deadzone>

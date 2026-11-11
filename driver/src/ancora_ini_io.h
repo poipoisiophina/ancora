@@ -57,14 +57,22 @@ inline bool write_file(const std::wstring& path, const std::string& data) {
     return false;
 }
 
-// holds the named mutex for the life of the object (at most 2 s wait)
+// holds the named mutex for the life of the object (at most 2 s wait); ok() is
+// false when it could not be had, and then nothing may be written
 struct IniLock {
     HANDLE m = nullptr;
+    bool held = false;
     IniLock() {
         m = CreateMutexW(nullptr, FALSE, ANCORA_INI_MUTEX);
-        if (m && WaitForSingleObject(m, 2000) == WAIT_TIMEOUT) { CloseHandle(m); m = nullptr; }
+        if (!m) return;
+        DWORD w = WaitForSingleObject(m, 2000);
+        held = w == WAIT_OBJECT_0 || w == WAIT_ABANDONED;   // abandoned: the owner died, the lock is ours
     }
-    ~IniLock() { if (m) { ReleaseMutex(m); CloseHandle(m); } }
+    ~IniLock() {
+        if (held) ReleaseMutex(m);
+        if (m) CloseHandle(m);
+    }
+    bool ok() const { return held; }
     IniLock(const IniLock&) = delete;
     IniLock& operator=(const IniLock&) = delete;
 };
@@ -74,6 +82,7 @@ struct IniLock {
 template <class F>
 bool update(const std::wstring& path, F edit) {
     IniLock lock;
+    if (!lock.ok()) return false;   // never write without the lock: the other side may be mid change
     std::string text;
     read_file(path, text);
     std::string next = edit(text);
@@ -83,6 +92,14 @@ bool update(const std::wstring& path, F edit) {
 
 inline bool set_key(const std::wstring& path, const char* key, const std::string& value) {
     return update(path, [&](const std::string& t) { return set(t, key, value); });
+}
+
+// <hand>_edge and <hand>_edge_base together, as one change
+inline bool set_edge(const std::wstring& path, int hand, const EdgeReach& edge, const EdgeReach& base) {
+    std::string k = kHandKey[hand];
+    return update(path, [&](const std::string& t) {
+        return set(set(t, (k + "_edge").c_str(), edge_format(edge)), (k + "_edge_base").c_str(), edge_format(base));
+    });
 }
 
 } // namespace ancfg

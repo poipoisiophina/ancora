@@ -68,7 +68,8 @@ Each card has:
 - **Thumb gate**: the main fix. Keep it **on**. If the thumb sensor misses
   your thumb (a worn sensor, a silicone cap, pushing with the side of your
   thumb), holding the stick at its edge for a quarter second still works:
-  ancora stops trusting the sensor until it sees your thumb again.
+  ancora stops trusting the sensor until it sees your thumb again. The card's
+  **Thumb** box then says **sensor ignored**.
 - **Deadzone**: only needed if your stick drifts even while your thumb rests
   on it. Leave it **off** unless you need it. Higher numbers mean you must push
   the stick further before you move. SteamVR's own controller bindings can
@@ -110,7 +111,9 @@ can come out short in places. While you play, ancora keeps watching: when the
 stick is held further than the measured edge in some direction, that direction
 is raised to match, and saved a few seconds later. A stick also keeps wearing:
 when many full pushes in a row toward one direction all stop clearly short of
-its edge, that direction is lowered part of the way. Only that one direction
+its edge, that direction is lowered part of the way, but never more than 0.10
+below the furthest the stick has reached there (measure again on the Tune page
+if it has worn more than that). Only that one direction
 changes, so a worn spot stays stretched even when the stick goes further right
 beside it, and readings shorter than a fiftieth of a second are ignored. Games
 get full a little (4 %) before the furthest edge seen, so an ordinary full

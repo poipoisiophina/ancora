@@ -38,6 +38,7 @@
   <thumb_no_sensor>ingen sensor</thumb_no_sensor>
   <thumb_on>på pinden</thumb_on>
   <thumb_off>væk</thumb_off>
+  <thumb_suspect>sensor ignoreret</thumb_suspect>
   <set_gate>Tommelspærre</set_gate>
   <set_smoothing>Udjævning</set_smoothing>
   <set_deadzone>Dødzone</set_deadzone>

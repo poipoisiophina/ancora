@@ -38,6 +38,7 @@
   <thumb_no_sensor>sem sensor</thumb_no_sensor>
   <thumb_on>no manípulo</thumb_on>
   <thumb_off>fora</thumb_off>
+  <thumb_suspect>sensor ignorado</thumb_suspect>
   <set_gate>Porta do polegar</set_gate>
   <set_smoothing>Suavização</set_smoothing>
   <set_deadzone>Zona morta</set_deadzone>

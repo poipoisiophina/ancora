@@ -38,6 +38,7 @@
   <thumb_no_sensor>无传感器</thumb_no_sensor>
   <thumb_on>在摇杆上</thumb_on>
   <thumb_off>离开</thumb_off>
+  <thumb_suspect>传感器已忽略</thumb_suspect>
   <set_gate>拇指门控</set_gate>
   <set_smoothing>平滑</set_smoothing>
   <set_deadzone>死区</set_deadzone>

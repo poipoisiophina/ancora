@@ -76,7 +76,10 @@ jobs:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04   # pinned like the Windows image; the job only needs git and gh
-    timeout-minutes: 10
+    # approval point: add yourself as a required reviewer of the "release"
+    # environment (Settings > Environments) and every release waits for your OK
+    environment: release
+    timeout-minutes: 10     # counts from approval; the wait for it is not included
     permissions:
       contents: write   # create the tag and the release
     env:
