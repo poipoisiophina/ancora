@@ -1,9 +1,11 @@
 @echo off
 rem Builds ancora and packs it into dist\ancora-setup-<version>.exe with Inno
-rem Setup (open source, https://jrsoftware.org/isinfo.php). ISCC.exe is found
-rem on PATH, then in the per user and machine wide Inno Setup 7 folders, then in
+rem Setup (open source, https://jrsoftware.org/isinfo.php). ISCC.exe is taken
+rem from the per user or machine wide Inno Setup 7 folder, else from
 rem tools\innosetup. When none exists, the compiler is fetched there from its
 rem NuGet package (pinned version and SHA-256), so nothing gets installed.
+rem An ISCC.exe on PATH is not used: it can be Inno Setup 6 (GitHub's Windows
+rem runners have 6), which cannot compile ancora.iss (SetupArchitecture is new in 7).
 setlocal
 cd /d %~dp0
 set "INNO_VER=7.1.0"
@@ -13,7 +15,6 @@ rem full path: cmd may be set not to run scripts from the current folder
 call "%~dp0build_driver.bat" all || exit /b 1
 
 set "ISCC="
-for /f "delims=" %%i in ('where ISCC.exe 2^>nul') do if not defined ISCC set "ISCC=%%i"
 if not defined ISCC if exist "%LOCALAPPDATA%\Programs\Inno Setup 7\ISCC.exe" set "ISCC=%LOCALAPPDATA%\Programs\Inno Setup 7\ISCC.exe"
 if not defined ISCC if exist "%ProgramFiles%\Inno Setup 7\ISCC.exe" set "ISCC=%ProgramFiles%\Inno Setup 7\ISCC.exe"
 if not defined ISCC if exist "%ProgramFiles(x86)%\Inno Setup 7\ISCC.exe" set "ISCC=%ProgramFiles(x86)%\Inno Setup 7\ISCC.exe"

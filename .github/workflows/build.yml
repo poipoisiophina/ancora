@@ -26,15 +26,22 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      # the output also goes to package.log and into the test-logs artifact: job logs
+      # need a GitHub sign in to read, artifacts of a public repo do not
       - name: Build, test and package
         shell: cmd
-        run: call package.bat
-      - name: Keep the test logs
+        run: |
+          call package.bat > package.log 2>&1
+          set RC=%ERRORLEVEL%
+          type package.log
+          exit /b %RC%
+      - name: Keep the logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-logs
           path: |
+            package.log
             driver/obj/ancora_test.log
             driver/obj/panel_test.log
           if-no-files-found: ignore
