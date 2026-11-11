@@ -75,7 +75,7 @@ jobs:
   prerelease:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned like the Windows image; the job only needs git and gh
     timeout-minutes: 10
     permissions:
       contents: write   # create the tag and the release
