@@ -62,7 +62,8 @@ rem before any dll is copied or deployed into a running SteamVR
 cl /nologo /std:c++17 /O2 /EHsc /MT /W3 /Fodriver\obj\ test\ancora_test.cpp /Fe:driver\obj\ancora_test.exe >nul || (echo driver tests did not compile & exit /b 1)
 driver\obj\ancora_test.exe > driver\obj\ancora_test.log
 if errorlevel 1 (
-    findstr /b FAIL driver\obj\ancora_test.log
+    rem every line but the passes: each FAIL with the values printed under it, and the count
+    findstr /v /b /c:"PASS " driver\obj\ancora_test.log
     echo driver tests failed, nothing built or deployed, full output in driver\obj\ancora_test.log
     exit /b 1
 )
@@ -108,7 +109,7 @@ echo built gui\bin\ancora.exe
 rem panel self test: ini files, the Tune page flow and every language file
 gui\bin\ancora.exe --selftest > driver\obj\panel_test.log
 if errorlevel 1 (
-    findstr /b FAIL driver\obj\panel_test.log
+    findstr /v /b /c:"PASS " driver\obj\panel_test.log
     echo panel self test failed, full output in driver\obj\panel_test.log
     exit /b 1
 )
