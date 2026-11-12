@@ -19,6 +19,8 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
 PrivilegesRequired=lowest
+; the BSD 3-Clause text, shown on a page the user accepts before the install
+LicenseFile=..\LICENSE
 ; the driver is x64 only, so the installer is a 64-bit program too (new in Inno Setup 7)
 SetupArchitecture=x64
 ArchitecturesAllowed=x64compatible
@@ -81,6 +83,9 @@ Source: "..\driver\ancora\bin\win64\driver_ancora.dll"; DestDir: "{app}\driver\a
 Source: "..\driver\ancora\logic\ancora_logic.dll"; DestDir: "{app}\driver\ancora\logic"; Flags: ignoreversion
 ; diagnostic tools with the SDK's openvr_api.dll, manifest and bindings
 Source: "..\src\bin\*"; DestDir: "{app}\diag"; Flags: ignoreversion recursesubdirs
+; license and the OpenVR notice its license asks to ship with openvr_api.dll
+Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
+Source: "..\THIRD-PARTY-NOTICES.md"; DestDir: "{app}"; DestName: "THIRD-PARTY-NOTICES.txt"; Flags: ignoreversion
 ; an existing config is kept on upgrade
 Source: "..\driver\ancora\ancora.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 

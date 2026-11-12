@@ -284,3 +284,13 @@ Layout:
 
 `build_driver.bat all` builds every `gui/lang/*.xml` into `ancora.exe`.
 A string missing from a language shows in English, and Diagnostics says how many.
+
+## License
+
+ancora is released under the BSD 3-Clause License, the same license as the OpenVR
+SDK it builds against: see [LICENSE](LICENSE). The installer ships OpenVR's
+`openvr_api.dll`; its notice is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+ancora is not affiliated with, endorsed by, or sponsored by Valve or Meta.
+SteamVR, Steam, Meta and Quest are trademarks of their respective owners, used
+here only to say what ancora works with.
