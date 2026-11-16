@@ -142,6 +142,11 @@
   <what_right_deadzone>右死区</what_right_deadzone>
   <what_left_curve>左曲线</what_left_curve>
   <what_right_curve>右曲线</what_right_curve>
+  <tip_gate>主要的修复。拇指离开摇杆时，游戏收到的是中心，漂移无法让你移动。请保持开启。</tip_gate>
+  <tip_smoothing>让在拇指下抖动的摇杆更稳定。不能修复漂移，数值越高延迟越大。</tip_smoothing>
+  <tip_deadzone>小幅推动视为中心，适用于拇指搭在上面时仍会漂移的摇杆。太大会难以慢走。调校页面可以测量。</tip_deadzone>
+  <tip_curve>小幅推动输出更少，推满仍为满，便于在中心附近精细控制。不能修复漂移，但能减小越过死区的缓慢移动。</tip_curve>
+  <tip_edge>让磨损的摇杆在提前停住的方向也能推满。请在调校页面测量。</tip_edge>
   <what_left_edge>左边缘拉伸</what_left_edge>
   <what_right_edge>右边缘拉伸</what_right_edge>
   <what_language>语言</what_language>

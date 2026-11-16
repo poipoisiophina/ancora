@@ -142,6 +142,11 @@
   <what_right_deadzone>Totzone rechts</what_right_deadzone>
   <what_left_curve>Kurve links</what_left_curve>
   <what_right_curve>Kurve rechts</what_right_curve>
+  <tip_gate>Der Hauptschutz. Ist der Daumen vom Stick, bekommen Spiele die Mitte, Drift kann dich also nicht bewegen. Eingeschaltet lassen.</tip_gate>
+  <tip_smoothing>Beruhigt einen Stick, der unter dem Daumen zittert. Behebt keinen Drift, höhere Werte erzeugen Verzögerung.</tip_smoothing>
+  <tip_deadzone>Kleine Ausschläge zählen als Mitte, für einen Stick, der driftet, während der Daumen darauf liegt. Zu hoch erschwert langsames Gehen. Die Seite Abstimmen misst sie.</tip_deadzone>
+  <tip_curve>Kleine Ausschläge geben weniger, volle bleiben voll, für feinere Kontrolle um die Mitte. Behebt keinen Drift, verkleinert aber Kriechen, das durch die Totzone kommt.</tip_curve>
+  <tip_edge>Lässt einen abgenutzten Stick in Richtungen voll ausschlagen, in denen er zu früh stoppt. Auf der Seite Abstimmen messen.</tip_edge>
   <what_left_edge>Randausgleich links</what_left_edge>
   <what_right_edge>Randausgleich rechts</what_right_edge>
   <what_language>Sprache</what_language>

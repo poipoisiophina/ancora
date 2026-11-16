@@ -142,6 +142,11 @@
   <what_right_deadzone>Parem surnud tsoon</what_right_deadzone>
   <what_left_curve>Vasak kõver</what_left_curve>
   <what_right_curve>Parem kõver</what_right_curve>
+  <tip_gate>Peamine parandus. Kui pöial pole kangil, saavad mängud keskasendi, nii et triiv ei liiguta sind. Hoia sees.</tip_gate>
+  <tip_smoothing>Rahustab kangi, mis pöidla all väriseb. Triivi see ei paranda ja suuremad väärtused lisavad viivitust.</tip_smoothing>
+  <tip_deadzone>Väikesed liigutused loetakse keskasendiks, kangile, mis triivib pöidla all. Liiga suur teeb aeglase kõndimise raskeks. Häälestuse leht mõõdab selle.</tip_deadzone>
+  <tip_curve>Väikesed liigutused annavad vähem, täis liigutused jäävad täis, täpsemaks juhtimiseks keskel. Triivi see ei paranda, kuid vähendab surnud tsoonist mööduvat roomamist.</tip_curve>
+  <tip_edge>Paneb kulunud kangi ulatuma lõpuni suundades, kus see varem peatub. Mõõda seda Häälestuse lehel.</tip_edge>
   <what_left_edge>Vasak serva venitus</what_left_edge>
   <what_right_edge>Parem serva venitus</what_right_edge>
   <what_language>Keel</what_language>

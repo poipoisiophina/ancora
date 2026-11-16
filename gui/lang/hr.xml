@@ -142,6 +142,11 @@
   <what_right_deadzone>Mrtva zona desno</what_right_deadzone>
   <what_left_curve>Krivulja lijevo</what_left_curve>
   <what_right_curve>Krivulja desno</what_right_curve>
+  <tip_gate>Glavni popravak. Kad palac nije na palici, igre dobiju sredinu, pa vas drift ne može pomaknuti. Ostavite uključeno.</tip_gate>
+  <tip_smoothing>Smiruje palicu koja drhti pod palcem. Ne popravlja drift, a veće vrijednosti dodaju kašnjenje.</tip_smoothing>
+  <tip_deadzone>Mali pomaci računaju se kao sredina, za palicu koja klizi dok palac leži na njoj. Previsoka otežava sporo hodanje. Stranica Podešavanje je mjeri.</tip_deadzone>
+  <tip_curve>Mali pomaci daju manje, puni ostaju puni, za finiju kontrolu oko sredine. Ne popravlja drift, ali smanjuje puzanje koje prođe mrtvu zonu.</tip_curve>
+  <tip_edge>Istrošena palica doseže puni otklon u smjerovima gdje prerano staje. Izmjerite na stranici Podešavanje.</tip_edge>
   <what_left_edge>Rastezanje ruba lijevo</what_left_edge>
   <what_right_edge>Rastezanje ruba desno</what_right_edge>
   <what_language>Jezik</what_language>

@@ -142,6 +142,11 @@
   <what_right_deadzone>Oikea kuollut alue</what_right_deadzone>
   <what_left_curve>Vasen käyrä</what_left_curve>
   <what_right_curve>Oikea käyrä</what_right_curve>
+  <tip_gate>Tärkein korjaus. Kun peukalo ei ole tikulla, pelit saavat keskiasennon, joten ajautuminen ei liikuta sinua. Pidä päällä.</tip_gate>
+  <tip_smoothing>Rauhoittaa tikun, joka tärisee peukalon alla. Ei korjaa ajautumista, ja suuret arvot lisäävät viivettä.</tip_smoothing>
+  <tip_deadzone>Pienet liikkeet lasketaan keskiasennoksi tikulle, joka ajautuu peukalon levätessä sen päällä. Liian suuri vaikeuttaa hidasta kävelyä. Säätö-sivu mittaa sen.</tip_deadzone>
+  <tip_curve>Pienet liikkeet antavat vähemmän, täydet pysyvät täysinä, tarkempaan hallintaan keskellä. Ei korjaa ajautumista, mutta pienentää kuolleen alueen ohi pääsevää ryömintää.</tip_curve>
+  <tip_edge>Saa kuluneen tikun ulottumaan täyteen suunnissa, joissa se pysähtyy liian aikaisin. Mittaa se Säätö-sivulla.</tip_edge>
   <what_left_edge>Vasen reunan venytys</what_left_edge>
   <what_right_edge>Oikea reunan venytys</what_right_edge>
   <what_language>Kieli</what_language>

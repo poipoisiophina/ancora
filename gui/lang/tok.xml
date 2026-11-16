@@ -144,6 +144,11 @@
   <what_right_deadzone>ma moli teje</what_right_deadzone>
   <what_left_curve>nasin tawa soto</what_left_curve>
   <what_right_curve>nasin tawa teje</what_right_curve>
+  <tip_gate>ni li pona nanpa wan. luka li lon ala palisa la musi li kama jo e insa. tawa ike li ken ala tawa e sina. o open e ni.</tip_gate>
+  <tip_smoothing>ni li awen e palisa pi tawa lili. ni li pona ala e tawa ike. nanpa suli li tenpo e ni.</tip_smoothing>
+  <tip_deadzone>tawa lili li sama insa, tawa palisa ni: ona li tawa ike lon luka. nanpa suli la tawa pi tenpo suli li ike. lipu ante li sona e ni.</tip_deadzone>
+  <tip_curve>tawa lili li pana e lili, tawa ale li awen ale. ni li pona e lawa lili lon insa. ni li pona ala e tawa ike.</tip_curve>
+  <tip_edge>palisa jaki li ken tawa ale lon nasin ale. o sona e ni lon lipu ante.</tip_edge>
   <what_left_edge>suli selo soto</what_left_edge>
   <what_right_edge>suli selo teje</what_right_edge>
   <what_language>toki</what_language>

@@ -142,6 +142,11 @@
   <what_right_deadzone>prawa martwa strefa</what_right_deadzone>
   <what_left_curve>lewa krzywa</what_left_curve>
   <what_right_curve>prawa krzywa</what_right_curve>
+  <tip_gate>Główna poprawka. Gdy kciuk nie jest na gałce, gry dostają środek, więc dryf cię nie przesunie. Zostaw włączone.</tip_gate>
+  <tip_smoothing>Uspokaja gałkę, która drży pod kciukiem. Nie naprawia dryfu, a wyższe wartości dodają opóźnienie.</tip_smoothing>
+  <tip_deadzone>Małe wychylenia liczą się jako środek, dla gałki, która dryfuje, gdy kciuk na niej leży. Za wysoka utrudnia powolne chodzenie. Strona Strojenie ją mierzy.</tip_deadzone>
+  <tip_curve>Małe wychylenia dają mniej, pełne pozostają pełne, dla dokładniejszej kontroli przy środku. Nie naprawia dryfu, ale zmniejsza pełzanie, które przechodzi przez martwą strefę.</tip_curve>
+  <tip_edge>Sprawia, że zużyta gałka sięga pełnego wychylenia w kierunkach, w których staje za wcześnie. Zmierz to na stronie Strojenie.</tip_edge>
   <what_left_edge>lewe rozciągnięcie krawędzi</what_left_edge>
   <what_right_edge>prawe rozciągnięcie krawędzi</what_right_edge>
   <what_language>język</what_language>

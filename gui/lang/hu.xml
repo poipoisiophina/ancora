@@ -142,6 +142,11 @@
   <what_right_deadzone>Jobb holtzóna</what_right_deadzone>
   <what_left_curve>Bal görbe</what_left_curve>
   <what_right_curve>Jobb görbe</what_right_curve>
+  <tip_gate>A fő javítás. Ha az ujjad nincs a karon, a játékok középállást kapnak, így a sodródás nem mozgat. Hagyd bekapcsolva.</tip_gate>
+  <tip_smoothing>Megnyugtatja az ujj alatt remegő kart. A sodródást nem javítja, a nagyobb érték késést okoz.</tip_smoothing>
+  <tip_deadzone>A kis kitérések középnek számítanak, olyan karhoz, amely sodródik, miközben rajta az ujjad. Túl nagy értéknél nehéz lassan sétálni. A Hangolás oldal megméri.</tip_deadzone>
+  <tip_curve>A kis kitérés kevesebbet ad, a teljes teljes marad, finomabb irányításhoz középen. A sodródást nem javítja, de csökkenti a holtzónán túljutó kúszást.</tip_curve>
+  <tip_edge>A kopott kar azokban az irányokban is eléri a teljes kitérést, ahol korábban megáll. Mérd meg a Hangolás oldalon.</tip_edge>
   <what_left_edge>Bal peremnyújtás</what_left_edge>
   <what_right_edge>Jobb peremnyújtás</what_right_edge>
   <what_language>Nyelv</what_language>

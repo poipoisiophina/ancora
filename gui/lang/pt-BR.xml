@@ -142,6 +142,11 @@
   <what_right_deadzone>Zona morta direita</what_right_deadzone>
   <what_left_curve>Curva esquerda</what_left_curve>
   <what_right_curve>Curva direita</what_right_curve>
+  <tip_gate>A correção principal. Com o polegar fora do analógico, os jogos recebem o centro, então o drift não te move. Deixe ligado.</tip_gate>
+  <tip_smoothing>Estabiliza um analógico que treme sob o polegar. Não corrige o drift, e valores maiores adicionam atraso.</tip_smoothing>
+  <tip_deadzone>Pequenos toques contam como centro, para um analógico que desliza com o polegar apoiado. Alta demais dificulta andar devagar. A página Ajuste a mede.</tip_deadzone>
+  <tip_curve>Toques pequenos dão menos, toques completos continuam completos, para um controle mais fino perto do centro. Não corrige o drift, mas reduz o deslize que passa da zona morta.</tip_curve>
+  <tip_edge>Faz um analógico gasto chegar ao máximo nas direções em que para antes. Meça na página Ajuste.</tip_edge>
   <what_left_edge>Ajuste de borda esquerdo</what_left_edge>
   <what_right_edge>Ajuste de borda direito</what_right_edge>
   <what_language>Idioma</what_language>

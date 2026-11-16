@@ -142,6 +142,11 @@
   <what_right_deadzone>Zonă moartă dreapta</what_right_deadzone>
   <what_left_curve>Curbă stânga</what_left_curve>
   <what_right_curve>Curbă dreapta</what_right_curve>
+  <tip_gate>Corecția principală. Când degetul nu e pe stick, jocurile primesc centrul, deci deriva nu te poate mișca. Lasă-l pornit.</tip_gate>
+  <tip_smoothing>Liniștește un stick care tremură sub deget. Nu corectează deriva, iar valorile mari adaugă întârziere.</tip_smoothing>
+  <tip_deadzone>Împingerile mici contează ca centru, pentru un stick care derivă cu degetul pe el. Prea mare îngreunează mersul lent. Pagina Reglare o măsoară.</tip_deadzone>
+  <tip_curve>Împingerile mici dau mai puțin, cele complete rămân complete, pentru control mai fin lângă centru. Nu corectează deriva, dar reduce târârea care trece de zona moartă.</tip_curve>
+  <tip_edge>Face ca un stick uzat să ajungă la capăt în direcțiile în care se oprește mai devreme. Măsoară-l pe pagina Reglare.</tip_edge>
   <what_left_edge>Întinderea marginii stânga</what_left_edge>
   <what_right_edge>Întinderea marginii dreapta</what_right_edge>
   <what_language>Limbă</what_language>

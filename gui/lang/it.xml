@@ -142,6 +142,11 @@
   <what_right_deadzone>Zona morta destra</what_right_deadzone>
   <what_left_curve>Curva sinistra</what_left_curve>
   <what_right_curve>Curva destra</what_right_curve>
+  <tip_gate>La correzione principale. Con il pollice fuori dalla levetta, i giochi ricevono il centro, quindi la deriva non ti muove. Lasciala attiva.</tip_gate>
+  <tip_smoothing>Stabilizza una levetta che trema sotto il pollice. Non corregge la deriva e valori più alti aggiungono ritardo.</tip_smoothing>
+  <tip_deadzone>Le piccole spinte contano come centro, per una levetta che deriva con il pollice appoggiato. Troppo alta rende difficile camminare piano. La pagina Taratura la misura.</tip_deadzone>
+  <tip_curve>Le piccole spinte danno meno, quelle piene restano piene, per un controllo più fine vicino al centro. Non corregge la deriva, ma riduce lo scivolamento oltre la zona morta.</tip_curve>
+  <tip_edge>Fa arrivare al massimo una levetta usurata nelle direzioni in cui si ferma prima. Misurala nella pagina Taratura.</tip_edge>
   <what_left_edge>Estensione bordo sinistra</what_left_edge>
   <what_right_edge>Estensione bordo destra</what_right_edge>
   <what_language>Lingua</what_language>

@@ -142,6 +142,11 @@
   <what_right_deadzone>Mrtvo območje desno</what_right_deadzone>
   <what_left_curve>Krivulja levo</what_left_curve>
   <what_right_curve>Krivulja desno</what_right_curve>
+  <tip_gate>Glavni popravek. Ko palec ni na palici, igre dobijo sredino, zato vas lezenje ne premakne. Pustite vklopljeno.</tip_gate>
+  <tip_smoothing>Umiri palico, ki se trese pod palcem. Lezenja ne popravi, višje vrednosti dodajo zakasnitev.</tip_smoothing>
+  <tip_deadzone>Majhni premiki štejejo kot sredina, za palico, ki leze, ko palec leži na njej. Previsoko oteži počasno hojo. Stran Nastavitev ga izmeri.</tip_deadzone>
+  <tip_curve>Majhni premiki dajo manj, polni ostanejo polni, za natančnejši nadzor okoli sredine. Lezenja ne popravi, zmanjša pa lezenje, ki pride mimo mrtvega območja.</tip_curve>
+  <tip_edge>Obrabljeni palici omogoči poln odklon v smereh, kjer se ustavi prezgodaj. Izmerite na strani Nastavitev.</tip_edge>
   <what_left_edge>Raztezanje roba levo</what_left_edge>
   <what_right_edge>Raztezanje roba desno</what_right_edge>
   <what_language>Jezik</what_language>

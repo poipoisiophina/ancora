@@ -142,6 +142,11 @@
   <what_right_deadzone>Zona muerta derecha</what_right_deadzone>
   <what_left_curve>Curva izquierda</what_left_curve>
   <what_right_curve>Curva derecha</what_right_curve>
+  <tip_gate>La corrección principal. Con el pulgar fuera del joystick, los juegos reciben el centro, así que la deriva no te mueve. Déjalo activado.</tip_gate>
+  <tip_smoothing>Estabiliza un joystick que tiembla bajo el pulgar. No corrige la deriva y los valores altos añaden retraso.</tip_smoothing>
+  <tip_deadzone>Los empujes pequeños cuentan como centro, para un joystick que deriva con el pulgar encima. Demasiado alta dificulta caminar despacio. La página Ajuste la mide.</tip_deadzone>
+  <tip_curve>Los empujes pequeños dan menos y los completos siguen completos, para un control más fino cerca del centro. No corrige la deriva, pero reduce el desplazamiento que pasa la zona muerta.</tip_curve>
+  <tip_edge>Hace que un joystick gastado llegue al máximo en las direcciones donde se queda corto. Mídelo en la página Ajuste.</tip_edge>
   <what_left_edge>Ajuste de borde izquierdo</what_left_edge>
   <what_right_edge>Ajuste de borde derecho</what_right_edge>
   <what_language>Idioma</what_language>

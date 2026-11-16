@@ -17,6 +17,7 @@
 //   ancora.exe --tray             start hidden in the tray
 //   ancora.exe --steamvr          started by SteamVR: tray, exit when SteamVR exits
 //   ancora.exe --screenshot f.png [--fake] [--page status|tune|edge|diag] [--lang code] [--kbd KLID]
+//                                 [--tip n] (n: settings row of the right card whose tooltip shows)
 //                                 render one frame, exit (--kbd: key hints for another
 //                                 keyboard layout, such as 00000407 German)
 //                                 and list any text that does not fit its space
@@ -696,6 +697,21 @@ bool g_focus_visible = false;      // keyboard focus ring only after a key press
 
 bool inside(const D2D1_RECT_F& r, float x, float y) { return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; }
 bool focused(Id id, int hand = 0) { return g_focus_visible && g_focus == id && g_focus_hand == hand; }
+
+// tooltips: a settings row registers its area and text while drawing; the tip
+// shows after the mouse rests on the row for kTipDelayMs, or at once while the
+// keyboard focus is on the row's control
+struct Tip { D2D1_RECT_F r; Str s; Id id; int hand; };
+std::vector<Tip> g_tips;
+const UINT kTimerTip = 3;
+const uint64_t kTipDelayMs = 500;
+int g_hover_key = -1;                // id * 2 + hand of the row under the mouse, -1 = none
+uint64_t g_hover_since = 0;
+bool g_tip_dismissed = false;        // a click hides the tip until the mouse moves to another row
+bool g_mouse_tracked = false;        // WM_MOUSELEAVE requested
+int g_tip_forced = -1;               // --screenshot --tip n: show row n's tip of the right card
+void tip(D2D1_RECT_F r, Str s, Id id, int hand) { g_tips.push_back({r, s, id, hand}); }
+int tip_key(const Tip& t) { return (int)t.id * 2 + t.hand; }
 void region(D2D1_RECT_F r, Id id, int hand = 0) { g_regions.push_back({r, id, hand}); }
 
 // ---- drawing helpers -----------------------------------------------------------------
@@ -1156,6 +1172,11 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     fill_round(t, well, 12, kWell);
     auto row = [&](int n) { return D2D1_RECT_F{well.left, well.top + n * rh, well.right, well.top + (n + 1) * rh}; };
     D2D1_RECT_F gate = row(0);
+    tip(row(0), S_tip_gate, ID_GATE, i);
+    tip(row(1), S_tip_smoothing, ID_AVERAGE, i);
+    tip(row(2), S_tip_deadzone, ID_SLIDER, i);
+    tip(row(3), S_tip_curve, ID_CURVE, i);
+    tip(row(4), S_tip_edge, ID_EDGE_ON, i);
     text(t, tr(S_set_gate), g.f_body, gate.left + 14, gate.top + rh / 2 - 11, kText, gate.right - gate.left - 90);
     draw_switch(t, gate.right - 14 - 46, gate.top + rh / 2 - 13, hc.touch_gate);
     if (focused(ID_GATE, i)) ring(t, gate, 12);
@@ -1541,9 +1562,51 @@ void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
     button_left(tr(S_btn_open_log), ID_OPEN_LOG);
 }
 
+// the tip to show now, if any: keyboard focus first, then the mouse after the delay
+const Tip* active_tip() {
+    if (g.drag_hand >= 0) return nullptr;
+    if (g_tip_forced >= 0) {
+        int n = 0;
+        for (const Tip& t : g_tips)
+            if (t.hand == 1 && n++ == g_tip_forced) return &t;
+        return nullptr;
+    }
+    if (g_focus_visible) {
+        for (const Tip& t : g_tips)
+            if (t.id == g_focus && t.hand == g_focus_hand) return &t;
+        return nullptr;
+    }
+    if (g_hover_key < 0 || g_tip_dismissed || GetTickCount64() - g_hover_since < kTipDelayMs) return nullptr;
+    for (const Tip& t : g_tips)
+        if (tip_key(t) == g_hover_key) return &t;
+    return nullptr;
+}
+
+// a box under the row (above it when there is no room), over everything else
+void draw_tip(ID2D1RenderTarget* t) {
+    const Tip* tp = active_tip();
+    if (!tp) return;
+    std::wstring s = tr(tp->s);
+    float pad = 14, w = tp->r.right - tp->r.left, tw = w - 2 * pad;
+    IDWriteTextLayout* lay = nullptr;
+    if (FAILED(g.dw->CreateTextLayout(s.c_str(), (UINT32)s.size(), g.f_body, tw, 400, &lay))) return;
+    lay->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP);
+    DWRITE_TEXT_METRICS m{};
+    lay->GetMetrics(&m);
+    lay->Release();
+    float h = m.height + 2 * pad - 4;
+    float top = tp->r.bottom + 6;
+    if (top + h > kH - 6) top = tp->r.top - 6 - h;
+    D2D1_RECT_F box = {tp->r.left, top, tp->r.right, top + h};
+    fill_round(t, box, 12, kSel);
+    stroke_round(t, box, 12, kGrid, 1.2f);
+    para(t, s, g.f_body, box.left + pad, box.top + pad - 2, tw, kText, h - 2 * pad + 4);
+}
+
 void draw(ID2D1RenderTarget* t) {
     uint64_t now = g_fake ? g_live.snap.tick_ms : GetTickCount64();
     g_regions.clear();
+    g_tips.clear();
     g.overflow.clear();
     t->SetTransform(D2D1::Matrix3x2F::Identity());
     t->Clear(rgb(kBg));
@@ -1554,6 +1617,7 @@ void draw(ID2D1RenderTarget* t) {
     if (g.page == PAGE_TUNE) draw_tune(t, now);
     if (g.page == PAGE_DIAG) draw_diag(t, now);
     draw_footer(t);
+    draw_tip(t);
     g.mirror = false;
     t->SetTransform(D2D1::Matrix3x2F::Identity());
 }
@@ -1917,6 +1981,7 @@ void language_menu() {
 LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     switch (m) {
     case WM_TIMER:
+        if (wp == kTimerTip) { KillTimer(h, kTimerTip); if (active_tip()) redraw(); }
         if (wp == kTimerFrame && refresh_fast()) redraw();
         if (wp == kTimerSlow) {
             bool shown = IsWindowVisible(h) && !IsIconic(h);   // not in the tray, not minimised
@@ -1960,6 +2025,28 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
             return 0;
         }
         SetCursor(LoadCursor(nullptr, hit_at(x, y) ? IDC_HAND : IDC_ARROW));
+        if (!g_mouse_tracked) {
+            TRACKMOUSEEVENT tme{sizeof(tme), TME_LEAVE, h, 0};
+            g_mouse_tracked = TrackMouseEvent(&tme) != FALSE;
+        }
+        int key = -1;
+        for (const Tip& tp : g_tips)
+            if (inside(tp.r, x, y)) key = tip_key(tp);
+        if (key != g_hover_key) {
+            bool was_shown = active_tip() != nullptr;
+            g_hover_key = key;
+            g_hover_since = GetTickCount64();
+            g_tip_dismissed = false;
+            if (key >= 0) SetTimer(h, kTimerTip, (UINT)kTipDelayMs + 20, nullptr);
+            if (was_shown) redraw();
+        }
+        return 0;
+    }
+    case WM_MOUSELEAVE: {
+        g_mouse_tracked = false;
+        bool was_shown = active_tip() != nullptr;
+        g_hover_key = -1;
+        if (was_shown) redraw();
         return 0;
     }
     case WM_LBUTTONDOWN: {
@@ -1967,6 +2054,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         if (g.rtl) x = kW - x;
         const Region* r = hit_at(x, y);
         trace("down %.0f,%.0f id=%d hand=%d", x, y, r ? (int)r->id : 0, r ? r->hand : -1);
+        g_tip_dismissed = true;
         g_focus_visible = false;
         if (r) {
             g_focus = r->id;
@@ -2233,7 +2321,10 @@ int screenshot(const std::wstring& out, const std::wstring& page, const std::wst
         g.cfg.enable = true; g.cfg.hand[0] = {true, true, 0.0f, 0}; g.cfg.hand[1] = {true, false, 0.20f, 100};
         {   // the right stick: a deadzone wide toward forward left, and a curve
             float rad[kDzSectors];
-            for (int k = 0; k < kDzSectors; ++k) rad[k] = 0.05f + 0.15f * std::pow(std::fmax(0.0f, std::cos((k - 6) * 3.14159265f / 8)), 2);
+            for (int k = 0; k < kDzSectors; ++k) {
+                float c = std::fmax(0.0f, std::cos((k - 6) * 3.14159265f / 8));
+                rad[k] = 0.05f + 0.15f * c * c;
+            }
             g.cfg.hand[1].deadzone_shape = dz_shape_from(rad, 0.20f);
             g.cfg.hand[1].curve = 0.30f;
         }
@@ -2723,6 +2814,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     if (has(L"--screenshot")) {
         attach_console();
         g_fake = has(L"--fake") != 0;
+        if (has(L"--tip")) g_tip_forced = _wtoi(arg_after(L"--tip", L"0").c_str());
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
         return screenshot(arg_after(L"--screenshot", L"ancora.png"), arg_after(L"--page", L"status"),
                           arg_after(L"--lang", L""), arg_after(L"--kbd", L""));

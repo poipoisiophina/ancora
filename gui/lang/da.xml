@@ -142,6 +142,11 @@
   <what_right_deadzone>Dødzone højre</what_right_deadzone>
   <what_left_curve>Kurve venstre</what_left_curve>
   <what_right_curve>Kurve højre</what_right_curve>
+  <tip_gate>Den vigtigste rettelse. Når tommelen er væk fra pinden, får spil centreret, så drift ikke kan flytte dig. Lad den være slået til.</tip_gate>
+  <tip_smoothing>Gør en pind, der ryster under tommelen, rolig. Den retter ikke drift, og højere værdier giver forsinkelse.</tip_smoothing>
+  <tip_deadzone>Små skub tæller som centreret, til en pind der driver, mens tommelen hviler på den. For høj gør langsom gang svær. Siden Justér måler den.</tip_deadzone>
+  <tip_curve>Små skub giver mindre, fulde skub forbliver fulde, for finere styring nær midten. Den retter ikke drift, men mindsker kryb, der slipper forbi dødzonen.</tip_curve>
+  <tip_edge>Får en slidt pind til at nå fuldt ud i retninger, hvor den stopper for tidligt. Mål den på siden Justér.</tip_edge>
   <what_left_edge>Kantudstrækning venstre</what_left_edge>
   <what_right_edge>Kantudstrækning højre</what_right_edge>
   <what_language>Sprog</what_language>

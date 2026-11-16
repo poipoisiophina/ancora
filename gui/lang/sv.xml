@@ -142,6 +142,11 @@
   <what_right_deadzone>Dödzon höger</what_right_deadzone>
   <what_left_curve>Kurva vänster</what_left_curve>
   <what_right_curve>Kurva höger</what_right_curve>
+  <tip_gate>Den viktigaste åtgärden. När tummen är borta från spaken får spel mitten, så drift kan inte flytta dig. Låt den vara på.</tip_gate>
+  <tip_smoothing>Lugnar en spak som skakar under tummen. Åtgärdar inte drift, och högre värden ger fördröjning.</tip_smoothing>
+  <tip_deadzone>Små tryck räknas som mitten, för en spak som driver medan tummen vilar på den. För hög gör långsam gång svår. Sidan Justera mäter den.</tip_deadzone>
+  <tip_curve>Små tryck ger mindre, fulla tryck förblir fulla, för finare kontroll nära mitten. Åtgärdar inte drift, men minskar krypning som tar sig förbi dödzonen.</tip_curve>
+  <tip_edge>Får en sliten spak att nå fullt i riktningar där den stannar för tidigt. Mät den på sidan Justera.</tip_edge>
   <what_left_edge>Kantsträckning vänster</what_left_edge>
   <what_right_edge>Kantsträckning höger</what_right_edge>
   <what_language>Språk</what_language>

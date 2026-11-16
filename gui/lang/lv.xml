@@ -142,6 +142,11 @@
   <what_right_deadzone>Labā mirusī zona</what_right_deadzone>
   <what_left_curve>Kreisā līkne</what_left_curve>
   <what_right_curve>Labā līkne</what_right_curve>
+  <tip_gate>Galvenais labojums. Kad īkšķis nav uz sviras, spēles saņem centru, tāpēc dreifs jūs nekustina. Atstājiet ieslēgtu.</tip_gate>
+  <tip_smoothing>Nomierina sviru, kas trīc zem īkšķa. Dreifu nelabo, un lielākas vērtības pievieno aizturi.</tip_smoothing>
+  <tip_deadzone>Mazas kustības skaitās kā centrs, svirai, kas dreifē, kamēr īkšķis uz tās. Pārāk liela apgrūtina lēnu iešanu. Regulēšanas lapa to izmēra.</tip_deadzone>
+  <tip_curve>Mazas kustības dod mazāk, pilnas paliek pilnas, precīzākai vadībai pie centra. Dreifu nelabo, bet samazina slīdēšanu, kas izkļūst cauri mirušajai zonai.</tip_curve>
+  <tip_edge>Ļauj nolietotai svirai sasniegt galu virzienos, kur tā apstājas pāragri. Izmēriet to regulēšanas lapā.</tip_edge>
   <what_left_edge>Kreisā malas izstiepšana</what_left_edge>
   <what_right_edge>Labā malas izstiepšana</what_right_edge>
   <what_language>Valoda</what_language>

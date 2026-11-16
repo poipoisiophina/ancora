@@ -142,6 +142,11 @@
   <what_right_deadzone>右のデッドゾーン</what_right_deadzone>
   <what_left_curve>左のカーブ</what_left_curve>
   <what_right_curve>右のカーブ</what_right_curve>
+  <tip_gate>メインの対策です。親指がスティックから離れているとゲームには中央が送られ、ドリフトで動きません。オンのままにしてください。</tip_gate>
+  <tip_smoothing>親指の下で震えるスティックを安定させます。ドリフトは直らず、値を上げると遅延が増えます。</tip_smoothing>
+  <tip_deadzone>小さな入力を中央として扱います。親指を乗せたままドリフトするスティック向けです。大きすぎるとゆっくり歩けません。調整ページで測定できます。</tip_deadzone>
+  <tip_curve>小さな入力は弱く、最大入力はそのまま。中央付近を細かく操作できます。ドリフトは直りませんが、デッドゾーンを越えた小さな動きを減らします。</tip_curve>
+  <tip_edge>すり減ったスティックが手前で止まる方向でも最大まで届くようにします。調整ページで測定してください。</tip_edge>
   <what_left_edge>左の端の補正</what_left_edge>
   <what_right_edge>右の端の補正</what_right_edge>
   <what_language>言語</what_language>

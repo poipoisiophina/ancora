@@ -142,6 +142,11 @@
   <what_right_deadzone>Mŕtva zóna vpravo</what_right_deadzone>
   <what_left_curve>Krivka vľavo</what_left_curve>
   <what_right_curve>Krivka vpravo</what_right_curve>
+  <tip_gate>Hlavná oprava. Keď palec nie je na páčke, hry dostanú stred, takže drift vami nepohne. Nechajte zapnuté.</tip_gate>
+  <tip_smoothing>Upokojí páčku, ktorá sa pod palcom trasie. Drift neopraví a vyššie hodnoty pridávajú oneskorenie.</tip_smoothing>
+  <tip_deadzone>Malé pohyby sa berú ako stred, pre páčku, ktorá driftuje, aj keď na nej leží palec. Príliš vysoká sťaží pomalú chôdzu. Stránka Ladenie ju zmeria.</tip_deadzone>
+  <tip_curve>Malé pohyby dávajú menej, plné zostávajú plné, pre jemnejšie ovládanie pri strede. Drift neopraví, ale zmenší plazenie, ktoré prejde mŕtvou zónou.</tip_curve>
+  <tip_edge>Opotrebovaná páčka dosiahne plnú výchylku v smeroch, kde sa zastaví skôr. Zmerajte na stránke Ladenie.</tip_edge>
   <what_left_edge>Natiahnutie okraja vľavo</what_left_edge>
   <what_right_edge>Natiahnutie okraja vpravo</what_right_edge>
   <what_language>Jazyk</what_language>

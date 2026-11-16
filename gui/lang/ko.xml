@@ -142,6 +142,11 @@
   <what_right_deadzone>오른쪽 데드존</what_right_deadzone>
   <what_left_curve>왼쪽 커브</what_left_curve>
   <what_right_curve>오른쪽 커브</what_right_curve>
+  <tip_gate>핵심 기능입니다. 엄지가 스틱에서 떨어지면 게임에 중앙 값이 전달되어 드리프트로 움직이지 않습니다. 켜 두세요.</tip_gate>
+  <tip_smoothing>엄지 아래에서 떨리는 스틱을 안정시킵니다. 드리프트는 고치지 못하며 값이 클수록 지연이 늘어납니다.</tip_smoothing>
+  <tip_deadzone>작은 입력을 중앙으로 처리합니다. 엄지를 올려 둔 채로 드리프트하는 스틱용입니다. 너무 크면 천천히 걷기 어렵습니다. 조정 페이지에서 측정합니다.</tip_deadzone>
+  <tip_curve>작은 입력은 약하게, 최대 입력은 그대로 유지해 중앙 근처를 더 세밀하게 조작합니다. 드리프트는 고치지 못하지만 데드존을 넘는 작은 움직임을 줄입니다.</tip_curve>
+  <tip_edge>닳은 스틱이 일찍 멈추는 방향에서도 끝까지 닿게 합니다. 조정 페이지에서 측정하세요.</tip_edge>
   <what_left_edge>왼쪽 가장자리 보정</what_left_edge>
   <what_right_edge>오른쪽 가장자리 보정</what_right_edge>
   <what_language>언어</what_language>

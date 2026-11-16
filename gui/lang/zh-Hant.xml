@@ -142,6 +142,11 @@
   <what_right_deadzone>右死區</what_right_deadzone>
   <what_left_curve>左曲線</what_left_curve>
   <what_right_curve>右曲線</what_right_curve>
+  <tip_gate>主要的修正。拇指離開搖桿時，遊戲收到的是中心，飄移無法讓你移動。請保持開啟。</tip_gate>
+  <tip_smoothing>讓在拇指下抖動的搖桿更穩定。不能修正飄移，數值越高延遲越大。</tip_smoothing>
+  <tip_deadzone>小幅推動視為中心，適用於拇指放在上面時仍會飄移的搖桿。太大會難以慢走。調校頁面可以測量。</tip_deadzone>
+  <tip_curve>小幅推動輸出更少，推滿仍為滿，便於在中心附近精細控制。不能修正飄移，但能減小越過死區的緩慢移動。</tip_curve>
+  <tip_edge>讓磨損的搖桿在提前停住的方向也能推滿。請在調校頁面測量。</tip_edge>
   <what_left_edge>左邊緣拉伸</what_left_edge>
   <what_right_edge>右邊緣拉伸</what_right_edge>
   <what_language>語言</what_language>

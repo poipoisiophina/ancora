@@ -142,6 +142,11 @@
   <what_right_deadzone>אזור מת ימני</what_right_deadzone>
   <what_left_curve>עקומה שמאלית</what_left_curve>
   <what_right_curve>עקומה ימנית</what_right_curve>
+  <tip_gate>התיקון העיקרי. כשהאגודל לא על הסטיק, המשחקים מקבלים מרכז, כך שהסחיפה לא מזיזה אותך. השאירו פועל.</tip_gate>
+  <tip_smoothing>מייצב סטיק שרועד מתחת לאגודל. לא מתקן סחיפה, וערכים גבוהים מוסיפים השהיה.</tip_smoothing>
+  <tip_deadzone>דחיפות קטנות נחשבות למרכז, לסטיק שנסחף כשהאגודל מונח עליו. ערך גבוה מדי מקשה הליכה איטית. דף הכוונון מודד אותו.</tip_deadzone>
+  <tip_curve>דחיפות קטנות נותנות פחות, דחיפות מלאות נשארות מלאות, לשליטה עדינה יותר ליד המרכז. לא מתקן סחיפה, אבל מקטין זחילה שעוברת את האזור המת.</tip_curve>
+  <tip_edge>גורם לסטיק שחוק להגיע לקצה בכיוונים שבהם הוא נעצר מוקדם. מדדו זאת בדף הכוונון.</tip_edge>
   <what_left_edge>מתיחת קצה שמאלית</what_left_edge>
   <what_right_edge>מתיחת קצה ימנית</what_right_edge>
   <what_language>שפה</what_language>

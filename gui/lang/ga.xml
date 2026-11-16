@@ -142,6 +142,11 @@
   <what_right_deadzone>Crios marbh deas</what_right_deadzone>
   <what_left_curve>Cuar clé</what_left_curve>
   <what_right_curve>Cuar deas</what_right_curve>
+  <tip_gate>An príomhcheartú. Nuair nach bhfuil d'ordóg ar an maide, faigheann cluichí an lár, mar sin ní féidir le sruth tú a bhogadh. Fág ar siúl é.</tip_gate>
+  <tip_smoothing>Socraíonn sé maide a chreathann faoi d'ordóg. Ní cheartaíonn sé sruth, agus cuireann luachanna níos airde moill leis.</tip_smoothing>
+  <tip_deadzone>Áirítear brúnna beaga mar lár, do mhaide a shníonn agus d'ordóg air. Rómhór, déanann sé siúl mall deacair. Tomhaiseann an leathanach Tiúnadh é.</tip_deadzone>
+  <tip_curve>Tugann brúnna beaga níos lú, fanann brúnna iomlána iomlán, le haghaidh rialú níos míne gar don lár. Ní cheartaíonn sé sruth, ach laghdaíonn sé snámh a théann thar an gcrios marbh.</tip_curve>
+  <tip_edge>Cuireann sé ar mhaide caite an t-imeall a bhaint amach sna treonna ina stopann sé gearr. Tomhais é ar an leathanach Tiúnadh.</tip_edge>
   <what_left_edge>Síneadh imill clé</what_left_edge>
   <what_right_edge>Síneadh imill deas</what_right_edge>
   <what_language>Teanga</what_language>

@@ -167,6 +167,11 @@
   <what_right_deadzone>Right deadzone</what_right_deadzone>
   <what_left_curve>Left curve</what_left_curve>
   <what_right_curve>Right curve</what_right_curve>
+  <tip_gate>The main fix. When your thumb is off the stick, games get centered, so drift cannot move you. Keep it on.</tip_gate>
+  <tip_smoothing>Steadies a stick that shakes under your thumb. It does not fix drift, and higher values add lag.</tip_smoothing>
+  <tip_deadzone>Small pushes count as centered, for a stick that drifts while your thumb rests on it. Too high makes slow walking hard. The Tune page measures it.</tip_deadzone>
+  <tip_curve>Small pushes give less, full pushes stay full, for finer control near the middle. It does not fix drift, but it shrinks creep that gets past the deadzone.</tip_curve>
+  <tip_edge>Makes a worn stick reach full in directions where it stops short. Measure it on the Tune page.</tip_edge>
   <what_left_edge>Left edge stretch</what_left_edge>
   <what_right_edge>Right edge stretch</what_right_edge>
   <what_language>Language</what_language>

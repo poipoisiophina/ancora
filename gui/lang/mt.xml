@@ -142,6 +142,11 @@
   <what_right_deadzone>Żona mejta lemin</what_right_deadzone>
   <what_left_curve>Kurva xellug</what_left_curve>
   <what_right_curve>Kurva lemin</what_right_curve>
+  <tip_gate>Is-soluzzjoni ewlenija. Meta s-saba' mhuwiex fuq il-lieva, il-logħob jieħdu ċ-ċentru, għalhekk id-drift ma jistax iċċaqalqek. Ħallih mixgħul.</tip_gate>
+  <tip_smoothing>Iserraħ lieva li titriegħed taħt is-saba'. Ma jirranġax id-drift, u valuri ogħla jżidu dewmien.</tip_smoothing>
+  <tip_deadzone>Imbuttaturi żgħar jgħoddu bħala ċ-ċentru, għal lieva li tiżloq waqt li s-saba' fuqha. Għolja wisq tagħmel il-mixi bil-mod diffiċli. Il-paġna Irfinar tkejjilha.</tip_deadzone>
+  <tip_curve>Imbuttaturi żgħar jagħtu inqas, dawk sħaħ jibqgħu sħaħ, għal kontroll aktar fin qrib iċ-ċentru. Ma jirranġax id-drift, imma jnaqqas it-tkaxkir li jgħaddi ż-żona mejta.</tip_curve>
+  <tip_edge>Jagħmel lieva mħassra tasal sal-aħħar fid-direzzjonijiet fejn tieqaf qasir. Kejjilha fil-paġna Irfinar.</tip_edge>
   <what_left_edge>Tiġbid tat-tarf xellug</what_left_edge>
   <what_right_edge>Tiġbid tat-tarf lemin</what_right_edge>
   <what_language>Lingwa</what_language>

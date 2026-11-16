@@ -142,6 +142,11 @@
   <what_right_deadzone>Zone morte droite</what_right_deadzone>
   <what_left_curve>Courbe gauche</what_left_curve>
   <what_right_curve>Courbe droite</what_right_curve>
+  <tip_gate>La correction principale. Pouce hors du stick, les jeux reçoivent le centre : la dérive ne peut pas vous déplacer. Laissez-la activée.</tip_gate>
+  <tip_smoothing>Stabilise un stick qui tremble sous le pouce. Ne corrige pas la dérive, et les valeurs élevées ajoutent du retard.</tip_smoothing>
+  <tip_deadzone>Les petites poussées comptent comme le centre, pour un stick qui dérive pouce posé dessus. Trop haute, elle gêne la marche lente. La page Réglage la mesure.</tip_deadzone>
+  <tip_curve>Les petites poussées donnent moins, les poussées complètes restent complètes, pour un contrôle plus fin au centre. Ne corrige pas la dérive, mais réduit le glissement qui passe la zone morte.</tip_curve>
+  <tip_edge>Fait atteindre le maximum à un stick usé dans les directions où il s’arrête trop tôt. Mesurez-le sur la page Réglage.</tip_edge>
   <what_left_edge>Extension du bord gauche</what_left_edge>
   <what_right_edge>Extension du bord droit</what_right_edge>
   <what_language>Langue</what_language>

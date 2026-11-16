@@ -142,6 +142,11 @@
   <what_right_deadzone>Dešinė mirtina zona</what_right_deadzone>
   <what_left_curve>Kairė kreivė</what_left_curve>
   <what_right_curve>Dešinė kreivė</what_right_curve>
+  <tip_gate>Pagrindinis pataisymas. Kai nykštys ne ant svirties, žaidimai gauna centrą, todėl dreifas jūsų nejudina. Palikite įjungtą.</tip_gate>
+  <tip_smoothing>Nuramina svirtį, kuri dreba po nykščiu. Dreifo nepataiso, o didesnės reikšmės prideda vėlavimo.</tip_smoothing>
+  <tip_deadzone>Maži judesiai laikomi centru, svirčiai, kuri dreifuoja, kai nykštys ant jos. Per didelė apsunkina lėtą ėjimą. Derinimo puslapis ją išmatuoja.</tip_deadzone>
+  <tip_curve>Maži judesiai duoda mažiau, pilni lieka pilni, tikslesniam valdymui prie centro. Dreifo nepataiso, bet sumažina šliaužimą, praeinantį mirtiną zoną.</tip_curve>
+  <tip_edge>Leidžia nusidėvėjusiai svirčiai pasiekti kraštą kryptimis, kur ji sustoja anksčiau. Išmatuokite derinimo puslapyje.</tip_edge>
   <what_left_edge>Kairysis krašto ištempimas</what_left_edge>
   <what_right_edge>Dešinysis krašto ištempimas</what_right_edge>
   <what_language>Kalba</what_language>

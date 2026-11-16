@@ -142,6 +142,11 @@
   <what_right_deadzone>Dode zone rechts</what_right_deadzone>
   <what_left_curve>Curve links</what_left_curve>
   <what_right_curve>Curve rechts</what_right_curve>
+  <tip_gate>De belangrijkste oplossing. Is je duim van de stick, dan krijgen games het midden, dus drift kan je niet bewegen. Laat hem aan.</tip_gate>
+  <tip_smoothing>Maakt een stick die onder je duim trilt rustiger. Lost drift niet op, hogere waarden geven vertraging.</tip_smoothing>
+  <tip_deadzone>Kleine duwtjes tellen als midden, voor een stick die drijft terwijl je duim erop rust. Te hoog maakt langzaam lopen lastig. De pagina Afstellen meet hem.</tip_deadzone>
+  <tip_curve>Kleine duwtjes geven minder, volle duwtjes blijven vol, voor fijnere controle rond het midden. Lost drift niet op, maar verkleint kruipen dat voorbij de dode zone komt.</tip_curve>
+  <tip_edge>Laat een versleten stick volledig uitslaan in richtingen waar hij te vroeg stopt. Meet het op de pagina Afstellen.</tip_edge>
   <what_left_edge>Randrekking links</what_left_edge>
   <what_right_edge>Randrekking rechts</what_right_edge>
   <what_language>Taal</what_language>

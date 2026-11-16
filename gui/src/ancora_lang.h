@@ -53,6 +53,7 @@
     X(btn_copy) X(btn_open_cfg) X(btn_open_log) \
     X(note_saved) X(what_anchoring) X(what_left_gate) X(what_right_gate) \
     X(what_left_smoothing) X(what_right_smoothing) X(what_left_deadzone) X(what_right_deadzone) X(what_left_curve) X(what_right_curve) \
+    X(tip_gate) X(tip_smoothing) X(tip_deadzone) X(tip_curve) X(tip_edge) \
     X(what_left_edge) X(what_right_edge) \
     X(what_language) X(note_copied) X(note_no_log) \
     X(tray_open) X(tray_exit)

@@ -62,7 +62,8 @@ One card per controller:
 | **Not corrected** | ancora is switched off for this controller. |
 | **Not connected** | The controller is off, asleep, or its battery is out. |
 
-Each card has:
+Each card has (rest the mouse on a setting, or move to it with Tab, to see
+what it does):
 
 - **Switch at the top**: ancora on or off for this controller.
 - **Thumb gate**: the main fix. Keep it **on**. If the thumb sensor misses

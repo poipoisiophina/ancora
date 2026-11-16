@@ -142,6 +142,11 @@
   <what_right_deadzone>Zona morta direita</what_right_deadzone>
   <what_left_curve>Curva esquerda</what_left_curve>
   <what_right_curve>Curva direita</what_right_curve>
+  <tip_gate>A correção principal. Com o polegar fora do manípulo, os jogos recebem o centro, por isso o desvio não o move. Deixe ligado.</tip_gate>
+  <tip_smoothing>Estabiliza um manípulo que treme sob o polegar. Não corrige o desvio, e valores mais altos acrescentam atraso.</tip_smoothing>
+  <tip_deadzone>Pequenos toques contam como centro, para um manípulo que desliza com o polegar pousado. Demasiado alta dificulta andar devagar. A página Afinar mede-a.</tip_deadzone>
+  <tip_curve>Toques pequenos dão menos, toques completos continuam completos, para um controlo mais fino perto do centro. Não corrige o desvio, mas reduz o deslize que passa a zona morta.</tip_curve>
+  <tip_edge>Faz um manípulo gasto chegar ao máximo nas direções em que para antes. Meça-o na página Afinar.</tip_edge>
   <what_left_edge>Extensão da borda esquerda</what_left_edge>
   <what_right_edge>Extensão da borda direita</what_right_edge>
   <what_language>Idioma</what_language>
