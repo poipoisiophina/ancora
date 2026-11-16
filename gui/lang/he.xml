@@ -42,6 +42,7 @@
   <set_gate>שער אגודל</set_gate>
   <set_smoothing>החלקה</set_smoothing>
   <set_deadzone>אזור מת</set_deadzone>
+  <set_curve>עקומה</set_curve>
   <set_edge>מתיחת קצה</set_edge>
   <edge_not_measured>לא נמדד, כוונון</edge_not_measured>
   <value_off>כבוי</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>חיישן האגודל זיהה מגע כששחררתם, כך ששער האגודל לבדו לא יעצור אותה.</find_gate_fail>
   <find_no_sensor>לא נמצא חיישן אגודל, רק אזור מת יכול לעצור אותה.</find_no_sensor>
   <find_creep>כשהאגודל מונח על הסטיק הוא עדיין יכול לזחול. אזור מת של {value} מכסה זאת.</find_creep>
+  <find_center>הוא נח {offset} מחוץ למרכז. ancora מחזיר את הנקודה הזו לאמצע, ואזור מת של {value} מכסה את השאר.</find_center>
   <tune_intro>מודד איך הסטיק הזה נסחף וממליץ על אזור מת. לוקח כ-20 שניות: שחררו את הסטיק, ואז הטו ושחררו אותו כמה פעמים.</tune_intro>
   <btn_start>התחלת מדידה</btn_start>
   <btn_apply_left>החלת {value} על השמאלי</btn_apply_left>
   <btn_apply_right>החלת {value} על הימני</btn_apply_right>
+  <btn_center_apply_left>מירכוז שמאלי, {value}</btn_center_apply_left>
+  <btn_center_apply_right>מירכוז ימני, {value}</btn_center_apply_right>
   <btn_restart>התחלה מחדש</btn_restart>
   <edge_intro>מתיחת קצה: אם הסטיק לא מגיע עד הסוף בחלק מהכיוונים, סובבו אותו לאורך הקצה ו-ancora ימתח את הכיוונים האלה עד הסוף.</edge_intro>
   <btn_edge>מדידת קצה</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>מתיחת הסטיק הימני</btn_edge_apply_right>
   <btn_edge_clear_left>הסרת מתיחה שמאלית</btn_edge_clear_left>
   <btn_edge_clear_right>הסרת מתיחה ימנית</btn_edge_clear_right>
+  <btn_center_clear_left>הסרת מירכוז שמאלי</btn_center_clear_left>
+  <btn_center_clear_right>הסרת מירכוז ימני</btn_center_clear_right>
   <step_edge>סובבו את הסטיק לאורך הקצה</step_edge>
   <res_reach>הטווח הקצר ביותר</res_reach>
   <find_edge_ok>הסטיק מגיע עד הסוף בכל כיוון. אין צורך במתיחה.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>החלקה ימנית</what_right_smoothing>
   <what_left_deadzone>אזור מת שמאלי</what_left_deadzone>
   <what_right_deadzone>אזור מת ימני</what_right_deadzone>
+  <what_left_curve>עקומה שמאלית</what_left_curve>
+  <what_right_curve>עקומה ימנית</what_right_curve>
   <what_left_edge>מתיחת קצה שמאלית</what_left_edge>
   <what_right_edge>מתיחת קצה ימנית</what_right_edge>
   <what_language>שפה</what_language>

@@ -42,6 +42,7 @@
   <set_gate>Trava do polegar</set_gate>
   <set_smoothing>Suavização</set_smoothing>
   <set_deadzone>Zona morta</set_deadzone>
+  <set_curve>Curva</set_curve>
   <set_edge>Ajuste de borda</set_edge>
   <edge_not_measured>não medido, ajustar</edge_not_measured>
   <value_off>desligado</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>O sensor do polegar detectou toque quando você soltou, então a trava do polegar sozinha não resolve.</find_gate_fail>
   <find_no_sensor>Nenhum sensor de polegar encontrado, só uma zona morta pode impedir.</find_no_sensor>
   <find_creep>Com o polegar apoiado no analógico ele ainda pode deslizar. Uma zona morta de {value} cobre isso.</find_creep>
+  <find_center>Ele repousa a {offset} do centro. O ancora leva esse ponto de volta ao meio; uma zona morta de {value} cobre o resto.</find_center>
   <tune_intro>Mede como este analógico tem drift e sugere uma zona morta. Leva uns 20 segundos: solte o analógico, depois empurre e solte algumas vezes.</tune_intro>
   <btn_start>Começar a medir</btn_start>
   <btn_apply_left>Aplicar {value} à esquerda</btn_apply_left>
   <btn_apply_right>Aplicar {value} à direita</btn_apply_right>
+  <btn_center_apply_left>Centralizar esquerdo, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Centralizar direito, {value}</btn_center_apply_right>
   <btn_restart>Recomeçar</btn_restart>
   <edge_intro>Ajuste de borda: se o analógico não chega ao máximo em algumas direções, gire-o pela borda e o ancora estica essas direções até o máximo.</edge_intro>
   <btn_edge>Medir borda</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Esticar analógico direito</btn_edge_apply_right>
   <btn_edge_clear_left>Remover ajuste esquerdo</btn_edge_clear_left>
   <btn_edge_clear_right>Remover ajuste direito</btn_edge_clear_right>
+  <btn_center_clear_left>Remover centralização esquerda</btn_center_clear_left>
+  <btn_center_clear_right>Remover centralização direita</btn_center_clear_right>
   <step_edge>Gire o analógico pela borda</step_edge>
   <res_reach>menor alcance</res_reach>
   <find_edge_ok>O analógico chega ao máximo em todas as direções. Nenhum ajuste necessário.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Suavização direita</what_right_smoothing>
   <what_left_deadzone>Zona morta esquerda</what_left_deadzone>
   <what_right_deadzone>Zona morta direita</what_right_deadzone>
+  <what_left_curve>Curva esquerda</what_left_curve>
+  <what_right_curve>Curva direita</what_right_curve>
   <what_left_edge>Ajuste de borda esquerdo</what_left_edge>
   <what_right_edge>Ajuste de borda direito</what_right_edge>
   <what_language>Idioma</what_language>

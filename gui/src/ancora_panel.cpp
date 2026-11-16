@@ -143,6 +143,26 @@ void write_deadzone(const std::wstring& path, int hand, float v) {
     write_key(path, hand_key(hand, L"_deadzone"), buf);
 }
 
+// empty value = no center offset
+void write_center(const std::wstring& path, int hand, const CenterOffset& c) {
+    ancfg::set_key(path, ascii(hand_key(hand, L"_center")).c_str(), center_format(c));
+}
+
+// what Apply on the Tune page sets, as one change, so the driver never reads a
+// new deadzone with an old center or shape
+void write_tune(const std::wstring& path, int hand, const HandConfig& h) {
+    std::string k = ascii(kHandKey[hand]);
+    ancfg::update(path, [&](const std::string& t) {
+        std::string s = ancfg::set(t, (k + "_deadzone").c_str(), ancfg::num2(h.deadzone));
+        s = ancfg::set(s, (k + "_deadzone_shape").c_str(), dz_shape_format(h.deadzone_shape));
+        return ancfg::set(s, (k + "_center").c_str(), center_format(h.center));
+    });
+}
+
+void write_curve(const std::wstring& path, int hand, float v) {
+    ancfg::set_key(path, ascii(hand_key(hand, L"_curve")).c_str(), ancfg::num2(v));
+}
+
 // empty value = edge stretch off. A new measurement is also the new furthest reach
 // (<hand>_edge_base), so wear can lower the stretch again from there
 void write_edge(const std::wstring& path, int hand, const EdgeReach& e) {
@@ -312,6 +332,12 @@ struct Point { float x, y; };
 
 struct TuneResult {
     float peak = 0, typical = 0, suggested = 0;
+    // where the stick rests on average; centered: far enough off 0,0 that moving
+    // it back (ancora_center.h) is worth it, and then the suggested deadzone only
+    // has to cover the spread around that point
+    CenterOffset center;
+    bool centered = false;
+    DeadzoneShape shape;        // the suggested deadzone per direction, off = round
     Str direction = S_dir_none;
     bool gate_ok = false;       // thumb sensor stayed off while the stick was let go
     bool has_sensor = false;
@@ -332,7 +358,22 @@ TuneResult tune_compute(const std::vector<Point>& pts, int touch_on, int samples
     std::sort(mags.begin(), mags.end());
     r.peak = mags.back();
     r.typical = mags[mags.size() / 2];
-    r.suggested = std::fmin(0.95f, std::ceil((r.peak + 0.03f) / 0.05f - 1e-4f) * 0.05f);
+    float n = (float)pts.size();
+    r.center = center_clamped(sx / n, sy / n);
+    r.centered = std::sqrt(r.center.x * r.center.x + r.center.y * r.center.y) >= kCenterMin;
+    // the deadzone per direction around where the stick will read 0,0
+    std::vector<float> xs, ys;
+    for (const Point& p : pts) {
+        float cx = p.x, cy = p.y;
+        if (r.centered) center_map(r.center, p.x, p.y, cx, cy);
+        xs.push_back(cx);
+        ys.push_back(cy);
+    }
+    float radius[kDzSectors], widest = 0;
+    dz_from_points(xs.data(), ys.data(), (int)xs.size(), radius);
+    for (float v : radius) widest = std::fmax(widest, v);
+    r.suggested = std::fmin(0.95f, std::ceil(widest / 0.05f - 1e-4f) * 0.05f);
+    r.shape = dz_shape_from(radius, r.suggested);
     if (std::fabs(sx) + std::fabs(sy) > 1e-3f) {
         float a = std::atan2(sy, sx) * 180.0f / 3.14159265f;   // 90 = forward (+y)
         static const Str names[8] = {S_dir_right, S_dir_forward_right, S_dir_forward, S_dir_forward_left,
@@ -385,7 +426,8 @@ EdgeMeasure g_edge_live;                // guarded by g_edge_mu
 std::thread g_edge_thread;
 std::atomic<bool> g_edge_run{false};
 
-void edge_sampler(int hand) {
+// the stretch acts on the centered stick, so the edge is measured centered too
+void edge_sampler(int hand, CenterOffset center) {
     HANDLE map = OpenFileMappingA(FILE_MAP_READ, FALSE, ANCORA_STATE_NAME);
     const AncoraState* view = map ? (const AncoraState*)MapViewOfFile(map, FILE_MAP_READ, 0, 0, sizeof(AncoraState)) : nullptr;
     timeBeginPeriod(1);
@@ -400,6 +442,7 @@ void edge_sampler(int hand) {
             if (view->seq == a && ps != last_pair) {
                 last_pair = ps;
                 std::lock_guard<std::mutex> lk(g_edge_mu);
+                center_map(center, x, y, x, y);
                 g_edge_live.feed(x, y);
             }
         }
@@ -415,8 +458,9 @@ void edge_sampler_stop() {
     if (g_edge_thread.joinable()) g_edge_thread.join();
 }
 
-// sampler: false in the self test, which feeds readings itself
-void tune_start_edge(bool sampler = true) {
+// sampler: false in the self test, which feeds readings itself; center: the
+// hand's center offset in use, so the edge is measured on the centered stick
+void tune_start_edge(bool sampler = true, CenterOffset center = {}) {
     edge_sampler_stop();
     int hand = g_tune.hand;
     g_tune = Tune{};
@@ -428,7 +472,7 @@ void tune_start_edge(bool sampler = true) {
     }
     if (sampler && !g_fake) {
         g_edge_run = true;
-        g_edge_thread = std::thread(edge_sampler, hand);
+        g_edge_thread = std::thread(edge_sampler, hand, center);
     }
 }
 
@@ -570,7 +614,8 @@ struct App {
     uint64_t note_until = 0;
     bool steamvr = false, registered = false;
     int drag_hand = -1;             // per hand slider being dragged
-    bool drag_average = false;      // that slider is the average, else the deadzone
+    bool drag_average = false;      // that slider is the average,
+    bool drag_curve = false;        // or the curve, else the deadzone
     D2D1_RECT_F drag_track{};
     bool exiting = false, from_steamvr = false;
     NOTIFYICONDATAW nid{};
@@ -640,9 +685,9 @@ void trace(const char* f, ...) {
 }
 
 // ---- focusable regions -------------------------------------------------------------------
-enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_AVERAGE, ID_SLIDER,
+enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_AVERAGE, ID_SLIDER, ID_CURVE,
           ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_TUNE_EDGE, ID_TUNE_EDGE_APPLY,
-          ID_TUNE_EDGE_CLEAR, ID_EDGE_ON, ID_TUNE_EDGE_FINISH, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG };
+          ID_TUNE_EDGE_CLEAR, ID_EDGE_ON, ID_TUNE_EDGE_FINISH, ID_TUNE_CENTER_CLEAR, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG };
 struct Region { D2D1_RECT_F r; Id id; int hand; };
 std::vector<Region> g_regions;     // rebuilt every frame, in focus order
 Id g_focus = ID_NAV_STATUS;
@@ -866,6 +911,38 @@ void draw_edge(ID2D1RenderTarget* t, float cx, float cy, float R, const EdgeReac
     }
 }
 
+// center offset: a small cross where the stick rests, which games read as 0,0
+void draw_center(ID2D1RenderTarget* t, float cx, float cy, float R, const CenterOffset& c) {
+    float x = cx + c.x * R, y = cy - c.y * R;
+    line(t, x - 6, y, x + 6, y, kOut, 2);
+    line(t, x, y - 6, x, y + 6, kOut, 2);
+}
+
+// deadzone outline in raw stick space: dz times its share per direction, around
+// the rest point when the stick is centered (each direction scaled the way
+// center_map scales it, so the outline is where the stick really starts to move)
+void draw_deadzone(ID2D1RenderTarget* t, float cx, float cy, float R, float dz, const DeadzoneShape& shape,
+                   const CenterOffset& center, bool dashed) {
+    if (!(dz > 0)) return;
+    if (!shape.on && !center.on) {
+        circle(t, cx, cy, R * dz, kOut, 0.07f);
+        circle(t, cx, cy, R * dz, kOut, 0.8f, false, dashed ? 2.0f : 1.0f, dashed ? g.dash : nullptr);
+        return;
+    }
+    const int n = 96;
+    float c2 = center.on ? center.x * center.x + center.y * center.y : 0;
+    float ox = center.on ? center.x : 0, oy = center.on ? center.y : 0;
+    float px = 0, py = 0;
+    for (int k = 0; k <= n; ++k) {
+        float a = k * 2 * 3.14159265f / n, ux = std::cos(a), uy = std::sin(a);
+        float b = ox * ux + oy * uy, span = -b + std::sqrt(b * b - c2 + 1.0f);
+        float r = dz * dz_shape_at(shape, ux, uy) * span;
+        float qx = cx + (ox + ux * r) * R, qy = cy - (oy + uy * r) * R;
+        if (k) line(t, px, py, qx, qy, kOut, dashed ? 2.0f : 1.4f, 0.8f);
+        px = qx; py = qy;
+    }
+}
+
 // ---- navigation and footer ---------------------------------------------------------------
 void nav_icon(ID2D1RenderTarget* t, int which, float x, float y, uint32_t c) {
     if (which == 0) {            // status: ring with a dot
@@ -982,6 +1059,9 @@ HandView describe_hand(int i, uint64_t now) {
     const AncoraHandState& h = s.hand[i];
     bool live = live_now(now);
     float m = std::sqrt(h.raw_x * h.raw_x + h.raw_y * h.raw_y);
+    float cx, cy;   // the deadzone is measured from the rest point when the stick is centered
+    center_map(g.cfg.hand[i].center, h.raw_x, h.raw_y, cx, cy);
+    float mc = std::sqrt(cx * cx + cy * cy);
     if (!live) return {tr(S_state_no_signal), tr(S_sub_no_signal), kDim};
     if ((h.tracked & 3) != 3 || !h.last_update_ms) return {tr(S_state_not_connected), tr(S_sub_wake), kWarn};
     if (!connected(h, now))
@@ -991,7 +1071,7 @@ HandView describe_hand(int i, uint64_t now) {
         return {tr(S_state_anchored), m > 0.02f ? sub(tr(S_sub_drifting), {{L"value", num(m, 2)}}) : tr(S_sub_thumb_off),
                 kOut};
     std::wstring pct = sub(tr(S_value_percent), {{L"n", num(h.deadzone * 100, 0)}});
-    if (h.deadzone > 0 && m < h.deadzone)
+    if (h.deadzone > 0 && mc < h.deadzone * dz_shape_at(g.cfg.hand[i].deadzone_shape, cx, cy))
         return {tr(S_state_in_deadzone), sub(tr(S_sub_in_deadzone), {{L"percent", pct}}), kOut};
     return {tr(S_state_following), h.deadzone > 0 ? sub(tr(S_sub_past_deadzone), {{L"percent", pct}}) : tr(S_sub_as_is),
             kBrass};
@@ -1040,8 +1120,10 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
 
     // stick
     float R = 82, cx = physical(t, x0 + 22 + R), cy = c.top + 62 + R;
-    draw_target(t, cx, cy, R, (live && h.enable && g_live.snap.enable) ? h.deadzone : 0, false);
+    draw_target(t, cx, cy, R, 0, false);
+    if (live && h.enable && g_live.snap.enable) draw_deadzone(t, cx, cy, R, h.deadzone, hc.deadzone_shape, hc.center, false);
     if (hc.edge.on && hc.edge_on && hc.enable && g.cfg.enable) draw_edge(t, cx, cy, R, hc.edge, 1.2f, 0.7f);
+    if (hc.center.on && hc.enable && g.cfg.enable) draw_center(t, cx, cy, R, hc.center);
     draw_trail(t, i, cx, cy, R, now);
     if (tracked) {
         circle(t, cx + h.raw_x * R, cy - h.raw_y * R, 7, kRaw, 1, false, 2);
@@ -1067,9 +1149,10 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
         if (k == 2) text(t, tr(thumb_label(h)), g.f_body, b.left + 12, b.top + 23, thumb_color(h), bw - 24);
     }
 
-    // per hand settings: four rows
-    const float rh = 46;
-    D2D1_RECT_F well = {x0 + 22, ry + 60, x0 + 470 - 22, ry + 60 + 4 * rh};
+    // per hand settings: five rows
+    const int rows = 5;
+    const float rh = 37;
+    D2D1_RECT_F well = {x0 + 22, ry + 60, x0 + 470 - 22, ry + 60 + rows * rh};
     fill_round(t, well, 12, kWell);
     auto row = [&](int n) { return D2D1_RECT_F{well.left, well.top + n * rh, well.right, well.top + (n + 1) * rh}; };
     D2D1_RECT_F gate = row(0);
@@ -1077,9 +1160,10 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     draw_switch(t, gate.right - 14 - 46, gate.top + rh / 2 - 13, hc.touch_gate);
     if (focused(ID_GATE, i)) ring(t, gate, 12);
     region(gate, ID_GATE, i);
-    for (int n = 1; n < 4; ++n) line(t, well.left, well.top + n * rh, well.right, well.top + n * rh, kLine);
+    for (int n = 1; n < rows; ++n) line(t, well.left, well.top + n * rh, well.right, well.top + n * rh, kLine);
 
-    float label_w = std::fmax(measure(tr(S_set_smoothing), g.f_body), measure(tr(S_set_deadzone), g.f_body));
+    float label_w = std::fmax(std::fmax(measure(tr(S_set_smoothing), g.f_body), measure(tr(S_set_deadzone), g.f_body)),
+                              measure(tr(S_set_curve), g.f_body));
     draw_slider(t, row(1), tr(S_set_smoothing),
                 hc.average_ms > 0 ? sub(tr(S_value_ms), {{L"n", std::to_wstring(hc.average_ms)}}) : tr(S_value_off),
                 hc.average_ms > 0, hc.average_ms / (float)kMaxAverageMs, ID_AVERAGE, i, label_w);
@@ -1087,9 +1171,12 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
                 // the whole "31%" as one left to right run, so the sign keeps to its number
                 hc.deadzone > 0 ? iso(sub(tr(S_value_percent), {{L"n", num(hc.deadzone * 100, 0)}})) : tr(S_value_off),
                 hc.deadzone > 0, hc.deadzone / 0.95f, ID_SLIDER, i, label_w);
+    draw_slider(t, row(3), tr(S_set_curve),
+                hc.curve > 0 ? iso(sub(tr(S_value_percent), {{L"n", num(hc.curve * 100, 0)}})) : tr(S_value_off),
+                hc.curve > 0, hc.curve / kMaxCurve, ID_CURVE, i, label_w);
 
     // edge stretch: a switch once measured, else a pointer to the Tune page
-    D2D1_RECT_F edge = row(3);
+    D2D1_RECT_F edge = row(4);
     text(t, tr(S_set_edge), g.f_body, edge.left + 14, edge.top + rh / 2 - 11, kText, edge.right - edge.left - 200);
     if (hc.edge.on) {
         draw_switch(t, edge.right - 14 - 46, edge.top + rh / 2 - 13, hc.edge_on, kBrass);
@@ -1168,7 +1255,18 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
     bool edge_mode = st == TUNE_EDGE || edge_review;
     const HandConfig& hc = g.cfg.hand[g_tune.hand];
     float cx = physical(t, lcx);
-    draw_target(t, cx, cy, R, review ? g_tune.result.suggested : 0, true);
+    const TuneResult& res = g_tune.result;
+    bool center_review = review && res.centered;
+    // the suggested deadzone, in its shape, around the rest point when centered
+    CenterOffset res_center = center_review ? res.center : CenterOffset{};
+    float dzx = cx + res_center.x * R, dzy = cy - res_center.y * R;
+    draw_target(t, cx, cy, R, 0, true);
+    if (review) draw_deadzone(t, cx, cy, R, res.suggested, res.shape, res_center, true);
+    if (center_review) {
+        draw_center(t, cx, cy, R, res.center);
+    } else if (st == TUNE_IDLE && hc.center.on) {
+        draw_center(t, cx, cy, R, hc.center);
+    }
     if (edge_review) {
         draw_edge(t, cx, cy, R, g_tune.edge_result, 2.2f, 1.0f);
     } else if (st == TUNE_EDGE) {
@@ -1188,9 +1286,12 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
     if (live_now(now) && connected(h, now) && !review && !edge_review)
         circle(t, cx + h.raw_x * R, cy - h.raw_y * R, 7, kRaw, 1, false, 2);
     unphysical(t);
+    // under the lowest point of the outline: straight down from the rest point
+    float down_span = res_center.y + std::sqrt(1.0f - res_center.x * res_center.x);
+    float label_dy = R * res.suggested * dz_shape_at(res.shape, 0, -1) * down_span;
     if (review && g_tune.result.suggested > 0)
-        text(t, sub(tr(S_tune_suggested), {{L"value", num(g_tune.result.suggested, 2)}}), g.f_small, lcx - 100,
-             cy + R * g_tune.result.suggested + 6, kOut, 200, DWRITE_TEXT_ALIGNMENT_CENTER);
+        text(t, sub(tr(S_tune_suggested), {{L"value", num(g_tune.result.suggested, 2)}}), g.f_small,
+             lcx + (dzx - cx) - 100, dzy + label_dy + 6, kOut, 200, DWRITE_TEXT_ALIGNMENT_CENTER);
     // legend, centred under the plot
     float ly = left.bottom - 34;
     if (edge_review) {
@@ -1279,8 +1380,11 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
             para(t, tr(r.gate_ok ? S_find_gate_ok : r.has_sensor ? S_find_gate_fail : S_find_no_sensor),
                  g.f_body, x0 + 40, fy + 2, x1 - x0 - 56, kText, 42);
             text(t, L"!", g.f_h2, x0 + 16, fy + 46, kBrass, 20);
-            para(t, sub(tr(S_find_creep), {{L"value", num(r.suggested, 2)}}), g.f_body, x0 + 40, fy + 48,
-                 x1 - x0 - 56, kText, 42);
+            float off = std::sqrt(r.center.x * r.center.x + r.center.y * r.center.y);
+            std::wstring creep = r.centered
+                ? sub(tr(S_find_center), {{L"offset", num(off, 2)}, {L"value", num(r.suggested, 2)}})
+                : sub(tr(S_find_creep), {{L"value", num(r.suggested, 2)}});
+            para(t, creep, g.f_body, x0 + 40, fy + 48, x1 - x0 - 56, kText, 42);
         }
     } else if (edge_review) {
         D2D1_RECT_F box = {x0, y, x1, y + 168};
@@ -1312,8 +1416,11 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
         btns.push_back({tr(S_btn_start), true, ID_TUNE_START});
         btns.push_back({tr(S_btn_edge), false, ID_TUNE_EDGE, kBrass});
         if (hc.edge.on) btns.push_back({tr(right ? S_btn_edge_clear_right : S_btn_edge_clear_left), false, ID_TUNE_EDGE_CLEAR});
+        if (hc.center.on) btns.push_back({tr(right ? S_btn_center_clear_right : S_btn_center_clear_left), false, ID_TUNE_CENTER_CLEAR});
     } else if (review && g_tune.result.peak >= 0.03f) {
-        btns.push_back({sub(tr(right ? S_btn_apply_right : S_btn_apply_left), {{L"value", num(g_tune.result.suggested, 2)}}),
+        Str label = g_tune.result.centered ? (right ? S_btn_center_apply_right : S_btn_center_apply_left)
+                                           : (right ? S_btn_apply_right : S_btn_apply_left);
+        btns.push_back({sub(tr(label), {{L"value", num(g_tune.result.suggested, 2)}}),
                         true, ID_TUNE_APPLY});
     } else if (st == TUNE_EDGE && g_tune.edge.can_finish()) {
         btns.push_back({tr(S_btn_edge_finish), false, ID_TUNE_EDGE_FINISH, kBrass});
@@ -1564,9 +1671,20 @@ void commit_average(int hand) {
     saved(tr(hand ? S_what_right_smoothing : S_what_left_smoothing));
 }
 
+void set_curve(int hand, float v) {
+    g.cfg.hand[hand].curve = std::round(std::fmax(0.0f, std::fmin(kMaxCurve, v)) * 100) / 100;
+}
+
+void commit_curve(int hand) {
+    ensure_file();
+    write_curve(g_ini, hand, g.cfg.hand[hand].curve);
+    saved(tr(hand ? S_what_right_curve : S_what_left_curve));
+}
+
 // slider position (0..1) to the dragged setting
 void set_dragged(float fraction) {
     if (g.drag_average) set_average(g.drag_hand, fraction * kMaxAverageMs);
+    else if (g.drag_curve) set_curve(g.drag_hand, fraction * kMaxCurve);
     else set_deadzone(g.drag_hand, fraction * 0.95f);
 }
 
@@ -1626,11 +1744,30 @@ void activate(Id id, int hand) {
     case ID_TUNE_HAND:  if (g_tune.hand != hand) tune_reset(hand); break;
     case ID_TUNE_START: tune_start(); break;
     case ID_TUNE_RESET: tune_reset(g_tune.hand); break;
-    case ID_TUNE_APPLY:
+    case ID_TUNE_APPLY: {
+        // the center and shape go with the deadzone measured around them: a stick
+        // that now rests at 0,0 drops an earlier center, a round result a shape
+        HandConfig& hc = g.cfg.hand[g_tune.hand];
+        hc.center = g_tune.result.centered ? g_tune.result.center : CenterOffset{};
+        hc.deadzone_shape = g_tune.result.shape;
         set_deadzone(g_tune.hand, g_tune.result.suggested);
-        commit_deadzone(g_tune.hand);
+        ensure_file();
+        write_tune(g_ini, g_tune.hand, hc);
+        saved(tr(g_tune.hand ? S_what_right_deadzone : S_what_left_deadzone));
+        // back to the start of the Tune page, on Measure edge: the usual next step,
+        // and the one a new center asks for, since the stretch is measured centered
+        tune_reset(g_tune.hand);
+        g_focus = ID_TUNE_EDGE;
+        g_focus_hand = 0;
         break;
-    case ID_TUNE_EDGE: tune_start_edge(); break;
+    }
+    case ID_TUNE_CENTER_CLEAR:
+        g.cfg.hand[g_tune.hand].center = CenterOffset{};
+        ensure_file();
+        write_center(g_ini, g_tune.hand, CenterOffset{});
+        saved(tr(g_tune.hand ? S_hand_right : S_hand_left));
+        break;
+    case ID_TUNE_EDGE: tune_start_edge(true, g.cfg.hand[g_tune.hand].center); break;
     case ID_TUNE_EDGE_FINISH: tune_finish_edge_early(); break;
     case ID_EDGE_ON:
         if (!g.cfg.hand[hand].edge.on) {   // nothing measured yet: open the Tune page on this hand
@@ -1834,9 +1971,10 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         if (r) {
             g_focus = r->id;
             g_focus_hand = r->hand;
-            if (r->id == ID_SLIDER || r->id == ID_AVERAGE) {
+            if (r->id == ID_SLIDER || r->id == ID_AVERAGE || r->id == ID_CURVE) {
                 g.drag_hand = r->hand;
                 g.drag_average = r->id == ID_AVERAGE;
+                g.drag_curve = r->id == ID_CURVE;
                 g.drag_track = {r->r.left + 12, r->r.top, r->r.right - 12, r->r.bottom};
                 SetCapture(h);
                 set_dragged((x - g.drag_track.left) / (g.drag_track.right - g.drag_track.left));
@@ -1853,6 +1991,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
             g.drag_hand = -1;
             ReleaseCapture();
             if (g.drag_average) commit_average(hand);
+            else if (g.drag_curve) commit_curve(hand);
             else commit_deadzone(hand);
             redraw();
         }
@@ -1872,11 +2011,14 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
             } else if (g_focus == ID_AVERAGE) {
                 set_average(g_focus_hand, g.cfg.hand[g_focus_hand].average_ms + (more ? 25.0f : -25.0f));
                 commit_average(g_focus_hand);
+            } else if (g_focus == ID_CURVE) {
+                set_curve(g_focus_hand, g.cfg.hand[g_focus_hand].curve + (more ? 0.05f : -0.05f));
+                commit_curve(g_focus_hand);
             } else {
                 move_focus(more ? 1 : -1);
             }
         } else if (wp == VK_RETURN || wp == VK_SPACE) {
-            if (g_focus != ID_SLIDER && g_focus != ID_AVERAGE) activate(g_focus, g_focus_hand);
+            if (g_focus != ID_SLIDER && g_focus != ID_AVERAGE && g_focus != ID_CURVE) activate(g_focus, g_focus_hand);
         } else if (wp == VK_ESCAPE) {
             if (g.page != PAGE_STATUS) { g.page = PAGE_STATUS; g_focus = ID_NAV_STATUS; g_focus_hand = 0; }
             else hide_panel();
@@ -2089,6 +2231,12 @@ int screenshot(const std::wstring& out, const std::wstring& page, const std::wst
     g.page = page == L"tune" || page == L"edge" ? PAGE_TUNE : page == L"diag" ? PAGE_DIAG : PAGE_STATUS;
     if (g_fake) {
         g.cfg.enable = true; g.cfg.hand[0] = {true, true, 0.0f, 0}; g.cfg.hand[1] = {true, false, 0.20f, 100};
+        {   // the right stick: a deadzone wide toward forward left, and a curve
+            float rad[kDzSectors];
+            for (int k = 0; k < kDzSectors; ++k) rad[k] = 0.05f + 0.15f * std::pow(std::fmax(0.0f, std::cos((k - 6) * 3.14159265f / 8)), 2);
+            g.cfg.hand[1].deadzone_shape = dz_shape_from(rad, 0.20f);
+            g.cfg.hand[1].curve = 0.30f;
+        }
         g.steamvr = true; g.registered = true;
         uint64_t base = 50000;
         for (int k = 0; k < 60; ++k) {   // two seconds of history at 30 Hz
@@ -2315,11 +2463,42 @@ int selftest() {
     check(c.hand[1].touch_gate && c.hand[1].deadzone == 0.0f, "old shared keys touch_gate and deadzone are ignored");
     DeleteFileW(p.c_str());
 
-    // tune math: forward drift peaking at 0.41 -> suggestion 0.45, direction forward
+    // tune math: a stick resting forward, around (0.008, 0.276), peaking at 0.41.
+    // It is centered there, and the deadzone only covers the spread around that
+    // point: (0, 0.41) is 0.134 of the 0.724 up to the rim, 0.186 -> 0.25
     std::vector<Point> pts = {{0.0f, 0.2f}, {0.05f, 0.3f}, {0.0f, 0.41f}, {-0.03f, 0.25f}, {0.02f, 0.22f}};
     TuneResult r = tune_compute(pts, 0, 100, true);
     check(std::fabs(r.peak - 0.41f) < 1e-3, "tune peak is the largest resting magnitude");
-    check(std::fabs(r.suggested - 0.45f) < 1e-4, "tune suggests peak plus margin rounded up to 5 %");
+    check(r.centered && std::fabs(r.center.x - 0.008f) < 1e-4 && std::fabs(r.center.y - 0.276f) < 1e-4,
+          "tune: a stick resting off center is centered on its average rest point");
+    check(std::fabs(r.suggested - 0.25f) < 1e-4, "tune: centered, the deadzone covers the spread around the rest point");
+    // resting around 0,0 with a wide spread: no centering, deadzone from the peak
+    TuneResult r0 = tune_compute({{0.01f, 0.0f}, {-0.01f, 0.0f}, {0.0f, 0.3f}, {0.0f, -0.3f}}, 0, 100, true);
+    check(!r0.centered && std::fabs(r0.suggested - 0.35f) < 1e-4, "tune suggests peak plus margin rounded up to 5 %");
+    write_center(p, 1, r.center);
+    check(read_config(p).hand[1].center.on && std::fabs(read_config(p).hand[1].center.y - 0.276f) < 1e-3 &&
+              !read_config(p).hand[0].center.on,
+          "center: ini write and read back per hand");
+    write_center(p, 1, CenterOffset{});
+    check(!read_config(p).hand[1].center.on, "center: cleared center reads as off");
+    // rests at 0,0 on average but drifts forward once: a shaped deadzone, wide forward only
+    std::vector<Point> fwd(15, Point{0.0f, -0.02f});
+    fwd.push_back({0.0f, 0.3f});
+    TuneResult rs = tune_compute(fwd, 0, 100, true);
+    check(!rs.centered && rs.shape.on && std::fabs(rs.suggested - 0.35f) < 1e-4 &&
+              dz_shape_at(rs.shape, 0, 1) > 0.9f && dz_shape_at(rs.shape, 0, -1) < 0.3f,
+          "tune: drift one way gives a deadzone shape wide that way only");
+    HandConfig th;
+    th.deadzone = rs.suggested;
+    th.deadzone_shape = rs.shape;
+    write_tune(p, 0, th);
+    Config tc = read_config(p);
+    check(tc.hand[0].deadzone_shape.on && std::fabs(tc.hand[0].deadzone - 0.35f) < 1e-4 && !tc.hand[0].center.on,
+          "tune: Apply writes deadzone, shape and center together");
+    write_curve(p, 1, 0.4f);
+    check(std::fabs(read_config(p).hand[1].curve - 0.4f) < 1e-4, "curve: ini write and read back");
+    DeleteFileW(p.c_str());
+    DeleteFileW(p.c_str());
     check(r.direction == S_dir_forward, "tune direction of forward drift is forward");
     check(r.gate_ok, "tune: thumb never on while let go -> gate alone stops it");
     check(!tune_compute(pts, 30, 100, true).gate_ok, "tune: thumb on 30 % of the time -> gate not enough");

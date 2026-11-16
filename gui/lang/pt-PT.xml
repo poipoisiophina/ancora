@@ -42,6 +42,7 @@
   <set_gate>Porta do polegar</set_gate>
   <set_smoothing>Suavização</set_smoothing>
   <set_deadzone>Zona morta</set_deadzone>
+  <set_curve>Curva</set_curve>
   <set_edge>Extensão da borda</set_edge>
   <edge_not_measured>não medido, afinar</edge_not_measured>
   <value_off>desligado</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>O sensor do polegar indicou toque quando largou, por isso a porta do polegar sozinha não a consegue travar.</find_gate_fail>
   <find_no_sensor>Não foi encontrado sensor do polegar, por isso só uma zona morta a pode travar.</find_no_sensor>
   <find_creep>Com o polegar pousado no manípulo, ainda pode deslizar. Uma zona morta de {value} cobre isso.</find_creep>
+  <find_center>Repousa a {offset} do centro. O ancora leva esse ponto de volta ao meio; uma zona morta de {value} cobre o resto.</find_center>
   <tune_intro>Mede como este manípulo deriva e sugere uma zona morta. Demora cerca de 20 segundos: largue o manípulo e depois empurre-o algumas vezes.</tune_intro>
   <btn_start>Começar a medir</btn_start>
   <btn_apply_left>Aplicar zona morta {value} à esquerda</btn_apply_left>
   <btn_apply_right>Aplicar zona morta {value} à direita</btn_apply_right>
+  <btn_center_apply_left>Centrar esquerdo, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Centrar direito, {value}</btn_center_apply_right>
   <btn_restart>Recomeçar</btn_restart>
   <edge_intro>Extensão da borda: se o manípulo não chega ao fim em algumas direções, rode-o pela borda e o ancora estende essas direções até ao fim.</edge_intro>
   <btn_edge>Medir a borda</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Estender manípulo direito</btn_edge_apply_right>
   <btn_edge_clear_left>Remover extensão esquerda</btn_edge_clear_left>
   <btn_edge_clear_right>Remover extensão direita</btn_edge_clear_right>
+  <btn_center_clear_left>Remover centragem esquerda</btn_center_clear_left>
+  <btn_center_clear_right>Remover centragem direita</btn_center_clear_right>
   <step_edge>Rode o manípulo pela borda</step_edge>
   <res_reach>menor alcance</res_reach>
   <find_edge_ok>O manípulo chega ao fim em todas as direções. Não é precisa extensão.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Suavização direita</what_right_smoothing>
   <what_left_deadzone>Zona morta esquerda</what_left_deadzone>
   <what_right_deadzone>Zona morta direita</what_right_deadzone>
+  <what_left_curve>Curva esquerda</what_left_curve>
+  <what_right_curve>Curva direita</what_right_curve>
   <what_left_edge>Extensão da borda esquerda</what_left_edge>
   <what_right_edge>Extensão da borda direita</what_right_edge>
   <what_language>Idioma</what_language>

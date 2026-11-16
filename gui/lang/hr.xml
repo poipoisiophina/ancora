@@ -42,6 +42,7 @@
   <set_gate>Blokada palca</set_gate>
   <set_smoothing>Izglađivanje</set_smoothing>
   <set_deadzone>Mrtva zona</set_deadzone>
+  <set_curve>Krivulja</set_curve>
   <set_edge>Rastezanje ruba</set_edge>
   <edge_not_measured>nije izmjereno, podesi</edge_not_measured>
   <value_off>isklj.</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Senzor palca javljao je dodir kad ste pustili, pa ga sama blokada palca ne može zaustaviti.</find_gate_fail>
   <find_no_sensor>Senzor palca nije pronađen, pa ga može zaustaviti samo mrtva zona.</find_no_sensor>
   <find_creep>S palcem na palici još uvijek može puzati. Mrtva zona od {value} to pokriva.</find_creep>
+  <find_center>Miruje {offset} izvan središta. ancora vraća tu točku u sredinu; mrtva zona od {value} pokriva ostatak.</find_center>
   <tune_intro>Mjeri kako ova palica klizi i predlaže mrtvu zonu. Traje oko 20 sekundi: pustite palicu, zatim je nekoliko puta gurnite.</tune_intro>
   <btn_start>Započni mjerenje</btn_start>
   <btn_apply_left>Primijeni mrtvu zonu {value} lijevo</btn_apply_left>
   <btn_apply_right>Primijeni mrtvu zonu {value} desno</btn_apply_right>
+  <btn_center_apply_left>Centriraj lijevo, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Centriraj desno, {value}</btn_center_apply_right>
   <btn_restart>Počni ispočetka</btn_restart>
   <edge_intro>Rastezanje ruba: ako palica u nekim smjerovima ne doseže kraj, okrećite je uz rub i ancora će te smjerove rastegnuti do kraja.</edge_intro>
   <btn_edge>Izmjeri rub</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Rastegni desnu palicu</btn_edge_apply_right>
   <btn_edge_clear_left>Ukloni rastezanje lijevo</btn_edge_clear_left>
   <btn_edge_clear_right>Ukloni rastezanje desno</btn_edge_clear_right>
+  <btn_center_clear_left>Ukloni centriranje lijevo</btn_center_clear_left>
+  <btn_center_clear_right>Ukloni centriranje desno</btn_center_clear_right>
   <step_edge>Okrećite palicu uz rub</step_edge>
   <res_reach>najkraći doseg</res_reach>
   <find_edge_ok>Palica doseže kraj u svim smjerovima. Rastezanje nije potrebno.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Izglađivanje desno</what_right_smoothing>
   <what_left_deadzone>Mrtva zona lijevo</what_left_deadzone>
   <what_right_deadzone>Mrtva zona desno</what_right_deadzone>
+  <what_left_curve>Krivulja lijevo</what_left_curve>
+  <what_right_curve>Krivulja desno</what_right_curve>
   <what_left_edge>Rastezanje ruba lijevo</what_left_edge>
   <what_right_edge>Rastezanje ruba desno</what_right_edge>
   <what_language>Jezik</what_language>

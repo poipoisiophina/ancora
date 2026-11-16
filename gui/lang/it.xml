@@ -42,6 +42,7 @@
   <set_gate>Blocco pollice</set_gate>
   <set_smoothing>Levigatura</set_smoothing>
   <set_deadzone>Zona morta</set_deadzone>
+  <set_curve>Curva</set_curve>
   <set_edge>Estensione bordo</set_edge>
   <edge_not_measured>non misurato, regola</edge_not_measured>
   <value_off>off</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Il sensore del pollice ha rilevato contatto quando hai lasciato, quindi il blocco pollice da solo non basta.</find_gate_fail>
   <find_no_sensor>Nessun sensore del pollice, solo una zona morta può fermarla.</find_no_sensor>
   <find_creep>Con il pollice appoggiato sulla levetta può ancora scivolare. Una zona morta di {value} lo copre.</find_creep>
+  <find_center>Riposa a {offset} dal centro. ancora riporta quel punto al centro; una zona morta di {value} copre il resto.</find_center>
   <tune_intro>Misura come deriva questa levetta e consiglia una zona morta. Circa 20 secondi: lascia la levetta, poi spingila e lasciala alcune volte.</tune_intro>
   <btn_start>Avvia misura</btn_start>
   <btn_apply_left>Applica {value} a sinistra</btn_apply_left>
   <btn_apply_right>Applica {value} a destra</btn_apply_right>
+  <btn_center_apply_left>Centra sinistro, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Centra destro, {value}</btn_center_apply_right>
   <btn_restart>Ricomincia</btn_restart>
   <edge_intro>Estensione del bordo: se la levetta non arriva al massimo in alcune direzioni, falla girare lungo il bordo e ancora estende quelle direzioni fino al massimo.</edge_intro>
   <btn_edge>Misura il bordo</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Estendi levetta destra</btn_edge_apply_right>
   <btn_edge_clear_left>Rimuovi estensione sinistra</btn_edge_clear_left>
   <btn_edge_clear_right>Rimuovi estensione destra</btn_edge_clear_right>
+  <btn_center_clear_left>Rimuovi centratura sinistra</btn_center_clear_left>
+  <btn_center_clear_right>Rimuovi centratura destra</btn_center_clear_right>
   <step_edge>Fai girare la levetta lungo il bordo</step_edge>
   <res_reach>portata più corta</res_reach>
   <find_edge_ok>La levetta arriva al massimo in ogni direzione. Nessuna estensione necessaria.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Levigatura destra</what_right_smoothing>
   <what_left_deadzone>Zona morta sinistra</what_left_deadzone>
   <what_right_deadzone>Zona morta destra</what_right_deadzone>
+  <what_left_curve>Curva sinistra</what_left_curve>
+  <what_right_curve>Curva destra</what_right_curve>
   <what_left_edge>Estensione bordo sinistra</what_left_edge>
   <what_right_edge>Estensione bordo destra</what_right_edge>
   <what_language>Lingua</what_language>

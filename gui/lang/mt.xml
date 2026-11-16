@@ -42,6 +42,7 @@
   <set_gate>Bieb tas-saba'</set_gate>
   <set_smoothing>Twittija</set_smoothing>
   <set_deadzone>Żona mejta</set_deadzone>
+  <set_curve>Kurva</set_curve>
   <set_edge>Tiġbid tat-tarf</set_edge>
   <edge_not_measured>mhux imkejjel, irfina</edge_not_measured>
   <value_off>mitfi</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Is-sensor tas-saba' wera mess meta tlaqt, allura l-bieb tas-saba' waħdu ma jistax iwaqqfu.</find_gate_fail>
   <find_no_sensor>Ma nstab l-ebda sensor tas-saba', allura żona mejta biss tista' twaqqfu.</find_no_sensor>
   <find_creep>Bis-saba' mistrieħ fuq il-lieva, xorta tista' titkaxkar. Żona mejta ta' {value} tkopri dan.</find_creep>
+  <find_center>Tistrieħ {offset} 'il bogħod miċ-ċentru. ancora terġa' ġġib dak il-punt fin-nofs; żona mejta ta' {value} tkopri l-bqija.</find_center>
   <tune_intro>Ikejjel kif din il-lieva tiddrifta u jissuġġerixxi żona mejta. Tieħu madwar 20 sekonda: itlaq il-lieva, imbagħad imbuttaha ftit drabi.</tune_intro>
   <btn_start>Ibda kejl</btn_start>
   <btn_apply_left>Applika żona mejta {value} xellug</btn_apply_left>
   <btn_apply_right>Applika żona mejta {value} lemin</btn_apply_right>
+  <btn_center_apply_left>Iċċentra x-xellug, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Iċċentra l-lemin, {value}</btn_center_apply_right>
   <btn_restart>Erġa' ibda</btn_restart>
   <edge_intro>Tiġbid tat-tarf: jekk il-lieva ma tasalx sal-aħħar f'xi direzzjonijiet, dawwarha mat-tarf u ancora tiġbed dawk id-direzzjonijiet sal-aħħar.</edge_intro>
   <btn_edge>Kejjel it-tarf</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Iġbed il-lieva tal-lemin</btn_edge_apply_right>
   <btn_edge_clear_left>Neħħi t-tiġbid tax-xellug</btn_edge_clear_left>
   <btn_edge_clear_right>Neħħi t-tiġbid tal-lemin</btn_edge_clear_right>
+  <btn_center_clear_left>Neħħi ċ-ċentrar tax-xellug</btn_center_clear_left>
+  <btn_center_clear_right>Neħħi ċ-ċentrar tal-lemin</btn_center_clear_right>
   <step_edge>Dawwar il-lieva mat-tarf</step_edge>
   <res_reach>l-iqsar firxa</res_reach>
   <find_edge_ok>Il-lieva tasal sal-aħħar f'kull direzzjoni. M'hemmx bżonn ta' tiġbid.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Twittija lemin</what_right_smoothing>
   <what_left_deadzone>Żona mejta xellug</what_left_deadzone>
   <what_right_deadzone>Żona mejta lemin</what_right_deadzone>
+  <what_left_curve>Kurva xellug</what_left_curve>
+  <what_right_curve>Kurva lemin</what_right_curve>
   <what_left_edge>Tiġbid tat-tarf xellug</what_left_edge>
   <what_right_edge>Tiġbid tat-tarf lemin</what_right_edge>
   <what_language>Lingwa</what_language>

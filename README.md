@@ -78,6 +78,9 @@ Each card has:
 - **Smoothing**: steadies a stick that shakes while your thumb is on it. It does
   not fix drift, and higher numbers add lag to your movement. Leave it **off**
   unless your stick shakes.
+- **Curve**: small pushes give less, full pushes stay full, so slow, careful
+  movement is easier. It does not fix drift. Leave it **off** unless you want
+  finer control near the middle.
 
 **Anchoring on** (top right) turns ancora on or off for everything.
 
@@ -92,6 +95,23 @@ Not sure about the deadzone? Let ancora measure your stick:
 3. **Push the stick all the way, then let go.** Do this 6 times. Wait about a
    second each time after letting go.
 4. Read the result and press **Apply** if you want the suggested deadzone.
+
+The suggested deadzone follows your stick: if it only drifts one way, the
+deadzone is wide that way and small everywhere else, so small pushes in the
+other directions still move you. The stick picture draws its outline. The
+Deadzone slider on the Status page makes the whole outline bigger or smaller;
+measure again to get a new outline (or a round one, if the stick drifts about
+the same everywhere).
+
+If your stick does not come back to the middle but rests a little off to one
+side, the result says how far, and the button reads **Center left, ...
+deadzone** (or right). Applying it moves that resting point back to the middle,
+so you do not need a big deadzone just to hide it, and slow walking keeps
+working. A full push still reads full in every direction, including the side
+the stick leans to. A small green cross on the stick picture shows where the
+stick rests. To undo it, press **Remove ... centering** on the Tune page. Measure
+the edge again after you apply a new centering if you use a stretch, since the
+stretch is measured on the centered stick.
 
 ### Stick does not reach full in some directions?
 
@@ -229,7 +249,8 @@ Needs Visual Studio 2022 Build Tools with C++ (x64), git, and Windows 10 or 11.
 Tests run on every build, and a failure stops it, so nothing untested is
 deployed into a running SteamVR or packed into an installer:
 
-- `test/ancora_test.cpp`, driver side: edge stretch, edge measuring, edge
+- `test/ancora_test.cpp`, driver side: center offset, deadzone shape, curve,
+  edge stretch, edge measuring, edge
   learning (raising and lowering), whole x/y pairs, saving learned reach,
   smoothing, the output order, the thumb gate and its fallback, ancora.ini
   reading and key edits, and that the shipped `ancora.ini` is the default
@@ -252,7 +273,7 @@ Layout:
 
 - `driver/src/driver_ancora.cpp` fixed loader: hooks SteamVR's driver input calls.
 - `driver/src/ancora_logic.cpp` the behaviour, hot reloadable.
-- `driver/src/ancora_edge.h`, `ancora_learn.h`, `ancora_average.h`,
+- `driver/src/ancora_center.h`, `ancora_deadzone.h`, `ancora_edge.h`, `ancora_learn.h`, `ancora_average.h`,
   `ancora_output.h` the stick math and the thumb gate, shared by the logic dll,
   the panel and the tests.
 - `driver/src/ancora_config.h`, `ancora_ini_io.h` ancora.ini: defaults,

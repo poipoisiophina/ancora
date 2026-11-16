@@ -18,6 +18,7 @@
 #include <cstdio>
 #include <limits>
 #include "../driver/src/ancora_average.h"
+#include "../driver/src/ancora_center.h"
 #include "../driver/src/ancora_edge.h"
 #include "../driver/src/ancora_learn.h"
 #include "../driver/src/ancora_output.h"
@@ -699,6 +700,165 @@ void test_output() {
     check(x1 != x2, "output: with a deadzone, x's output depends on y", "x output %.4f then %.4f", x1, x2);
 }
 
+// a deadzone shape: share 1 forward (90 deg, direction 4), `rest` everywhere else
+DeadzoneShape forward_shape(float rest) {
+    DeadzoneShape s;
+    s.on = true;
+    for (int k = 0; k < kDzSectors; ++k) s.r[k] = rest;
+    s.r[4] = 1.0f;
+    return s;
+}
+
+void test_shape() {
+    DeadzoneShape off;
+    check(dz_shape_at(off, 0.3f, 0.1f) == 1.0f, "shape: off is round, share 1 everywhere");
+    DeadzoneShape s = forward_shape(0.2f);
+    check(near(dz_shape_at(s, 0.0f, 0.5f), 1.0, 1e-5) && near(dz_shape_at(s, 0.0f, -0.5f), 0.2, 1e-5),
+          "shape: share read per direction (forward 1, back 0.2)");
+    float half = dz_shape_at(s, std::cos(rad(78.75f)), std::sin(rad(78.75f)));   // halfway between 67.5 and 90
+    check(near(half, 0.6, 1e-4), "shape: linear between two directions", "got %.4f", half);
+
+    // forward drift of 0.3 with a 0.35 deadzone in that shape: forward 0.3 is held,
+    // a small push back of 0.1 moves (round, it would be held)
+    StickSettings st;
+    st.correct = true;
+    st.deadzone = 0.35f;
+    st.deadzone_shape = s;
+    float x, y;
+    stick_output(st, false, false, 0, 0, 0.0f, 0.3f, x, y);
+    check(x == 0 && y == 0, "shape: drift toward the wide side is held");
+    stick_output(st, false, false, 0, 0, 0.0f, -0.1f, x, y);
+    check(y < 0, "shape: a small push toward the narrow side moves", "got (%.4f, %.4f)", x, y);
+    float want = (0.1f - 0.07f) / (1.0f - 0.07f);
+    check(near(y, -want, 1e-4), "shape: the narrow side scales from its own deadzone to full", "got %.4f, want %.4f", y, -want);
+    stick_output(st, false, false, 0, 0, 0.0f, -1.0f, x, y);
+    check(near(y, -1.0, 1e-5), "shape: a full push still reads full");
+
+    // measuring: forward rest points widen the forward directions only
+    float xs[3] = {0.0f, 0.02f, -0.02f}, ys[3] = {0.30f, 0.25f, 0.28f}, radius[kDzSectors];
+    dz_from_points(xs, ys, 3, radius);
+    check(near(radius[4], 0.33, 1e-4) && near(radius[12], kDzFloor, 1e-6),
+          "shape: measured forward is the furthest rest plus 0.03, back is the floor",
+          "forward %.4f, back %.4f", radius[4], radius[12]);
+    DeadzoneShape m = dz_shape_from(radius, 0.35f);
+    check(m.on && near(m.r[4], 0.33 / 0.35, 1e-4) && m.r[12] < 0.2f, "shape: shares of the rounded deadzone");
+    float ring[kDzSectors];
+    for (int k = 0; k < kDzSectors; ++k) ring[k] = 0.3f;
+    check(!dz_shape_from(ring, 0.35f).on, "shape: about the same in every direction stays round");
+
+    DeadzoneShape p = dz_shape_parse(dz_shape_format(m).c_str());
+    bool same = p.on;
+    for (int k = 0; k < kDzSectors && same; ++k) same = near(p.r[k], m.r[k], 0.006);
+    check(same, "shape: survives a write and read back");
+    check(!dz_shape_parse("").on && !dz_shape_parse("0.5,0.5").on && !dz_shape_parse("a").on,
+          "shape: empty, short or malformed is round");
+    ancfg::Config e;
+    e.hand[1].deadzone_shape = m;
+    ancfg::Config back = ancfg::parse(ancfg::format(e));
+    check(back.hand[1].deadzone_shape.on && !back.hand[0].deadzone_shape.on, "shape: read per hand from ancora.ini");
+}
+
+void test_curve() {
+    check(curve_apply(0.0f, 0.4f) == 0.4f, "curve: 0 is off");
+    check(near(curve_apply(0.5f, 0.0f), 0.0, 1e-7) && near(curve_apply(0.5f, 1.0f), 1.0, 1e-6),
+          "curve: 0 and full stay where they are");
+    check(near(curve_apply(0.5f, 0.5f), 0.3125, 1e-6), "curve: 0.5 at half push gives 0.3125",
+          "got %.6f", curve_apply(0.5f, 0.5f));
+    bool rising = true;
+    for (float c : {0.25f, 1.0f}) {
+        float last = -1;
+        for (int k = 0; k <= 100; ++k) {
+            float o = curve_apply(c, k / 100.0f);
+            if (o < last) rising = false;
+            last = o;
+        }
+    }
+    check(rising, "curve: never goes back as the push grows");
+
+    StickSettings st;
+    st.correct = true;
+    st.curve = 0.5f;
+    float x, y;
+    stick_output(st, false, false, 0, 0, 0.3f, 0.4f, x, y);   // magnitude 0.5, same direction
+    check(near(std::sqrt(x * x + y * y), 0.3125, 1e-5) && near(x / y, 0.75, 1e-5),
+          "curve: works without a deadzone and keeps the direction", "got (%.4f, %.4f)", x, y);
+    st.deadzone = 0.2f;
+    stick_output(st, false, false, 0, 0, 0.0f, 0.6f, x, y);   // (0.6 - 0.2) / 0.8 = 0.5 after the deadzone
+    check(near(y, 0.3125, 1e-5), "curve: comes after the deadzone", "got %.4f", y);
+    ancfg::Config c = ancfg::parse("[ancora]\nleft_curve=0.4\nright_curve=7\n");
+    check(near(c.hand[0].curve, 0.4, 1e-6) && c.hand[1].curve == 1.0f, "curve: read per hand, clamped to 1");
+}
+
+void test_center() {
+    float x, y;
+    CenterOffset off;
+    center_map(off, 0.3f, -0.2f, x, y);
+    check(x == 0.3f && y == -0.2f, "center: off passes the stick unchanged");
+
+    CenterOffset c = center_clamped(0.1f, 0.05f);
+    center_map(c, 0.1f, 0.05f, x, y);
+    check(x == 0 && y == 0, "center: the rest point reads 0,0", "got (%.4f, %.4f)", x, y);
+    // every point on the rim stays on the rim, in its own direction, also toward the offset
+    bool rim_ok = true;
+    for (int deg = 0; deg < 360; deg += 15) {
+        float rx = std::cos(rad((float)deg)), ry = std::sin(rad((float)deg));
+        center_map(c, rx, ry, x, y);
+        float m = std::sqrt(x * x + y * y);
+        if (!near(m, 1.0, 1e-4)) {
+            rim_ok = false;
+            std::printf("     rim at %d deg: out (%.4f, %.4f), magnitude %.4f\n", deg, x, y, m);
+        }
+    }
+    check(rim_ok, "center: a full push reads full in every direction");
+    // the direction is the one from the rest point, not from 0,0
+    center_map(c, 0.55f, 0.05f, x, y);
+    check(x > 0 && near(y, 0.0, 1e-5), "center: a push straight right from the rest point reads straight right",
+          "got (%.4f, %.4f)", x, y);
+    CenterOffset h = center_clamped(0.0f, 0.2f);
+    center_map(h, 0.0f, 0.6f, x, y);   // 0.4 of the 0.8 from rest to the top rim
+    check(near(x, 0.0, 1e-6) && near(y, 0.5, 1e-5), "center: halfway from rest to the rim reads 0.5",
+          "got (%.4f, %.4f)", x, y);
+    center_map(h, 0.0f, -0.4f, x, y);  // 0.6 of the 1.2 from rest to the bottom rim
+    check(near(x, 0.0, 1e-6) && near(y, -0.5, 1e-5), "center: halfway toward the far rim reads 0.5 too",
+          "got (%.4f, %.4f)", x, y);
+    center_map(h, 0.0f, 1.2f, x, y);
+    check(near(y, 1.0, 1e-6), "center: a reading past the rim is capped at 1", "got %.4f", y);
+
+    CenterOffset far = center_clamped(0.9f, 0.0f);
+    check(far.on && near(far.x, 0.5, 1e-6), "center: a rest point past 0.5 is clamped to 0.5", "x %.4f", far.x);
+    check(!center_clamped(std::numeric_limits<float>::quiet_NaN(), 0).on, "center: nan is off");
+
+    CenterOffset p = center_parse(" 0.031 , -0.012 ");
+    check(p.on && near(p.x, 0.031, 1e-6) && near(p.y, -0.012, 1e-6), "center: x,y is read, spaces allowed");
+    check(!center_parse("").on && !center_parse("0.1").on && !center_parse("0.1,").on && !center_parse("a,b").on &&
+              !center_parse("0.1,0.2,0.3").on,
+          "center: empty or malformed text is off");
+    check(center_format(p) == "0.031,-0.012" && center_format(CenterOffset{}).empty(), "center: written as x,y, off as empty");
+
+    ancfg::Config cfg = ancfg::parse("[ancora]\nright_center=0.05,0.1\n");
+    check(cfg.hand[1].center.on && !cfg.hand[0].center.on && near(cfg.hand[1].center.y, 0.1, 1e-6),
+          "center: read per hand from ancora.ini");
+    ancfg::Config e;
+    e.hand[0].center = center_clamped(-0.04f, 0.02f);
+    ancfg::Config back = ancfg::parse(ancfg::format(e));
+    check(back.hand[0].center.on && near(back.hand[0].center.x, -0.04, 1e-6) && !back.hand[1].center.on,
+          "center: survives a write and read back");
+
+    // output order: average, then center, then deadzone
+    StickSettings st;
+    st.correct = true;
+    st.center = center_clamped(0.0f, 0.2f);
+    stick_output(st, false, false, 0, 0, 0.0f, 0.2f, x, y);
+    check(x == 0 && y == 0, "center: in the output a stick at its rest point gives 0,0");
+    st.deadzone = 0.1f;
+    stick_output(st, false, false, 0, 0, 0.0f, 0.25f, x, y);   // 0.05 / 0.8 = 0.0625 off center, inside 0.1
+    check(x == 0 && y == 0, "center: the deadzone is measured from the rest point", "got (%.4f, %.4f)", x, y);
+    stick_output(st, false, false, 0, 0, 0.0f, 0.06f, x, y);   // without centering 0.06 is inside 0.1; centered it is 0.14 / 1.2
+    check(x == 0 && y < 0, "center: a small pull the other way past the rest point moves", "got (%.4f, %.4f)", x, y);
+    stick_output(st, true, false, 0, 0, 0.5f, 0.5f, x, y);
+    check(x == 0 && y == 0, "center: a closed gate still gives 0,0");
+}
+
 void test_gate() {
     TouchGate g;
     check(g.closed(0), "gate: closed before the thumb ever touches");
@@ -778,6 +938,9 @@ int main(int argc, char** argv) {
     test_learn_state();
     test_config();
     test_output();
+    test_center();
+    test_shape();
+    test_curve();
     test_gate();
     std::printf("%d test(s), %d failure(s)\n", g_count, g_fails);
     return g_fails ? 1 : 0;

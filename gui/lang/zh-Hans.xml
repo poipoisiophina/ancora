@@ -42,6 +42,7 @@
   <set_gate>拇指门控</set_gate>
   <set_smoothing>平滑</set_smoothing>
   <set_deadzone>死区</set_deadzone>
+  <set_curve>曲线</set_curve>
   <set_edge>边缘拉伸</set_edge>
   <edge_not_measured>未测量，去调校</edge_not_measured>
   <value_off>关</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>松开时拇指传感器显示触摸，所以仅靠拇指门控无法阻止。</find_gate_fail>
   <find_no_sensor>未找到拇指传感器，只能用死区阻止。</find_no_sensor>
   <find_creep>拇指放在摇杆上时仍可能缓慢移动。{value} 的死区可以覆盖。</find_creep>
+  <find_center>静止时偏离中心 {offset}。ancora 会把该点移回中心，其余由 {value} 的死区覆盖。</find_center>
   <tune_intro>测量这个摇杆的漂移并建议死区。约需 20 秒：先松开摇杆，然后推到底再松开几次。</tune_intro>
   <btn_start>开始测量</btn_start>
   <btn_apply_left>将 {value} 应用到左侧</btn_apply_left>
   <btn_apply_right>将 {value} 应用到右侧</btn_apply_right>
+  <btn_center_apply_left>左侧回中，{value}</btn_center_apply_left>
+  <btn_center_apply_right>右侧回中，{value}</btn_center_apply_right>
   <btn_restart>重新开始</btn_restart>
   <edge_intro>边缘拉伸：如果摇杆在某些方向推不到底，沿边缘转动摇杆，ancora 会把这些方向拉伸到满幅。</edge_intro>
   <btn_edge>测量边缘</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>拉伸右摇杆</btn_edge_apply_right>
   <btn_edge_clear_left>移除左侧拉伸</btn_edge_clear_left>
   <btn_edge_clear_right>移除右侧拉伸</btn_edge_clear_right>
+  <btn_center_clear_left>移除左侧回中</btn_center_clear_left>
+  <btn_center_clear_right>移除右侧回中</btn_center_clear_right>
   <step_edge>沿边缘转动摇杆</step_edge>
   <res_reach>最短行程</res_reach>
   <find_edge_ok>摇杆在每个方向都能推到底，无需拉伸。</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>右平滑</what_right_smoothing>
   <what_left_deadzone>左死区</what_left_deadzone>
   <what_right_deadzone>右死区</what_right_deadzone>
+  <what_left_curve>左曲线</what_left_curve>
+  <what_right_curve>右曲线</what_right_curve>
   <what_left_edge>左边缘拉伸</what_left_edge>
   <what_right_edge>右边缘拉伸</what_right_edge>
   <what_language>语言</what_language>

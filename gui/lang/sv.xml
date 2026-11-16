@@ -42,6 +42,7 @@
   <set_gate>Tumspärr</set_gate>
   <set_smoothing>Utjämning</set_smoothing>
   <set_deadzone>Dödzon</set_deadzone>
+  <set_curve>Kurva</set_curve>
   <set_edge>Kantsträckning</set_edge>
   <edge_not_measured>ej mätt, justera</edge_not_measured>
   <value_off>av</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Tumsensorn visade på när du släppte, så tumspärren ensam kan inte stoppa den.</find_gate_fail>
   <find_no_sensor>Ingen tumsensor hittades, så bara en dödzon kan stoppa den.</find_no_sensor>
   <find_creep>Med tummen vilande på spaken kan den fortfarande krypa. En dödzon på {value} täcker det.</find_creep>
+  <find_center>Den vilar {offset} från mitten. ancora flyttar tillbaka den punkten till mitten; en dödzon på {value} täcker resten.</find_center>
   <tune_intro>Mäter hur spaken driver och föreslår en dödzon. Tar ungefär 20 sekunder: släpp spaken och knuffa den sedan några gånger.</tune_intro>
   <btn_start>Starta mätning</btn_start>
   <btn_apply_left>Använd dödzon {value} vänster</btn_apply_left>
   <btn_apply_right>Använd dödzon {value} höger</btn_apply_right>
+  <btn_center_apply_left>Centrera vänster, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Centrera höger, {value}</btn_center_apply_right>
   <btn_restart>Börja om</btn_restart>
   <edge_intro>Kantsträckning: når spaken inte ända ut i vissa riktningar, rulla den längs kanten så sträcker ancora ut de riktningarna till fullt.</edge_intro>
   <btn_edge>Mät kanten</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Sträck höger spak</btn_edge_apply_right>
   <btn_edge_clear_left>Ta bort sträckning vänster</btn_edge_clear_left>
   <btn_edge_clear_right>Ta bort sträckning höger</btn_edge_clear_right>
+  <btn_center_clear_left>Ta bort centrering vänster</btn_center_clear_left>
+  <btn_center_clear_right>Ta bort centrering höger</btn_center_clear_right>
   <step_edge>Rulla spaken längs kanten</step_edge>
   <res_reach>kortaste räckvidd</res_reach>
   <find_edge_ok>Spaken når ända ut i alla riktningar. Ingen sträckning behövs.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Utjämning höger</what_right_smoothing>
   <what_left_deadzone>Dödzon vänster</what_left_deadzone>
   <what_right_deadzone>Dödzon höger</what_right_deadzone>
+  <what_left_curve>Kurva vänster</what_left_curve>
+  <what_right_curve>Kurva höger</what_right_curve>
   <what_left_edge>Kantsträckning vänster</what_left_edge>
   <what_right_edge>Kantsträckning höger</what_right_edge>
   <what_language>Språk</what_language>

@@ -57,6 +57,7 @@
   <set_gate>Thumb gate</set_gate>
   <set_smoothing>Smoothing</set_smoothing>
   <set_deadzone>Deadzone</set_deadzone>
+  <set_curve>Curve</set_curve>
   <set_edge>Edge stretch</set_edge>
   <edge_not_measured>not measured, tune</edge_not_measured>
   <!-- a setting that is switched off -->
@@ -97,10 +98,13 @@
   <find_gate_fail>Thumb sensor read on while you let go, so the thumb gate alone cannot stop it.</find_gate_fail>
   <find_no_sensor>No thumb sensor found, so only a deadzone can stop it.</find_no_sensor>
   <find_creep>With your thumb resting on the stick it can still creep. A {value} deadzone covers that.</find_creep>
+  <find_center>It rests {offset} off center. ancora moves that point back to the middle; a {value} deadzone covers the rest.</find_center>
   <tune_intro>Measures how this stick drifts and suggests a deadzone. Takes about 20 seconds: let go of the stick, then flick it a few times.</tune_intro>
   <btn_start>Start measuring</btn_start>
   <btn_apply_left>Apply {value} deadzone to left</btn_apply_left>
   <btn_apply_right>Apply {value} deadzone to right</btn_apply_right>
+  <btn_center_apply_left>Center left, {value} deadzone</btn_center_apply_left>
+  <btn_center_apply_right>Center right, {value} deadzone</btn_center_apply_right>
   <btn_restart>Start over</btn_restart>
   <edge_intro>Edge stretch: if the stick cannot reach full in some directions, roll it around its edge and ancora stretches those directions to full.</edge_intro>
   <btn_edge>Measure edge</btn_edge>
@@ -108,6 +112,8 @@
   <btn_edge_apply_right>Stretch right stick</btn_edge_apply_right>
   <btn_edge_clear_left>Remove left stretch</btn_edge_clear_left>
   <btn_edge_clear_right>Remove right stretch</btn_edge_clear_right>
+  <btn_center_clear_left>Remove left centering</btn_center_clear_left>
+  <btn_center_clear_right>Remove right centering</btn_center_clear_right>
   <step_edge>Roll the stick around its edge</step_edge>
   <res_reach>shortest reach</res_reach>
   <find_edge_ok>The stick reaches full in every direction. No stretch needed.</find_edge_ok>
@@ -159,6 +165,8 @@
   <what_right_smoothing>Right smoothing</what_right_smoothing>
   <what_left_deadzone>Left deadzone</what_left_deadzone>
   <what_right_deadzone>Right deadzone</what_right_deadzone>
+  <what_left_curve>Left curve</what_left_curve>
+  <what_right_curve>Right curve</what_right_curve>
   <what_left_edge>Left edge stretch</what_left_edge>
   <what_right_edge>Right edge stretch</what_right_edge>
   <what_language>Language</what_language>

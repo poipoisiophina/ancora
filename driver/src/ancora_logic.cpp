@@ -2,7 +2,8 @@
 // Hot swappable ancora behaviour, loaded by driver_ancora.dll. Tracks each
 // hand's /input/joystick/{x,y,touch} components and rewrites stick values per
 // ancora.ini, in this order (ancora_output.h): touch gate (thumb off the cap ->
-// 0,0), optional moving average, optional radial deadzone and edge stretch.
+// 0,0), optional moving average, optional center offset, optional deadzone (in
+// its shape) and edge stretch, optional curve.
 // Publishes live state to shared memory for the ancora panel.
 // Rebuild this dll while SteamVR runs; the loader swaps it in.
 
@@ -35,6 +36,9 @@ struct Config {
     bool  hand[2]       = {true, true};    // correct this stick at all
     bool  touch_gate[2] = {true, true};
     float deadzone[2]   = {0.0f, 0.0f};
+    CenterOffset center[2];                // rest point moved back to 0,0, off unless measured
+    DeadzoneShape deadzone_shape[2];       // share of the deadzone per direction, off = round
+    float curve[2]      = {0.0f, 0.0f};    // response curve, 0 = off
     int   average_ms[2] = {0, 0};          // moving average window, 0 = off
     EdgeReach edge[2];                     // edge stretch in use, off unless measured and on
 };
@@ -119,6 +123,9 @@ void output(const Stick& s, int i, double now, float& x, float& y) {
     StickSettings st;
     st.correct = correcting(i);
     st.deadzone = g_cfg.deadzone[i];
+    st.center = g_cfg.center[i];
+    st.deadzone_shape = g_cfg.deadzone_shape[i];
+    st.curve = g_cfg.curve[i];
     st.edge = g_cfg.edge[i];
     stick_output(st, gate_closed(s, i, now), s.avg.count > 0, s.avg.avg_x(), s.avg.avg_y(), s.raw_x, s.raw_y, x, y);
 }
@@ -206,6 +213,9 @@ void load_config(bool force) {
         c.hand[i] = h.enable;
         c.touch_gate[i] = h.touch_gate;
         c.deadzone[i] = h.deadzone;
+        c.center[i] = h.center;
+        c.deadzone_shape[i] = h.deadzone_shape;
+        c.curve[i] = h.curve;
         c.average_ms[i] = h.average_ms;
         c.edge[i] = ancfg::effective_edge(h);
         if (h.edge_bad) log(std::string(kHand[i]) + "_edge unreadable, edge stretch off");
@@ -217,13 +227,16 @@ void load_config(bool force) {
     double now = now_precise_ms();
     for (int i = 0; i < 2; ++i) { update_average(g_s[i], i, now); repush(i, 0, now); }
     publish();
-    char line[240];
+    char line[320];
     std::snprintf(line, sizeof(line),
-                  "config enable=%d left=%d gate=%d avg=%dms dz=%.2f edge=%.2f right=%d gate=%d avg=%dms dz=%.2f edge=%.2f",
-                  c.enable, c.hand[0], c.touch_gate[0], c.average_ms[0], c.deadzone[0],
-                  c.edge[0].on ? c.edge[0].r[edge_shortest(c.edge[0])] : 0.0f,
-                  c.hand[1], c.touch_gate[1], c.average_ms[1], c.deadzone[1],
-                  c.edge[1].on ? c.edge[1].r[edge_shortest(c.edge[1])] : 0.0f);
+                  "config enable=%d left=%d gate=%d avg=%dms dz=%.2f%s center=%.3f,%.3f edge=%.2f curve=%.2f "
+                  "right=%d gate=%d avg=%dms dz=%.2f%s center=%.3f,%.3f edge=%.2f curve=%.2f",
+                  c.enable, c.hand[0], c.touch_gate[0], c.average_ms[0], c.deadzone[0], c.deadzone_shape[0].on ? " shaped" : "",
+                  c.center[0].x, c.center[0].y,
+                  c.edge[0].on ? c.edge[0].r[edge_shortest(c.edge[0])] : 0.0f, c.curve[0],
+                  c.hand[1], c.touch_gate[1], c.average_ms[1], c.deadzone[1], c.deadzone_shape[1].on ? " shaped" : "",
+                  c.center[1].x, c.center[1].y,
+                  c.edge[1].on ? c.edge[1].r[edge_shortest(c.edge[1])] : 0.0f, c.curve[1]);
     log(line);
 }
 
@@ -264,10 +277,13 @@ void on_bool(void*, uint64_t h, bool* v, double dt) {
 }
 
 // edge learning during play (ancora_edge.h); saved to the ini kEdgeSaveMs after
-// the last change; g_mu held
+// the last change; g_mu held. The stretch acts on the centered stick, so it
+// learns from centered pairs too
 void learn_edge(int i, double now) {
     if (!correcting(i) || !g_cfg.edge[i].on) return;
-    g_s[i].learn.on_pair(g_cfg.edge[i], g_s[i].pair.x, g_s[i].pair.y, now);
+    float x, y;
+    center_map(g_cfg.center[i], g_s[i].pair.x, g_s[i].pair.y, x, y);
+    g_s[i].learn.on_pair(g_cfg.edge[i], x, y, now);
 }
 
 // write learned reach to the ini once the stick has stopped changing it; the

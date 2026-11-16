@@ -42,6 +42,7 @@
   <set_gate>Palcová brána</set_gate>
   <set_smoothing>Vyhladenie</set_smoothing>
   <set_deadzone>Mŕtva zóna</set_deadzone>
+  <set_curve>Krivka</set_curve>
   <set_edge>Natiahnutie okraja</set_edge>
   <edge_not_measured>nemerané, ladiť</edge_not_measured>
   <value_off>vyp.</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Senzor palca hlásil dotyk, keď ste pustili, takže samotná palcová brána ho nezastaví.</find_gate_fail>
   <find_no_sensor>Senzor palca sa nenašiel, zastaviť ho môže len mŕtva zóna.</find_no_sensor>
   <find_creep>S palcom položeným na páčke môže stále liezť. Mŕtva zóna {value} to pokryje.</find_creep>
+  <find_center>Spočíva {offset} mimo stredu. ancora tento bod vráti doprostred; mŕtva zóna {value} pokryje zvyšok.</find_center>
   <tune_intro>Zmeria, ako táto páčka driftuje, a odporučí mŕtvu zónu. Trvá asi 20 sekúnd: pustite páčku a potom ňou niekoľkokrát cvrnknite.</tune_intro>
   <btn_start>Začať merať</btn_start>
   <btn_apply_left>Použiť mŕtvu zónu {value} vľavo</btn_apply_left>
   <btn_apply_right>Použiť mŕtvu zónu {value} vpravo</btn_apply_right>
+  <btn_center_apply_left>Vycentrovať vľavo, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Vycentrovať vpravo, {value}</btn_center_apply_right>
   <btn_restart>Začať znova</btn_restart>
   <edge_intro>Natiahnutie okraja: ak páčka v niektorých smeroch nedosiahne na doraz, krúžte ňou po okraji a ancora tieto smery natiahne na plný rozsah.</edge_intro>
   <btn_edge>Zmerať okraj</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Natiahnuť pravú páčku</btn_edge_apply_right>
   <btn_edge_clear_left>Odstrániť natiahnutie vľavo</btn_edge_clear_left>
   <btn_edge_clear_right>Odstrániť natiahnutie vpravo</btn_edge_clear_right>
+  <btn_center_clear_left>Odstrániť vycentrovanie vľavo</btn_center_clear_left>
+  <btn_center_clear_right>Odstrániť vycentrovanie vpravo</btn_center_clear_right>
   <step_edge>Krúžte páčkou po okraji</step_edge>
   <res_reach>najkratší dosah</res_reach>
   <find_edge_ok>Páčka dosiahne na doraz vo všetkých smeroch. Natiahnutie nie je potrebné.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Vyhladenie vpravo</what_right_smoothing>
   <what_left_deadzone>Mŕtva zóna vľavo</what_left_deadzone>
   <what_right_deadzone>Mŕtva zóna vpravo</what_right_deadzone>
+  <what_left_curve>Krivka vľavo</what_left_curve>
+  <what_right_curve>Krivka vpravo</what_right_curve>
   <what_left_edge>Natiahnutie okraja vľavo</what_left_edge>
   <what_right_edge>Natiahnutie okraja vpravo</what_right_edge>
   <what_language>Jazyk</what_language>

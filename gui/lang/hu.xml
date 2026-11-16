@@ -42,6 +42,7 @@
   <set_gate>Ujjkapu</set_gate>
   <set_smoothing>Simítás</set_smoothing>
   <set_deadzone>Holtzóna</set_deadzone>
+  <set_curve>Görbe</set_curve>
   <set_edge>Peremnyújtás</set_edge>
   <edge_not_measured>nincs mérve, hangolás</edge_not_measured>
   <value_off>ki</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Az ujjérzékelő érintést jelzett, amikor elengedte, így az ujjkapu egyedül nem tudja megállítani.</find_gate_fail>
   <find_no_sensor>Nincs ujjérzékelő, így csak holtzóna állíthatja meg.</find_no_sensor>
   <find_creep>Ha az ujja a karon pihen, még kúszhat. Egy {value} holtzóna ezt lefedi.</find_creep>
+  <find_center>Nyugalomban {offset} értékkel a közép mellett áll. Az ancora visszahúzza ezt a pontot középre; egy {value} holtzóna lefedi a többit.</find_center>
   <tune_intro>Megméri, hogyan sodródik ez a kar, és holtzónát javasol. Kb. 20 másodperc: engedje el a kart, majd pöccintse meg néhányszor.</tune_intro>
   <btn_start>Mérés indítása</btn_start>
   <btn_apply_left>{value} holtzóna a bal oldalra</btn_apply_left>
   <btn_apply_right>{value} holtzóna a jobb oldalra</btn_apply_right>
+  <btn_center_apply_left>Bal középre, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Jobb középre, {value}</btn_center_apply_right>
   <btn_restart>Újrakezdés</btn_restart>
   <edge_intro>Peremnyújtás: ha a kar egyes irányokban nem éri el az ütközőt, forgassa körbe a peremén, és az ancora azokat az irányokat teljesre nyújtja.</edge_intro>
   <btn_edge>Perem mérése</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Jobb kar nyújtása</btn_edge_apply_right>
   <btn_edge_clear_left>Bal nyújtás törlése</btn_edge_clear_left>
   <btn_edge_clear_right>Jobb nyújtás törlése</btn_edge_clear_right>
+  <btn_center_clear_left>Bal középre állítás törlése</btn_center_clear_left>
+  <btn_center_clear_right>Jobb középre állítás törlése</btn_center_clear_right>
   <step_edge>Forgassa a kart a peremén körbe</step_edge>
   <res_reach>legrövidebb elérés</res_reach>
   <find_edge_ok>A kar minden irányban eléri az ütközőt. Nem kell nyújtás.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Jobb simítás</what_right_smoothing>
   <what_left_deadzone>Bal holtzóna</what_left_deadzone>
   <what_right_deadzone>Jobb holtzóna</what_right_deadzone>
+  <what_left_curve>Bal görbe</what_left_curve>
+  <what_right_curve>Jobb görbe</what_right_curve>
   <what_left_edge>Bal peremnyújtás</what_left_edge>
   <what_right_edge>Jobb peremnyújtás</what_right_edge>
   <what_language>Nyelv</what_language>

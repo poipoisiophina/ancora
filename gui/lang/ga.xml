@@ -42,6 +42,7 @@
   <set_gate>Geata ordóige</set_gate>
   <set_smoothing>Mínú</set_smoothing>
   <set_deadzone>Crios marbh</set_deadzone>
+  <set_curve>Cuar</set_curve>
   <set_edge>Síneadh imill</set_edge>
   <edge_not_measured>gan tomhas, tiúnáil</edge_not_measured>
   <value_off>as</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Léigh braiteoir na hordóige teagmháil nuair a lig tú dó, mar sin ní féidir le geata na hordóige é a stopadh leis féin.</find_gate_fail>
   <find_no_sensor>Níor aimsíodh braiteoir ordóige, mar sin ní féidir é a stopadh ach le crios marbh.</find_no_sensor>
   <find_creep>Le d'ordóg ar an maide, is féidir leis snámh fós. Clúdaíonn crios marbh {value} é sin.</find_creep>
+  <find_center>Luíonn sé {offset} ón lár. Bogann ancora an pointe sin ar ais go dtí an lár; clúdaíonn crios marbh {value} an chuid eile.</find_center>
   <tune_intro>Tomhaiseann sé conas a shruthaíonn an maide seo agus molann sé crios marbh. Tógann sé thart ar 20 soicind: lig don mhaide, ansin brúigh é cúpla uair.</tune_intro>
   <btn_start>Tosaigh ag tomhas</btn_start>
   <btn_apply_left>Crios marbh {value} ar chlé</btn_apply_left>
   <btn_apply_right>Crios marbh {value} ar dheis</btn_apply_right>
+  <btn_center_apply_left>Láraigh ar chlé, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Láraigh ar dheis, {value}</btn_center_apply_right>
   <btn_restart>Tosaigh arís</btn_restart>
   <edge_intro>Síneadh imill: mura sroicheann an maide an deireadh i dtreonna áirithe, rolláil timpeall a imill é agus síneann ancora na treonna sin go deireadh.</edge_intro>
   <btn_edge>Tomhais an t-imeall</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Sín an maide deas</btn_edge_apply_right>
   <btn_edge_clear_left>Bain síneadh clé</btn_edge_clear_left>
   <btn_edge_clear_right>Bain síneadh deas</btn_edge_clear_right>
+  <btn_center_clear_left>Bain lárú clé</btn_center_clear_left>
+  <btn_center_clear_right>Bain lárú deas</btn_center_clear_right>
   <step_edge>Rolláil an maide timpeall an imill</step_edge>
   <res_reach>an raon is giorra</res_reach>
   <find_edge_ok>Sroicheann an maide an deireadh i ngach treo. Níl gá le síneadh.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Mínú deas</what_right_smoothing>
   <what_left_deadzone>Crios marbh clé</what_left_deadzone>
   <what_right_deadzone>Crios marbh deas</what_right_deadzone>
+  <what_left_curve>Cuar clé</what_left_curve>
+  <what_right_curve>Cuar deas</what_right_curve>
   <what_left_edge>Síneadh imill clé</what_left_edge>
   <what_right_edge>Síneadh imill deas</what_right_edge>
   <what_language>Teanga</what_language>

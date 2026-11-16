@@ -42,6 +42,7 @@
   <set_gate>Bloqueo por pulgar</set_gate>
   <set_smoothing>Suavizado</set_smoothing>
   <set_deadzone>Zona muerta</set_deadzone>
+  <set_curve>Curva</set_curve>
   <set_edge>Ajuste de borde</set_edge>
   <edge_not_measured>sin medir, ajustar</edge_not_measured>
   <value_off>no</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>El sensor del pulgar detectó contacto al soltar, así que el bloqueo por pulgar solo no basta.</find_gate_fail>
   <find_no_sensor>No hay sensor de pulgar, solo una zona muerta puede detenerla.</find_no_sensor>
   <find_creep>Con el pulgar apoyado en el joystick aún puede desplazarse. Una zona muerta de {value} lo cubre.</find_creep>
+  <find_center>Reposa a {offset} del centro. ancora devuelve ese punto al centro; una zona muerta de {value} cubre el resto.</find_center>
   <tune_intro>Mide cómo deriva este joystick y sugiere una zona muerta. Tarda unos 20 segundos: suelta el joystick y luego empújalo y suéltalo unas cuantas veces.</tune_intro>
   <btn_start>Empezar a medir</btn_start>
   <btn_apply_left>Aplicar {value} a la izquierda</btn_apply_left>
   <btn_apply_right>Aplicar {value} a la derecha</btn_apply_right>
+  <btn_center_apply_left>Centrar izquierdo, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Centrar derecho, {value}</btn_center_apply_right>
   <btn_restart>Empezar de nuevo</btn_restart>
   <edge_intro>Ajuste de borde: si el joystick no llega al máximo en algunas direcciones, gíralo por su borde y ancora estira esas direcciones hasta el máximo.</edge_intro>
   <btn_edge>Medir borde</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Estirar joystick derecho</btn_edge_apply_right>
   <btn_edge_clear_left>Quitar ajuste izquierdo</btn_edge_clear_left>
   <btn_edge_clear_right>Quitar ajuste derecho</btn_edge_clear_right>
+  <btn_center_clear_left>Quitar centrado izquierdo</btn_center_clear_left>
+  <btn_center_clear_right>Quitar centrado derecho</btn_center_clear_right>
   <step_edge>Gira el joystick por su borde</step_edge>
   <res_reach>alcance más corto</res_reach>
   <find_edge_ok>El joystick llega al máximo en todas las direcciones. No hace falta ajuste.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Suavizado derecho</what_right_smoothing>
   <what_left_deadzone>Zona muerta izquierda</what_left_deadzone>
   <what_right_deadzone>Zona muerta derecha</what_right_deadzone>
+  <what_left_curve>Curva izquierda</what_left_curve>
+  <what_right_curve>Curva derecha</what_right_curve>
   <what_left_edge>Ajuste de borde izquierdo</what_left_edge>
   <what_right_edge>Ajuste de borde derecho</what_right_edge>
   <what_language>Idioma</what_language>

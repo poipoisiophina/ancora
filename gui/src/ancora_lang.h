@@ -28,7 +28,7 @@
     X(state_in_deadzone) X(sub_in_deadzone) X(state_following) X(sub_past_deadzone) X(sub_as_is) \
     X(read_reports) X(read_games) X(read_thumb) \
     X(thumb_no_sensor) X(thumb_on) X(thumb_off) X(thumb_suspect) \
-    X(set_gate) X(set_smoothing) X(set_deadzone) X(value_off) X(value_ms) X(value_percent) \
+    X(set_gate) X(set_smoothing) X(set_deadzone) X(set_curve) X(value_off) X(value_ms) X(value_percent) \
     X(master_on) X(master_off) \
     X(tune_suggested) X(legend_rests) X(legend_suggested) \
     X(step_rest) X(step_rest_active) X(step_rest_done) \
@@ -37,8 +37,9 @@
     X(res_peak) X(res_typical) X(res_direction) \
     X(dir_none) X(dir_right) X(dir_forward_right) X(dir_forward) X(dir_forward_left) \
     X(dir_left) X(dir_back_left) X(dir_back) X(dir_back_right) \
-    X(find_none) X(find_gate_ok) X(find_gate_fail) X(find_no_sensor) X(find_creep) \
+    X(find_none) X(find_gate_ok) X(find_gate_fail) X(find_no_sensor) X(find_creep) X(find_center) \
     X(tune_intro) X(btn_start) X(btn_apply_left) X(btn_apply_right) X(btn_restart) \
+    X(btn_center_apply_left) X(btn_center_apply_right) X(btn_center_clear_left) X(btn_center_clear_right) \
     X(edge_intro) X(btn_edge) X(btn_edge_apply_left) X(btn_edge_apply_right) \
     X(btn_edge_clear_left) X(btn_edge_clear_right) X(step_edge) X(step_edge_active) X(step_edge_done) \
     X(res_reach) X(find_edge_ok) X(find_edge_short) X(legend_reach) X(legend_edge_done) X(legend_edge_more) \
@@ -51,7 +52,7 @@
     X(log_title) X(log_empty) \
     X(btn_copy) X(btn_open_cfg) X(btn_open_log) \
     X(note_saved) X(what_anchoring) X(what_left_gate) X(what_right_gate) \
-    X(what_left_smoothing) X(what_right_smoothing) X(what_left_deadzone) X(what_right_deadzone) \
+    X(what_left_smoothing) X(what_right_smoothing) X(what_left_deadzone) X(what_right_deadzone) X(what_left_curve) X(what_right_curve) \
     X(what_left_edge) X(what_right_edge) \
     X(what_language) X(note_copied) X(note_no_log) \
     X(tray_open) X(tray_exit)

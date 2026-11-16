@@ -42,6 +42,7 @@
   <set_gate>Palčna zapora</set_gate>
   <set_smoothing>Glajenje</set_smoothing>
   <set_deadzone>Mrtvo območje</set_deadzone>
+  <set_curve>Krivulja</set_curve>
   <set_edge>Raztezanje roba</set_edge>
   <edge_not_measured>ni izmerjeno, nastavi</edge_not_measured>
   <value_off>izklop</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Senzor palca je javil dotik, ko ste spustili, zato ga palčna zapora sama ne more ustaviti.</find_gate_fail>
   <find_no_sensor>Senzorja palca ni, zato ga lahko ustavi le mrtvo območje.</find_no_sensor>
   <find_creep>S palcem na palici lahko še vedno leze. Mrtvo območje {value} to pokrije.</find_creep>
+  <find_center>Miruje {offset} izven središča. ancora to točko vrne na sredino; mrtvo območje {value} pokrije ostalo.</find_center>
   <tune_intro>Izmeri, kako ta palica drsi, in predlaga mrtvo območje. Traja približno 20 sekund: spustite palico, nato jo nekajkrat sunite.</tune_intro>
   <btn_start>Začni merjenje</btn_start>
   <btn_apply_left>Uporabi mrtvo območje {value} levo</btn_apply_left>
   <btn_apply_right>Uporabi mrtvo območje {value} desno</btn_apply_right>
+  <btn_center_apply_left>Sredinsko levo, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Sredinsko desno, {value}</btn_center_apply_right>
   <btn_restart>Začni znova</btn_restart>
   <edge_intro>Raztezanje roba: če palica v nekaterih smereh ne doseže konca, jo zavrtite ob robu in ancora te smeri raztegne do konca.</edge_intro>
   <btn_edge>Izmeri rob</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Raztegni desno palico</btn_edge_apply_right>
   <btn_edge_clear_left>Odstrani raztezanje levo</btn_edge_clear_left>
   <btn_edge_clear_right>Odstrani raztezanje desno</btn_edge_clear_right>
+  <btn_center_clear_left>Odstrani centriranje levo</btn_center_clear_left>
+  <btn_center_clear_right>Odstrani centriranje desno</btn_center_clear_right>
   <step_edge>Vrtite palico ob robu</step_edge>
   <res_reach>najkrajši doseg</res_reach>
   <find_edge_ok>Palica doseže konec v vseh smereh. Raztezanje ni potrebno.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Glajenje desno</what_right_smoothing>
   <what_left_deadzone>Mrtvo območje levo</what_left_deadzone>
   <what_right_deadzone>Mrtvo območje desno</what_right_deadzone>
+  <what_left_curve>Krivulja levo</what_left_curve>
+  <what_right_curve>Krivulja desno</what_right_curve>
   <what_left_edge>Raztezanje roba levo</what_left_edge>
   <what_right_edge>Raztezanje roba desno</what_right_edge>
   <what_language>Jezik</what_language>

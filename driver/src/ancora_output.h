@@ -1,11 +1,14 @@
 // ancora_output.h
 // What a game receives for one stick, as plain functions so test\ancora_test.cpp
 // can run them: the thumb gate with its debounce and its fallback for a touch
-// sensor that cannot be trusted, then the moving average, then the radial
-// deadzone and edge stretch (ancora_edge.h). Used by the logic dll.
+// sensor that cannot be trusted, then the moving average, then the center
+// offset (ancora_center.h), then the deadzone in its shape and edge stretch
+// (ancora_edge.h), then the curve (ancora_deadzone.h). Used by the logic dll.
 
 #pragma once
 #include <cmath>
+#include "ancora_center.h"
+#include "ancora_deadzone.h"
 #include "ancora_edge.h"
 
 // The cap sensor can flicker for a moment while the thumb stays on: the gate
@@ -54,11 +57,15 @@ struct TouchGate {
 struct StickSettings {
     bool  correct = false;      // master switch and this hand both on
     float deadzone = 0.0f;
+    DeadzoneShape deadzone_shape;   // share of the deadzone per direction, .on false = round
+    CenterOffset center;        // rest point moved back to 0,0, .on false when off
     EdgeReach edge;             // in use, .on false when off
+    float curve = 0.0f;         // response curve (ancora_deadzone.h), 0 = off
 };
 
 // output for raw (x, y): gate_closed -> 0,0; has_avg -> the average replaces the
-// raw position; then the deadzone and edge stretch on the radial magnitude
+// raw position; then the center offset (ancora_center.h); then the deadzone (in
+// its shape) and edge stretch on the radial magnitude; then the curve
 inline void stick_output(const StickSettings& s, bool gate_closed, bool has_avg, float avg_x, float avg_y,
                          float raw_x, float raw_y, float& out_x, float& out_y) {
     out_x = raw_x;
@@ -66,12 +73,16 @@ inline void stick_output(const StickSettings& s, bool gate_closed, bool has_avg,
     if (!s.correct) return;
     if (gate_closed) { out_x = out_y = 0.0f; return; }
     float x = has_avg ? avg_x : raw_x, y = has_avg ? avg_y : raw_y;
+    center_map(s.center, x, y, x, y);
     float dz = s.deadzone;
     if (!(dz > 0.0f && dz < 1.0f)) dz = 0.0f;
-    if (dz > 0.0f || s.edge.on) {
+    if (dz > 0.0f) dz *= dz_shape_at(s.deadzone_shape, x, y);
+    bool curve = s.curve > 0.0f;
+    if (dz > 0.0f || s.edge.on || curve) {
         float m = std::sqrt(x * x + y * y);
         float o = edge_map(s.edge, x, y, m, dz);
         if (o <= 0.0f) { out_x = out_y = 0.0f; return; }
+        o = curve_apply(s.curve, o);
         x *= o / m;
         y *= o / m;
     }

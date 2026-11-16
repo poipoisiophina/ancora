@@ -42,6 +42,7 @@
   <set_gate>Blokada kciuka</set_gate>
   <set_smoothing>Wygładzanie</set_smoothing>
   <set_deadzone>Martwa strefa</set_deadzone>
+  <set_curve>Krzywa</set_curve>
   <set_edge>Rozciągnięcie krawędzi</set_edge>
   <edge_not_measured>nie zmierzono, dostrój</edge_not_measured>
   <value_off>wył.</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Czujnik kciuka wykrywał dotyk po puszczeniu, więc sama blokada kciuka nie wystarczy.</find_gate_fail>
   <find_no_sensor>Nie znaleziono czujnika kciuka, tylko martwa strefa może to zatrzymać.</find_no_sensor>
   <find_creep>Z kciukiem opartym na gałce wciąż może się przesuwać. Martwa strefa {value} to pokrywa.</find_creep>
+  <find_center>Spoczywa {offset} poza środkiem. ancora przesuwa ten punkt z powrotem na środek; martwa strefa {value} pokrywa resztę.</find_center>
   <tune_intro>Mierzy dryf tej gałki i sugeruje martwą strefę. Trwa około 20 sekund: puść gałkę, potem kilka razy wychyl ją i puść.</tune_intro>
   <btn_start>Zacznij pomiar</btn_start>
   <btn_apply_left>Zastosuj {value} do lewego</btn_apply_left>
   <btn_apply_right>Zastosuj {value} do prawego</btn_apply_right>
+  <btn_center_apply_left>Wyśrodkuj lewy, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Wyśrodkuj prawy, {value}</btn_center_apply_right>
   <btn_restart>Od nowa</btn_restart>
   <edge_intro>Rozciągnięcie krawędzi: jeśli gałka nie dochodzi do końca w niektórych kierunkach, obróć ją po krawędzi, a ancora rozciągnie te kierunki do pełnego wychylenia.</edge_intro>
   <btn_edge>Zmierz krawędź</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Rozciągnij prawą gałkę</btn_edge_apply_right>
   <btn_edge_clear_left>Usuń rozciągnięcie lewej</btn_edge_clear_left>
   <btn_edge_clear_right>Usuń rozciągnięcie prawej</btn_edge_clear_right>
+  <btn_center_clear_left>Usuń wyśrodkowanie lewej</btn_center_clear_left>
+  <btn_center_clear_right>Usuń wyśrodkowanie prawej</btn_center_clear_right>
   <step_edge>Obracaj gałkę po krawędzi</step_edge>
   <res_reach>najkrótszy zasięg</res_reach>
   <find_edge_ok>Gałka dochodzi do końca w każdym kierunku. Rozciągnięcie niepotrzebne.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>prawe wygładzanie</what_right_smoothing>
   <what_left_deadzone>lewa martwa strefa</what_left_deadzone>
   <what_right_deadzone>prawa martwa strefa</what_right_deadzone>
+  <what_left_curve>lewa krzywa</what_left_curve>
+  <what_right_curve>prawa krzywa</what_right_curve>
   <what_left_edge>lewe rozciągnięcie krawędzi</what_left_edge>
   <what_right_edge>prawe rozciągnięcie krawędzi</what_right_edge>
   <what_language>język</what_language>

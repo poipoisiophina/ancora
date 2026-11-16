@@ -12,6 +12,8 @@
 #include <cstring>
 #include <string>
 #include "ancora_average.h"
+#include "ancora_center.h"
+#include "ancora_deadzone.h"
 #include "ancora_edge.h"
 
 namespace ancfg {
@@ -24,11 +26,14 @@ struct HandConfig {
     bool  touch_gate = true;    // thumb off the cap -> 0,0
     float deadzone = 0.0f;      // radial, 0 = off
     int   average_ms = 0;       // moving average window, 0 = off
+    CenterOffset center;        // rest point to move back to 0,0, off when the key is empty
     EdgeReach edge;             // measured reach, off when the key is empty
     bool  edge_on = true;       // use the measured edge; off keeps the values for later
     bool  edge_bad = false;     // <hand>_edge had text that is not a valid reach list
     EdgeReach edge_base;        // furthest reach ever confirmed per direction, the floor
                                 // for lowering by wear (ancora_edge.h); off when missing
+    DeadzoneShape deadzone_shape;   // share of the deadzone per direction, off = round
+    float curve = 0.0f;         // response curve, 0 = off
 };
 
 struct Config {
@@ -126,6 +131,10 @@ inline Config parse(const std::string& text) {
         h.deadzone = !(dz >= 0.0f) ? 0.0f : dz > kMaxDeadzone ? kMaxDeadzone : dz;
         int ms = get_int(text, (k + "_average_ms").c_str(), 0);
         h.average_ms = ms < 0 ? 0 : ms > kMaxAverageMs ? kMaxAverageMs : ms;
+        h.deadzone_shape = dz_shape_parse(get(text, (k + "_deadzone_shape").c_str()).c_str());
+        h.center = center_parse(get(text, (k + "_center").c_str()).c_str());
+        float cv = (float)std::atof(get(text, (k + "_curve").c_str()).c_str());
+        h.curve = !(cv >= 0.0f) ? 0.0f : cv > kMaxCurve ? kMaxCurve : cv;
         std::string edge = get(text, (k + "_edge").c_str());
         h.edge = edge_parse(edge.c_str());
         h.edge_bad = !edge.empty() && !h.edge.on;
@@ -161,7 +170,11 @@ inline std::string format(const Config& c) {
         "enable=" + std::to_string(c.enable ? 1 : 0) + "\r\n"
         "; per hand: correct the stick (1 = on), thumb gate (thumb off the cap -> 0,0),\r\n"
         "; moving average for a shaky stick (0..300 ms, 0 = off, adds lag),\r\n"
-        "; radial deadzone while touched (0..0.95, 0 = off),\r\n"
+        "; deadzone while touched (0..0.95, 0 = off) and its shape: " + std::to_string(kDzSectors) + " shares of it\r\n"
+        "; per direction, from right counterclockwise (the Tune page writes them; empty = round),\r\n"
+        "; rest point x,y the stick is moved back from, so it reads 0,0 there and full\r\n"
+        "; at the rim (the Tune page writes it; empty = off),\r\n"
+        "; response curve, softer small pushes for finer control (0..1, 0 = off),\r\n"
         "; edge stretch: " + std::to_string(kEdgeSectors) + " measured reach values, from right counterclockwise\r\n"
         "; (the Tune page writes them; empty = off), whether to use them (1 = on), and the\r\n"
         "; furthest reach seen per direction (the driver keeps it; wear never lowers the\r\n"
@@ -173,6 +186,9 @@ inline std::string format(const Config& c) {
         s += k + "_touch_gate=" + std::to_string(h.touch_gate ? 1 : 0) + "\r\n";
         s += k + "_average_ms=" + std::to_string(h.average_ms) + "\r\n";
         s += k + "_deadzone=" + num2(h.deadzone) + "\r\n";
+        s += k + "_deadzone_shape=" + dz_shape_format(h.deadzone_shape) + "\r\n";
+        s += k + "_center=" + center_format(h.center) + "\r\n";
+        s += k + "_curve=" + num2(h.curve) + "\r\n";
         s += k + "_edge=" + edge_format(h.edge) + "\r\n";
         s += k + "_edge_on=" + std::to_string(h.edge_on ? 1 : 0) + "\r\n";
         s += k + "_edge_base=" + edge_format(h.edge_base) + "\r\n";

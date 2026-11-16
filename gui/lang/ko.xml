@@ -42,6 +42,7 @@
   <set_gate>엄지 게이트</set_gate>
   <set_smoothing>스무딩</set_smoothing>
   <set_deadzone>데드존</set_deadzone>
+  <set_curve>커브</set_curve>
   <set_edge>가장자리 보정</set_edge>
   <edge_not_measured>측정 안 됨, 조정</edge_not_measured>
   <value_off>끔</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>놓을 때 엄지 센서가 켜져 있었으므로 엄지 게이트만으로는 막을 수 없습니다.</find_gate_fail>
   <find_no_sensor>엄지 센서가 없어 데드존으로만 막을 수 있습니다.</find_no_sensor>
   <find_creep>엄지를 스틱에 올려 두면 조금 움직일 수 있습니다. {value} 데드존이면 막을 수 있습니다.</find_creep>
+  <find_center>중심에서 {offset} 벗어난 곳에 멈춥니다. ancora가 그 지점을 중앙으로 되돌리고, 나머지는 {value} 데드존이 막습니다.</find_center>
   <tune_intro>이 스틱의 드리프트를 측정하고 데드존을 권장합니다. 약 20초: 스틱에서 손을 뗀 다음 몇 번 밀었다가 놓으세요.</tune_intro>
   <btn_start>측정 시작</btn_start>
   <btn_apply_left>왼쪽에 {value} 적용</btn_apply_left>
   <btn_apply_right>오른쪽에 {value} 적용</btn_apply_right>
+  <btn_center_apply_left>왼쪽 중심 보정, {value}</btn_center_apply_left>
+  <btn_center_apply_right>오른쪽 중심 보정, {value}</btn_center_apply_right>
   <btn_restart>다시 시작</btn_restart>
   <edge_intro>가장자리 보정: 스틱이 일부 방향에서 끝까지 닿지 않으면 가장자리를 따라 돌리세요. ancora가 그 방향을 끝까지 늘려 줍니다.</edge_intro>
   <btn_edge>가장자리 측정</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>오른쪽 스틱 보정</btn_edge_apply_right>
   <btn_edge_clear_left>왼쪽 보정 제거</btn_edge_clear_left>
   <btn_edge_clear_right>오른쪽 보정 제거</btn_edge_clear_right>
+  <btn_center_clear_left>왼쪽 중심 보정 제거</btn_center_clear_left>
+  <btn_center_clear_right>오른쪽 중심 보정 제거</btn_center_clear_right>
   <step_edge>스틱을 가장자리를 따라 돌리기</step_edge>
   <res_reach>가장 짧은 도달 거리</res_reach>
   <find_edge_ok>스틱이 모든 방향에서 끝까지 닿습니다. 보정이 필요 없습니다.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>오른쪽 스무딩</what_right_smoothing>
   <what_left_deadzone>왼쪽 데드존</what_left_deadzone>
   <what_right_deadzone>오른쪽 데드존</what_right_deadzone>
+  <what_left_curve>왼쪽 커브</what_left_curve>
+  <what_right_curve>오른쪽 커브</what_right_curve>
   <what_left_edge>왼쪽 가장자리 보정</what_left_edge>
   <what_right_edge>오른쪽 가장자리 보정</what_right_edge>
   <what_language>언어</what_language>

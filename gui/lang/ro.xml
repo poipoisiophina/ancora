@@ -42,6 +42,7 @@
   <set_gate>Poarta degetului</set_gate>
   <set_smoothing>Netezire</set_smoothing>
   <set_deadzone>Zonă moartă</set_deadzone>
+  <set_curve>Curbă</set_curve>
   <set_edge>Întinderea marginii</set_edge>
   <edge_not_measured>nemăsurat, reglați</edge_not_measured>
   <value_off>oprit</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>Senzorul de deget a indicat atingere când ați eliberat, deci poarta degetului singură nu o poate opri.</find_gate_fail>
   <find_no_sensor>Nu s-a găsit senzor de deget, deci doar o zonă moartă o poate opri.</find_no_sensor>
   <find_creep>Cu degetul sprijinit pe stick, acesta încă se poate târî. O zonă moartă de {value} acoperă asta.</find_creep>
+  <find_center>Se odihnește la {offset} de centru. ancora readuce acel punct la mijloc; o zonă moartă de {value} acoperă restul.</find_center>
   <tune_intro>Măsoară cum derivă acest stick și sugerează o zonă moartă. Durează aproximativ 20 de secunde: eliberați stickul, apoi împingeți-l de câteva ori.</tune_intro>
   <btn_start>Începeți măsurarea</btn_start>
   <btn_apply_left>Aplică zona moartă {value} la stânga</btn_apply_left>
   <btn_apply_right>Aplică zona moartă {value} la dreapta</btn_apply_right>
+  <btn_center_apply_left>Centrează stânga, {value}</btn_center_apply_left>
+  <btn_center_apply_right>Centrează dreapta, {value}</btn_center_apply_right>
   <btn_restart>Reîncepeți</btn_restart>
   <edge_intro>Întinderea marginii: dacă stickul nu ajunge la capăt în unele direcții, rotiți-l pe margine și ancora întinde acele direcții până la capăt.</edge_intro>
   <btn_edge>Măsurați marginea</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>Întinde stickul drept</btn_edge_apply_right>
   <btn_edge_clear_left>Elimină întinderea stângă</btn_edge_clear_left>
   <btn_edge_clear_right>Elimină întinderea dreaptă</btn_edge_clear_right>
+  <btn_center_clear_left>Elimină centrarea stângă</btn_center_clear_left>
+  <btn_center_clear_right>Elimină centrarea dreaptă</btn_center_clear_right>
   <step_edge>Rotiți stickul pe margine</step_edge>
   <res_reach>cea mai scurtă atingere</res_reach>
   <find_edge_ok>Stickul ajunge la capăt în toate direcțiile. Nu e nevoie de întindere.</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>Netezire dreapta</what_right_smoothing>
   <what_left_deadzone>Zonă moartă stânga</what_left_deadzone>
   <what_right_deadzone>Zonă moartă dreapta</what_right_deadzone>
+  <what_left_curve>Curbă stânga</what_left_curve>
+  <what_right_curve>Curbă dreapta</what_right_curve>
   <what_left_edge>Întinderea marginii stânga</what_left_edge>
   <what_right_edge>Întinderea marginii dreapta</what_right_edge>
   <what_language>Limbă</what_language>

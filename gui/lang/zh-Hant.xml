@@ -42,6 +42,7 @@
   <set_gate>拇指閘控</set_gate>
   <set_smoothing>平滑</set_smoothing>
   <set_deadzone>死區</set_deadzone>
+  <set_curve>曲線</set_curve>
   <set_edge>邊緣拉伸</set_edge>
   <edge_not_measured>未測量，去調校</edge_not_measured>
   <value_off>關</value_off>
@@ -78,10 +79,13 @@
   <find_gate_fail>放開時拇指感測器顯示觸碰，所以只靠拇指閘控無法阻止。</find_gate_fail>
   <find_no_sensor>找不到拇指感測器，只能用死區阻止。</find_no_sensor>
   <find_creep>拇指放在搖桿上時仍可能緩慢移動。{value} 的死區可以涵蓋。</find_creep>
+  <find_center>靜止時偏離中心 {offset}。ancora 會把該點移回中心，其餘由 {value} 的死區涵蓋。</find_center>
   <tune_intro>測量這支搖桿的漂移並建議死區。約需 20 秒：先放開搖桿，然後推到底再放開幾次。</tune_intro>
   <btn_start>開始測量</btn_start>
   <btn_apply_left>將 {value} 套用到左側</btn_apply_left>
   <btn_apply_right>將 {value} 套用到右側</btn_apply_right>
+  <btn_center_apply_left>左側回中，{value}</btn_center_apply_left>
+  <btn_center_apply_right>右側回中，{value}</btn_center_apply_right>
   <btn_restart>重新開始</btn_restart>
   <edge_intro>邊緣拉伸：如果搖桿在某些方向推不到底，沿邊緣轉動搖桿，ancora 會把這些方向拉伸到滿幅。</edge_intro>
   <btn_edge>測量邊緣</btn_edge>
@@ -89,6 +93,8 @@
   <btn_edge_apply_right>拉伸右搖桿</btn_edge_apply_right>
   <btn_edge_clear_left>移除左側拉伸</btn_edge_clear_left>
   <btn_edge_clear_right>移除右側拉伸</btn_edge_clear_right>
+  <btn_center_clear_left>移除左側回中</btn_center_clear_left>
+  <btn_center_clear_right>移除右側回中</btn_center_clear_right>
   <step_edge>沿邊緣轉動搖桿</step_edge>
   <res_reach>最短行程</res_reach>
   <find_edge_ok>搖桿在每個方向都能推到底，不需要拉伸。</find_edge_ok>
@@ -134,6 +140,8 @@
   <what_right_smoothing>右平滑</what_right_smoothing>
   <what_left_deadzone>左死區</what_left_deadzone>
   <what_right_deadzone>右死區</what_right_deadzone>
+  <what_left_curve>左曲線</what_left_curve>
+  <what_right_curve>右曲線</what_right_curve>
   <what_left_edge>左邊緣拉伸</what_left_edge>
   <what_right_edge>右邊緣拉伸</what_right_edge>
   <what_language>語言</what_language>
