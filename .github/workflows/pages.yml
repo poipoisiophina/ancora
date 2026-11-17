@@ -2,8 +2,8 @@
 # (https://poipoisiophina.github.io/ancora/). Needs Settings > Pages > Source:
 # GitHub Actions. Runs on site changes, by hand, and from build.yml after a new
 # release. The panel pictures in site/shots are never committed: build.yml renders
-# them from the built panel and attaches them to the release as panel-<page>.png
-# (permanent), and every deploy takes them from the latest release.
+# them from the built panel and attaches them to the release as panel-screenshots.zip
+# (permanent). Every deploy takes them from the newest release that has them.
 name: pages
 
 on:
@@ -34,15 +34,23 @@ jobs:
       - uses: actions/checkout@v4
       - name: Add the panel screenshots of the newest release that has them
         run: |
-          mkdir -p site/shots
+          mkdir -p site/shots tmp/png
+          found=
           for tag in $(gh release list --repo "$GITHUB_REPOSITORY" --limit 20 --json tagName --jq '.[].tagName'); do
-            if gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern 'panel-*.png' --dir site/shots 2>/dev/null; then
-              for f in site/shots/panel-*.png; do mv "$f" "site/shots/${f##*/panel-}"; done
-              echo "screenshots of $tag"; ls -la site/shots
+            if gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern 'panel-screenshots.zip' --dir tmp 2>/dev/null; then
+              unzip -oq tmp/panel-screenshots.zip -d site/shots
+              found=$tag; break
+            elif gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern 'panel-*.png' --dir tmp/png 2>/dev/null; then
+              # releases before the zip carry loose panel-<page>.png files
+              for f in tmp/png/panel-*.png; do mv "$f" "site/shots/${f##*/panel-}"; done
               found=$tag; break
             fi
           done
-          if [ -z "$found" ]; then echo "::warning::no recent release has panel screenshots, the site goes out without them"; fi
+          if [ -z "$found" ]; then
+            echo "::warning::no recent release has panel screenshots, the site goes out without them"
+          else
+            echo "screenshots of $found"; ls -la site/shots
+          fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

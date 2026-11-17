@@ -120,7 +120,7 @@ jobs:
         with:
           name: ancora-setup
           path: dist
-      # the panel pictures of this version go on the release as panel-<page>.png: a
+      # the panel pictures of this version go on the release as one small zip: a
       # release never expires, and the website takes them from the latest release
       - name: Get the panel screenshots
         if: steps.check.outputs.new == 'true'
@@ -134,9 +134,9 @@ jobs:
         run: |
           file="dist/ancora-setup-$VERSION.exe"
           shots=()
-          for p in status tune edge diag; do
-            if [ -f "shots/$p.png" ]; then mv "shots/$p.png" "shots/panel-$p.png"; shots+=("shots/panel-$p.png"); fi
-          done
+          if ls shots/*.png > /dev/null 2>&1; then
+            (cd shots && zip -qj panel-screenshots.zip *.png) && shots+=("shots/panel-screenshots.zip")
+          fi
           test -f "$file" || { echo "missing $file"; ls -la dist; exit 1; }
           gh release create "v$VERSION" "$file" "${shots[@]}" \
             --repo "$GITHUB_REPOSITORY" \
