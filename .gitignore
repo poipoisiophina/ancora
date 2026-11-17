@@ -33,3 +33,4 @@
 # editor state
 .vs/
 *.user
+site/shots/

@@ -71,6 +71,24 @@ jobs:
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 7
+      # panel pictures for the website, rendered from this build with demo values, so
+      # the site never shows an old look. A failure here must not fail the release.
+      - name: Render panel screenshots
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        shell: cmd
+        run: |
+          mkdir shots
+          for %%p in (status tune edge diag) do gui\bin\ancora.exe --screenshot shots\%%p.png --fake --page %%p
+          dir shots
+      - name: Keep the screenshots
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: site-shots
+          path: shots/*.png
+          if-no-files-found: warn
+          retention-days: 7
 
   prerelease:
     needs: build
@@ -102,14 +120,38 @@ jobs:
         with:
           name: ancora-setup
           path: dist
+      # the panel pictures of this version go on the release as panel-<page>.png: a
+      # release never expires, and the website takes them from the latest release
+      - name: Get the panel screenshots
+        if: steps.check.outputs.new == 'true'
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: site-shots
+          path: shots
       - name: Tag and pre-release
         if: steps.check.outputs.new == 'true'
         run: |
           file="dist/ancora-setup-$VERSION.exe"
+          shots=()
+          for p in status tune edge diag; do
+            if [ -f "shots/$p.png" ]; then mv "shots/$p.png" "shots/panel-$p.png"; shots+=("shots/panel-$p.png"); fi
+          done
           test -f "$file" || { echo "missing $file"; ls -la dist; exit 1; }
-          gh release create "v$VERSION" "$file" \
+          gh release create "v$VERSION" "$file" "${shots[@]}" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "ancora $VERSION" \
             --prerelease \
             --generate-notes
+
+  # publish the website after a new release, so its screenshots are the ones of
+  # that release (pages.yml reads them from the latest release)
+  site:
+    needs: prerelease
+    if: ${{ !cancelled() && needs.prerelease.result == 'success' }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml

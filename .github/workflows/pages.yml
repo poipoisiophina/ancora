@@ -1,6 +1,9 @@
 # Publishes the static site in site/ to GitHub Pages
 # (https://poipoisiophina.github.io/ancora/). Needs Settings > Pages > Source:
-# GitHub Actions. Only site changes trigger it.
+# GitHub Actions. Runs on site changes, by hand, and from build.yml after a new
+# release. The panel pictures in site/shots are never committed: build.yml renders
+# them from the built panel and attaches them to the release as panel-<page>.png
+# (permanent), and every deploy takes them from the latest release.
 name: pages
 
 on:
@@ -8,25 +11,38 @@ on:
     branches: [main]
     paths: ['site/**', '.github/workflows/pages.yml']
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+      - name: Add the panel screenshots of the newest release that has them
+        run: |
+          mkdir -p site/shots
+          for tag in $(gh release list --repo "$GITHUB_REPOSITORY" --limit 20 --json tagName --jq '.[].tagName'); do
+            if gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern 'panel-*.png' --dir site/shots 2>/dev/null; then
+              for f in site/shots/panel-*.png; do mv "$f" "site/shots/${f##*/panel-}"; done
+              echo "screenshots of $tag"; ls -la site/shots
+              found=$tag; break
+            fi
+          done
+          if [ -z "$found" ]; then echo "::warning::no recent release has panel screenshots, the site goes out without them"; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
