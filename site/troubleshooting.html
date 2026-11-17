@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ancora troubleshooting: stick still drifting, no tray icon</title>
+<meta name="description" content="Fix common ancora problems: no tray icon, still drifting, controller not connected, deadzone too high.">
+<link rel="canonical" href="https://poipoisiophina.github.io/ancora/troubleshooting.html">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0F14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FBFAF6" media="(prefers-color-scheme: light)">
+<script>(function(){var d=document.documentElement,m=matchMedia("(prefers-color-scheme: light)");function cur(){return d.dataset.theme||(m.matches?"light":"dark")}function meta(){var c=cur()==="light"?"#FBFAF6":"#0B0F14";document.querySelectorAll('meta[name="theme-color"]').forEach(function(e){e.removeAttribute("media");e.content=c})}try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")d.dataset.theme=t}catch(e){}window.toggleTheme=function(){var n=cur()==="light"?"dark":"light";d.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}meta();document.getElementById("tt").setAttribute("aria-pressed",n==="dark")};m.addEventListener("change",function(){try{if(localStorage.getItem("theme"))return}catch(e){}meta()});document.addEventListener("DOMContentLoaded",function(){meta();document.getElementById("tt").setAttribute("aria-pressed",cur()==="dark")})})()</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ancora">
+<meta property="og:title" content="ancora troubleshooting: stick still drifting, no tray icon">
+<meta property="og:description" content="Fix common ancora problems: no tray icon, still drifting, controller not connected, deadzone too high.">
+<meta property="og:url" content="https://poipoisiophina.github.io/ancora/troubleshooting.html">
+<meta property="og:image" content="https://poipoisiophina.github.io/ancora/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"No anchor icon in the tray","acceptedAnswer":{"@type":"Answer","text":"Start SteamVR; ancora starts with it. Or run %LOCALAPPDATA%\\ancora\\ancora.exe. The icon can hide behind the small up arrow in the tray."}},{"@type":"Question","name":"Installer says SteamVR is running","acceptedAnswer":{"@type":"Answer","text":"Close SteamVR fully, also from the tray, then press OK."}},{"@type":"Question","name":"Still drifting","acceptedAnswer":{"@type":"Answer","text":"Open the panel. If the card says Not corrected, switch it on. If it drifts with your thumb on the stick, use Tune and apply a deadzone."}},{"@type":"Question","name":"A controller shows Not connected","acceptedAnswer":{"@type":"Answer","text":"Wake the controller or check its battery. If it still shows that while the controller works in games, restart SteamVR with the controller already on."}},{"@type":"Question","name":"I cannot walk slowly any more","acceptedAnswer":{"@type":"Answer","text":"Your deadzone is too high. Lower it or turn it off."}},{"@type":"Question","name":"Valve Index controllers","acceptedAnswer":{"@type":"Answer","text":"Not supported yet. ancora does nothing on Index controllers."}},{"@type":"Question","name":"Game does not use SteamVR","acceptedAnswer":{"@type":"Answer","text":"ancora only works for games that run through SteamVR."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ancora","item":"https://poipoisiophina.github.io/ancora/"},{"@type":"ListItem","position":2,"name":"Troubleshooting","item":"https://poipoisiophina.github.io/ancora/troubleshooting.html"}]}</script>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" alt="" width="28" height="28"> ancora</a><nav aria-label="Main"><a href="index.html">Home</a><a href="drift-in-vrchat.html">Why drift happens</a><a href="install.html">Install</a><a href="thumb-gate.html">Thumb Gate</a><a href="how-it-works.html">How it works</a><a href="troubleshooting.html" aria-current="page">Troubleshooting</a><a href="faq.html">FAQ</a><button class="tt" id="tt" type="button" aria-label="Dark theme" aria-pressed="false" onclick="toggleTheme()">&#9680;</button></nav></div></header>
+<main class="wrap">
+<h1>Troubleshooting ancora</h1>
+<p class="lead">Quick fixes for the common problems.</p><h2>No anchor icon in the tray</h2><p>Start SteamVR; ancora starts with it. Or run %LOCALAPPDATA%\ancora\ancora.exe. The icon can hide behind the small up arrow in the tray.</p><h2>Installer says SteamVR is running</h2><p>Close SteamVR fully, also from the tray, then press OK.</p><h2>Still drifting</h2><p>Open the panel. If the card says Not corrected, switch it on. If it drifts with your thumb on the stick, use Tune and apply a deadzone.</p><h2>A controller shows Not connected</h2><p>Wake the controller or check its battery. If it still shows that while the controller works in games, restart SteamVR with the controller already on.</p><h2>I cannot walk slowly any more</h2><p>Your deadzone is too high. Lower it or turn it off.</p><h2>Valve Index controllers</h2><p>Not supported yet. ancora does nothing on Index controllers.</p><h2>Game does not use SteamVR</h2><p>ancora only works for games that run through SteamVR.</p><p>Still stuck? Open the panel, Diagnostics, Copy diagnostics, and send that text with your question on <a href="https://github.com/poipoisiophina/ancora/issues">GitHub</a>.</p>
+</main>
+<footer><div class="wrap"><p>ancora is free and open source (<a href="https://github.com/poipoisiophina/ancora">GitHub</a>, <a href="https://github.com/poipoisiophina/ancora/releases">downloads</a>). It is not affiliated with Meta, Valve or VRChat. Quest, SteamVR and VRChat are trademarks of their owners.</p></div></footer>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How ancora works: Thumb Gate for Meta Quest drift</title>
+<meta name="description" content="ancora is a SteamVR driver. Its Thumb Gate uses the Meta Quest thumb sensor to stop stick drift. Learn Thumb Gate, deadzone and the Tune page.">
+<link rel="canonical" href="https://poipoisiophina.github.io/ancora/how-it-works.html">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0F14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FBFAF6" media="(prefers-color-scheme: light)">
+<script>(function(){var d=document.documentElement,m=matchMedia("(prefers-color-scheme: light)");function cur(){return d.dataset.theme||(m.matches?"light":"dark")}function meta(){var c=cur()==="light"?"#FBFAF6":"#0B0F14";document.querySelectorAll('meta[name="theme-color"]').forEach(function(e){e.removeAttribute("media");e.content=c})}try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")d.dataset.theme=t}catch(e){}window.toggleTheme=function(){var n=cur()==="light"?"dark":"light";d.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}meta();document.getElementById("tt").setAttribute("aria-pressed",n==="dark")};m.addEventListener("change",function(){try{if(localStorage.getItem("theme"))return}catch(e){}meta()});document.addEventListener("DOMContentLoaded",function(){meta();document.getElementById("tt").setAttribute("aria-pressed",cur()==="dark")})})()</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ancora">
+<meta property="og:title" content="How ancora works: Thumb Gate for Meta Quest drift">
+<meta property="og:description" content="ancora is a SteamVR driver. Its Thumb Gate uses the Meta Quest thumb sensor to stop stick drift. Learn Thumb Gate, deadzone and the Tune page.">
+<meta property="og:url" content="https://poipoisiophina.github.io/ancora/how-it-works.html">
+<meta property="og:image" content="https://poipoisiophina.github.io/ancora/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ancora","item":"https://poipoisiophina.github.io/ancora/"},{"@type":"ListItem","position":2,"name":"How it works","item":"https://poipoisiophina.github.io/ancora/how-it-works.html"}]}</script>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" alt="" width="28" height="28"> ancora</a><nav aria-label="Main"><a href="index.html">Home</a><a href="drift-in-vrchat.html">Why drift happens</a><a href="install.html">Install</a><a href="thumb-gate.html">Thumb Gate</a><a href="how-it-works.html" aria-current="page">How it works</a><a href="troubleshooting.html">Troubleshooting</a><a href="faq.html">FAQ</a><button class="tt" id="tt" type="button" aria-label="Dark theme" aria-pressed="false" onclick="toggleTheme()">&#9680;</button></nav></div></header>
+<main class="wrap">
+<h1>How ancora works</h1>
+<p class="lead">ancora is a SteamVR driver. It sits between your controller driver and the game and only changes the thumbstick.</p>
+<h2>Thumb Gate</h2>
+<p>Thumb off the stick: games get "stick centered". Thumb on: input passes through. Keep it on; it is the main fix. <a href="thumb-gate.html">Read the Thumb Gate guide</a>.</p>
+<h2>Optional tools</h2>
+<ul>
+<li><strong>Deadzone:</strong> only if the stick drifts while your thumb rests on it. Leave off otherwise.</li>
+<li><strong>Tune page:</strong> measures your stick and suggests a deadzone, re-centers a stick that rests off to one side, and stretches directions where a worn stick stops short of full.</li>
+<li><strong>Smoothing and curve:</strong> for a shaky stick or finer control near the middle. They do not fix drift.</li>
+</ul>
+<h2>Safe by design</h2>
+<p>Nothing touches the game process or its files. Everything runs inside SteamVR. Settings live in <code>%LOCALAPPDATA%\ancora\ancora.ini</code> and save by themselves with no restart. The panel speaks many languages, including every official EU language.</p>
+<p>Source and tests: <a href="https://github.com/poipoisiophina/ancora">github.com/poipoisiophina/ancora</a>.</p>
+</main>
+<footer><div class="wrap"><p>ancora is free and open source (<a href="https://github.com/poipoisiophina/ancora">GitHub</a>, <a href="https://github.com/poipoisiophina/ancora/releases">downloads</a>). It is not affiliated with Meta, Valve or VRChat. Quest, SteamVR and VRChat are trademarks of their owners.</p></div></footer>
+</body>
+</html>

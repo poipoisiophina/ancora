@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install ancora: Meta Quest stick drift fix for SteamVR</title>
+<meta name="description" content="Step by step: install ancora on Windows to stop Quest thumbstick drift in VRChat. Takes a minute, no admin rights.">
+<link rel="canonical" href="https://poipoisiophina.github.io/ancora/install.html">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0F14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FBFAF6" media="(prefers-color-scheme: light)">
+<script>(function(){var d=document.documentElement,m=matchMedia("(prefers-color-scheme: light)");function cur(){return d.dataset.theme||(m.matches?"light":"dark")}function meta(){var c=cur()==="light"?"#FBFAF6":"#0B0F14";document.querySelectorAll('meta[name="theme-color"]').forEach(function(e){e.removeAttribute("media");e.content=c})}try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")d.dataset.theme=t}catch(e){}window.toggleTheme=function(){var n=cur()==="light"?"dark":"light";d.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}meta();document.getElementById("tt").setAttribute("aria-pressed",n==="dark")};m.addEventListener("change",function(){try{if(localStorage.getItem("theme"))return}catch(e){}meta()});document.addEventListener("DOMContentLoaded",function(){meta();document.getElementById("tt").setAttribute("aria-pressed",cur()==="dark")})})()</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ancora">
+<meta property="og:title" content="Install ancora: Meta Quest stick drift fix for SteamVR">
+<meta property="og:description" content="Step by step: install ancora on Windows to stop Quest thumbstick drift in VRChat. Takes a minute, no admin rights.">
+<meta property="og:url" content="https://poipoisiophina.github.io/ancora/install.html">
+<meta property="og:image" content="https://poipoisiophina.github.io/ancora/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Install ancora","step":[{"@type":"HowToStep","text":"Close SteamVR completely."},{"@type":"HowToStep","text":"Download the newest ancora-setup installer from Releases (a pre-release is fine) and run it. If Windows says \"Windows protected your PC\", click More info, then Run anyway. This happens because the installer is not signed with a paid certificate."},{"@type":"HowToStep","text":"Click through the installer."},{"@type":"HowToStep","text":"Start SteamVR. ancora is now active. A small anchor icon appears in the Windows tray."}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ancora","item":"https://poipoisiophina.github.io/ancora/"},{"@type":"ListItem","position":2,"name":"Install","item":"https://poipoisiophina.github.io/ancora/install.html"}]}</script>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" alt="" width="28" height="28"> ancora</a><nav aria-label="Main"><a href="index.html">Home</a><a href="drift-in-vrchat.html">Why drift happens</a><a href="install.html" aria-current="page">Install</a><a href="thumb-gate.html">Thumb Gate</a><a href="how-it-works.html">How it works</a><a href="troubleshooting.html">Troubleshooting</a><a href="faq.html">FAQ</a><button class="tt" id="tt" type="button" aria-label="Dark theme" aria-pressed="false" onclick="toggleTheme()">&#9680;</button></nav></div></header>
+<main class="wrap">
+<h1>Install ancora</h1>
+<p class="lead">Needs Windows 10 or 11 (64-bit) and SteamVR started once. No admin rights, no extra runtimes.</p>
+<ol><li>Close SteamVR completely.</li><li>Download the newest ancora-setup installer from Releases (a pre-release is fine) and run it. If Windows says &quot;Windows protected your PC&quot;, click More info, then Run anyway. This happens because the installer is not signed with a paid certificate.</li><li>Click through the installer.</li><li>Start SteamVR. ancora is now active. A small anchor icon appears in the Windows tray.</li></ol>
+<p><a class="btn" href="https://github.com/poipoisiophina/ancora/releases/latest">Download ancora for Windows</a> <a class="btn alt" href="install.html">How to install</a></p>
+<h2>Use it</h2>
+<p>You do not have to do anything: drift is fixed as soon as SteamVR runs. To look or change a setting, click the anchor icon in the tray. Each controller has a card that shows <em>Drift anchored</em> (thumb off, blocked) or <em>Following thumb</em> (thumb on, normal).</p>
+<h2>Uninstall</h2>
+<p>Close SteamVR, then Windows Settings, Apps, Installed apps, ancora, Uninstall.</p>
+<p>Something wrong? See <a href="troubleshooting.html">troubleshooting</a>.</p>
+</main>
+<footer><div class="wrap"><p>ancora is free and open source (<a href="https://github.com/poipoisiophina/ancora">GitHub</a>, <a href="https://github.com/poipoisiophina/ancora/releases">downloads</a>). It is not affiliated with Meta, Valve or VRChat. Quest, SteamVR and VRChat are trademarks of their owners.</p></div></footer>
+</body>
+</html>

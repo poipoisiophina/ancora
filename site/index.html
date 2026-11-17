@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meta Quest thumbstick drift fix for SteamVR | ancora</title>
+<meta name="description" content="Stop Meta Quest thumbstick drift in VRChat and SteamVR. ancora&#x27;s Thumb Gate centers the stick when your thumb is off. Free, no game files touched.">
+<link rel="canonical" href="https://poipoisiophina.github.io/ancora/">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0F14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FBFAF6" media="(prefers-color-scheme: light)">
+<script>(function(){var d=document.documentElement,m=matchMedia("(prefers-color-scheme: light)");function cur(){return d.dataset.theme||(m.matches?"light":"dark")}function meta(){var c=cur()==="light"?"#FBFAF6":"#0B0F14";document.querySelectorAll('meta[name="theme-color"]').forEach(function(e){e.removeAttribute("media");e.content=c})}try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")d.dataset.theme=t}catch(e){}window.toggleTheme=function(){var n=cur()==="light"?"dark":"light";d.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}meta();document.getElementById("tt").setAttribute("aria-pressed",n==="dark")};m.addEventListener("change",function(){try{if(localStorage.getItem("theme"))return}catch(e){}meta()});document.addEventListener("DOMContentLoaded",function(){meta();document.getElementById("tt").setAttribute("aria-pressed",cur()==="dark")})})()</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ancora">
+<meta property="og:title" content="Meta Quest thumbstick drift fix for SteamVR | ancora">
+<meta property="og:description" content="Stop Meta Quest thumbstick drift in VRChat and SteamVR. ancora&#x27;s Thumb Gate centers the stick when your thumb is off. Free, no game files touched.">
+<meta property="og:url" content="https://poipoisiophina.github.io/ancora/">
+<meta property="og:image" content="https://poipoisiophina.github.io/ancora/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<!-- GSC-VERIFY -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ancora","description":"Free SteamVR driver with Thumb Gate that stops Meta Quest controller thumbstick drift in VRChat and other SteamVR games.","applicationCategory":"UtilitiesApplication","operatingSystem":"Windows 10, Windows 11","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"downloadUrl":"https://github.com/poipoisiophina/ancora/releases","url":"https://poipoisiophina.github.io/ancora/","codeRepository":"https://github.com/poipoisiophina/ancora"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can ancora get me banned in VRChat?","acceptedAnswer":{"@type":"Answer","text":"ancora never touches VRChat or its files. It is a SteamVR driver that changes the stick values your controller driver reports, inside SteamVR's own process. A game only sees ordinary stick values. Nobody can promise anything about VRChat's rules, but ancora does not modify the game."}},{"@type":"Question","name":"What is Thumb Gate?","acceptedAnswer":{"@type":"Answer","text":"Thumb Gate is ancora's main fix for Meta Quest thumbstick drift. Quest sticks have a thumb sensor. With your thumb off the stick, games get stick centered, so drift cannot move you. With your thumb on, the stick works as normal."}},{"@type":"Question","name":"Does ancora slow anything down?","acceptedAnswer":{"@type":"Answer","text":"No. The driver does a few calculations per stick update while SteamVR runs. The panel uses a few MB of memory and draws nothing while hidden in the tray."}}]}</script>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" alt="" width="28" height="28"> ancora</a><nav aria-label="Main"><a href="index.html" aria-current="page">Home</a><a href="drift-in-vrchat.html">Why drift happens</a><a href="install.html">Install</a><a href="thumb-gate.html">Thumb Gate</a><a href="how-it-works.html">How it works</a><a href="troubleshooting.html">Troubleshooting</a><a href="faq.html">FAQ</a><button class="tt" id="tt" type="button" aria-label="Dark theme" aria-pressed="false" onclick="toggleTheme()">&#9680;</button></nav></div></header>
+<main class="wrap">
+<h1>Meta Quest thumbstick drift fix for SteamVR and VRChat</h1>
+<p class="lead">Is your VRChat character walking or turning on its own when you are not touching the stick? That is thumbstick drift. <strong>ancora</strong> is a free SteamVR driver that fixes Meta Quest thumbstick drift with <a href="thumb-gate.html">Thumb Gate</a>: when your thumb is <em>off</em> the stick, games get "stick centered". When your thumb is <em>on</em> the stick, everything works as normal.</p>
+<p><a class="btn" href="https://github.com/poipoisiophina/ancora/releases/latest">Download ancora for Windows</a> <a class="btn alt" href="install.html">How to install</a></p>
+<ul class="cards">
+<li><strong>Quest ready.</strong> Works with Quest 3, Quest 2 and Quest Pro (Touch style sticks with a thumb sensor).</li>
+<li><strong>Game files untouched.</strong> It runs inside SteamVR only, never inside VRChat.</li>
+<li><strong>Free and small.</strong> No admin rights, and you can turn it off or remove it at any time.</li>
+</ul>
+<h2>Why Thumb Gate beats recalibrating or adding a deadzone</h2>
+<p>A big deadzone makes slow walking impossible, and recalibration does not help a stick that rests off center. ancora uses the capacitive thumb sensor: no thumb on the stick means the stick cannot be pushed, so drift is blocked without losing precision. Read <a href="drift-in-vrchat.html">why stick drift happens in VRChat</a>.</p>
+<h2>What you need</h2>
+<ul>
+<li>Windows 10 or 11 (64-bit).</li>
+<li>SteamVR installed and started once.</li>
+<li>A Quest connected to SteamVR. Tested with Steam Link; Virtual Desktop, ALVR and Quest Link should work the same way but are not tested yet.</li>
+</ul>
+<h2>Install in four steps</h2>
+<ol><li>Close SteamVR.</li><li>Download the newest <code>ancora-setup</code> installer from <a href="https://github.com/poipoisiophina/ancora/releases">Releases</a>.</li><li>Run it and click through.</li><li>Start SteamVR. An anchor icon appears in the tray. Done.</li></ol>
+<p>Full guide: <a href="install.html">install ancora</a>. Problems: <a href="troubleshooting.html">troubleshooting</a>.</p>
+<h2>Frequently asked questions</h2>
+<h3>Can ancora get me banned in VRChat?</h3><p>ancora never touches VRChat or its files. It is a SteamVR driver that changes the stick values your controller driver reports, inside SteamVR&#x27;s own process. A game only sees ordinary stick values. Nobody can promise anything about VRChat&#x27;s rules, but ancora does not modify the game.</p><h3>What is Thumb Gate?</h3><p>Thumb Gate is ancora&#x27;s main fix for Meta Quest thumbstick drift. Quest sticks have a thumb sensor. With your thumb off the stick, games get stick centered, so drift cannot move you. With your thumb on, the stick works as normal.</p><h3>Does ancora slow anything down?</h3><p>No. The driver does a few calculations per stick update while SteamVR runs. The panel uses a few MB of memory and draws nothing while hidden in the tray.</p><p><a href="faq.html">More questions</a></p>
+</main>
+<footer><div class="wrap"><p>ancora is free and open source (<a href="https://github.com/poipoisiophina/ancora">GitHub</a>, <a href="https://github.com/poipoisiophina/ancora/releases">downloads</a>). It is not affiliated with Meta, Valve or VRChat. Quest, SteamVR and VRChat are trademarks of their owners.</p></div></footer>
+</body>
+</html>

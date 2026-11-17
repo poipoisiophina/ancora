@@ -1,0 +1,39 @@
+:root{color-scheme:dark;--bg:#0b0f14;--fg:#f1f3f4;--mut:#a9b4bf;--acc:#f5c451;--lnk:#f5c451;--grn:#3ddc97;--org:#ff9f43;--line:#26303c;--hdr:rgba(11,15,20,.72);--ov:255,255,255;--h1a:#fff;--g1:.16;--g2:.12;--g3:.07;--btnbg:#f5c451;--btnfg:#1a1405}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){color-scheme:light;--bg:#fbfaf6;--fg:#18202a;--mut:#53606d;--acc:#9a6a00;--lnk:#8a5d00;--grn:#0c8f5a;--org:#c45f00;--line:#e0dccf;--hdr:rgba(251,250,246,.78);--ov:20,30,40;--h1a:#18202a;--g1:.26;--g2:.16;--g3:.1}}
+:root[data-theme=light]{color-scheme:light;--bg:#fbfaf6;--fg:#18202a;--mut:#53606d;--acc:#9a6a00;--lnk:#8a5d00;--grn:#0c8f5a;--org:#c45f00;--line:#e0dccf;--hdr:rgba(251,250,246,.78);--ov:20,30,40;--h1a:#18202a;--g1:.26;--g2:.16;--g3:.1}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--fg);font:18px/1.7 "Google Sans","Google Sans Text","Product Sans",Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;
+ background:radial-gradient(60rem 28rem at 12% -6%,rgba(245,196,81,var(--g1)),transparent 60%),radial-gradient(52rem 26rem at 95% 4%,rgba(61,220,151,var(--g2)),transparent 60%),radial-gradient(40rem 22rem at 60% 30%,rgba(255,159,67,var(--g3)),transparent 60%),var(--bg);background-repeat:no-repeat}
+.wrap{max-width:60rem;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:5;backdrop-filter:blur(14px);background:var(--hdr);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:center;padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:1.15rem;letter-spacing:-.01em;color:var(--fg);text-decoration:none}
+nav{display:flex;flex-wrap:wrap;gap:4px 6px;font-size:.95rem;margin-left:auto}
+nav a{color:var(--mut);text-decoration:none;padding:6px 14px;border-radius:999px;transition:background .2s,color .2s}
+nav a:hover{background:rgba(var(--ov),.08);color:var(--fg)}
+nav a[aria-current]{background:rgba(245,196,81,.2);color:var(--acc)}
+main{padding-bottom:1rem}
+h1{font-size:clamp(2.4rem,6.5vw,4.4rem);line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:4.5rem 0 1.4rem;
+ background:linear-gradient(100deg,var(--h1a) 20%,var(--acc) 62%,var(--grn));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:-.02em;font-weight:600;margin:3.4rem 0 .8rem}
+h3{font-size:1.15rem;margin:1.8rem 0 .3rem}
+a{color:var(--lnk)}
+.lead{font-size:clamp(1.15rem,2.4vw,1.4rem);line-height:1.55;color:var(--mut);max-width:44rem}
+.lead strong,.lead em{color:var(--fg)}
+.btn{display:inline-block;margin:.6rem .6rem .6rem 0;padding:.85rem 1.7rem;background:var(--btnbg);color:var(--btnfg);border-radius:999px;font-weight:600;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(245,196,81,.55)}
+.btn.alt{background:transparent;color:var(--fg);border:1px solid rgba(var(--ov),.3)}
+.btn.alt:hover{box-shadow:none;background:rgba(var(--ov),.07)}
+.cards{list-style:none;padding:0;margin:2.2rem 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:16px}
+.cards li{background:linear-gradient(160deg,rgba(var(--ov),.06),rgba(var(--ov),.02));border:1px solid var(--line);border-radius:24px;padding:1.5rem;font-size:1rem;line-height:1.55;transition:transform .25s,border-color .25s}
+.cards li:hover{transform:translateY(-4px);border-color:rgba(245,196,81,.5)}
+.cards li::before{content:"";display:block;width:2.2rem;height:.3rem;border-radius:9px;background:var(--acc);margin-bottom:1rem}
+.cards li:nth-child(2)::before{background:var(--grn)}.cards li:nth-child(3)::before{background:var(--org)}
+ul,ol{padding-left:1.3rem}li{margin:.3rem 0}
+h2+p,h3+p{margin-top:.3rem}
+code{background:rgba(var(--ov),.09);padding:.12em .45em;border-radius:8px;font-size:.88em}
+footer{margin-top:4rem;border-top:1px solid var(--line);color:var(--mut);font-size:.88rem;padding:1.4rem 0 2.5rem}
+@media (max-width:600px){nav{margin-left:0}h1{margin-top:2.6rem}}
+.tt{margin-left:4px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;font-size:1.05rem;line-height:1}
+.tt:hover{background:rgba(var(--ov),.08)}

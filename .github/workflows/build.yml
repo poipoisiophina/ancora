@@ -14,9 +14,9 @@ name: build
 on:
   push:
     branches: [main]
-    paths-ignore: ['**.md']
+    paths-ignore: ['**.md', 'site/**', '.github/workflows/pages.yml']
   pull_request:
-    paths-ignore: ['**.md']
+    paths-ignore: ['**.md', 'site/**', '.github/workflows/pages.yml']
 
 # a newer push to a PR cancels its older run; pushes to main queue instead, so a
 # release in progress is never cut off half way

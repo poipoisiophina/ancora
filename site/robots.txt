@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://poipoisiophina.github.io/ancora/sitemap.xml

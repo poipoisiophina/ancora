@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thumb Gate: Meta Quest thumbstick drift fix explained</title>
+<meta name="description" content="Thumb Gate uses the Meta Quest thumb sensor to block stick drift in SteamVR and VRChat. See how it works and why it beats a deadzone.">
+<link rel="canonical" href="https://poipoisiophina.github.io/ancora/thumb-gate.html">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0B0F14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FBFAF6" media="(prefers-color-scheme: light)">
+<script>(function(){var d=document.documentElement,m=matchMedia("(prefers-color-scheme: light)");function cur(){return d.dataset.theme||(m.matches?"light":"dark")}function meta(){var c=cur()==="light"?"#FBFAF6":"#0B0F14";document.querySelectorAll('meta[name="theme-color"]').forEach(function(e){e.removeAttribute("media");e.content=c})}try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")d.dataset.theme=t}catch(e){}window.toggleTheme=function(){var n=cur()==="light"?"dark":"light";d.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(e){}meta();document.getElementById("tt").setAttribute("aria-pressed",n==="dark")};m.addEventListener("change",function(){try{if(localStorage.getItem("theme"))return}catch(e){}meta()});document.addEventListener("DOMContentLoaded",function(){meta();document.getElementById("tt").setAttribute("aria-pressed",cur()==="dark")})})()</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ancora">
+<meta property="og:title" content="Thumb Gate: Meta Quest thumbstick drift fix explained">
+<meta property="og:description" content="Thumb Gate uses the Meta Quest thumb sensor to block stick drift in SteamVR and VRChat. See how it works and why it beats a deadzone.">
+<meta property="og:url" content="https://poipoisiophina.github.io/ancora/thumb-gate.html">
+<meta property="og:image" content="https://poipoisiophina.github.io/ancora/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Thumb Gate: Meta Quest thumbstick drift fix explained","dateModified":"2026-11-17","author":{"@type":"Organization","name":"ancora"},"mainEntityOfPage":"https://poipoisiophina.github.io/ancora/thumb-gate.html"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ancora","item":"https://poipoisiophina.github.io/ancora/"},{"@type":"ListItem","position":2,"name":"Thumb Gate","item":"https://poipoisiophina.github.io/ancora/thumb-gate.html"}]}</script>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="index.html"><img src="favicon.svg" alt="" width="28" height="28"> ancora</a><nav aria-label="Main"><a href="index.html">Home</a><a href="drift-in-vrchat.html">Why drift happens</a><a href="install.html">Install</a><a href="thumb-gate.html" aria-current="page">Thumb Gate</a><a href="how-it-works.html">How it works</a><a href="troubleshooting.html">Troubleshooting</a><a href="faq.html">FAQ</a><button class="tt" id="tt" type="button" aria-label="Dark theme" aria-pressed="false" onclick="toggleTheme()">&#9680;</button></nav></div></header>
+<main class="wrap">
+<h1>Thumb Gate: the Meta Quest thumbstick drift fix</h1>
+<p class="lead"><strong>Thumb Gate</strong> is the part of ancora that stops Meta Quest thumbstick drift. It uses the thumb sensor built into the stick: no thumb on the stick, no input reaches the game.</p>
+<h2>How Thumb Gate works</h2>
+<ol>
+<li>Your Quest controller reports two things: how far the stick is pushed, and whether your thumb touches it.</li>
+<li>ancora's SteamVR driver reads both before any game does.</li>
+<li>Thumb off the stick: the game gets "stick centered" (0, 0), whatever the drift is.</li>
+<li>Thumb on the stick: the stick passes through unchanged, so slow and precise movement still works.</li>
+</ol>
+<h2>Why this beats a deadzone</h2>
+<p>A deadzone ignores small pushes, drifting or not, so you lose slow walking. Thumb Gate leaves your thumb's input alone and only blocks input when you are not touching the stick. Use a deadzone only if the stick drifts while your thumb rests on it.</p>
+<h2>If the thumb sensor misses your thumb</h2>
+<p>A worn sensor, a silicone cap or pushing with the side of your thumb can hide your thumb from the sensor. Holding the stick at its edge for a quarter second makes ancora stop trusting the sensor until it sees your thumb again. The controller card then shows <em>sensor ignored</em>.</p>
+<h2>Works with</h2>
+<p>Meta Quest controllers with a thumb sensor, on Windows 10 or 11 through SteamVR. Tested with Steam Link; Virtual Desktop, ALVR and Quest Link should work the same way but are not tested yet. Valve Index controllers are not supported.</p>
+<h2>Related</h2>
+<p><a href="drift-in-vrchat.html">Why stick drift happens in VRChat</a>, <a href="how-it-works.html">how ancora works</a>, <a href="faq.html">FAQ</a>.</p>
+<p><a class="btn" href="https://github.com/poipoisiophina/ancora/releases/latest">Download ancora for Windows</a> <a class="btn alt" href="install.html">How to install</a></p>
+</main>
+<footer><div class="wrap"><p>ancora is free and open source (<a href="https://github.com/poipoisiophina/ancora">GitHub</a>, <a href="https://github.com/poipoisiophina/ancora/releases">downloads</a>). It is not affiliated with Meta, Valve or VRChat. Quest, SteamVR and VRChat are trademarks of their owners.</p></div></footer>
+</body>
+</html>
