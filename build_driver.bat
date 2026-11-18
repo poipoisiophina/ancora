@@ -81,6 +81,16 @@ if not exist driver\ancora\bin\win64 mkdir driver\ancora\bin\win64
 cl %CL_OPTS% driver\src\driver_ancora.cpp /Fe:driver\obj\driver_ancora.dll /link /NOIMPLIB /NOEXP || exit /b 1
 copy /y driver\obj\driver_ancora.dll driver\ancora\bin\win64\driver_ancora.dll >nul || exit /b 1
 echo built driver\ancora\bin\win64\driver_ancora.dll
+rem loader id: SHA-256 of everything that decides whether a running SteamVR can stay while
+rem setup replaces the logic dll and the panel (hot update): the loader sources, its driver
+rem manifest, the SteamVR registration code and manifest, and the pinned OpenVR SDK. Shipped
+rem as loader.id; setup compares the installed one with the new one, so it holds for any
+rem jump between versions: any change in between gives another id, and setup then asks to
+rem close SteamVR and registers again. .gitattributes pins these files to LF, so every
+rem checkout hashes alike
+(for %%f in (driver\src\driver_ancora.cpp driver\src\ancora_host_api.h driver\ancora\driver.vrdrivermanifest gui\src\ancora_steamvr.h gui\ancora.vrmanifest) do @"%SystemRoot%\System32\certutil.exe" -hashfile %%f SHA256 | findstr /v ":") > driver\obj\loader.id
+>> driver\obj\loader.id echo openvr %OPENVR_COMMIT%
+for /f "delims=" %%i in (driver\obj\loader.id) do echo loader id %%i
 rem control panel (no OpenVR dependency)
 if not exist gui\bin mkdir gui\bin
 rem version: one place, the installer script's AppVersion; the panel shows it on Diagnostics

@@ -1927,6 +1927,12 @@ void tray_add() {
     Shell_NotifyIconW(NIM_ADD, &g.nid);
 }
 
+// puts the icon back when the shell lost it (Explorer restarted, or the PC resumed);
+// NIM_MODIFY fails for an icon the shell does not have, and only then is it added again
+void tray_ensure() {
+    if (!Shell_NotifyIconW(NIM_MODIFY, &g.nid)) tray_add();
+}
+
 void show_panel() {
     live_poll();      // the update count the rate starts from is the current one
     refresh_slow();   // the tray runs only the SteamVR check
@@ -1978,8 +1984,23 @@ void language_menu() {
     saved(tr(S_what_language));
 }
 
+UINT g_msg_taskbar = 0;   // "TaskbarCreated": the shell (Explorer) started and its tray is empty
+
 LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
+    // Explorer restarted: every tray icon is gone, add ours again
+    if (g_msg_taskbar && m == g_msg_taskbar) { tray_add(); return 0; }
     switch (m) {
+    // back from sleep or hibernation: the shell may have dropped the icon, and the
+    // panel's view of SteamVR is old
+    case WM_POWERBROADCAST:
+        if (wp == PBT_APMRESUMEAUTOMATIC || wp == PBT_APMRESUMESUSPEND) {
+            tray_ensure();
+            // in the tray or minimised only the cheap SteamVR check, like the slow timer
+            bool shown = IsWindowVisible(h) && !IsIconic(h);
+            if (shown) live_poll();
+            refresh_slow(shown);
+        }
+        return TRUE;
     case WM_TIMER:
         if (wp == kTimerTip) { KillTimer(h, kTimerTip); if (active_tip()) redraw(); }
         if (wp == kTimerFrame && refresh_fast()) redraw();
@@ -2853,6 +2874,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     wc.lpszClassName = L"ancora_panel";
     wc.hbrBackground = CreateSolidBrush(RGB(0x0E, 0x14, 0x1B));
     RegisterClassExW(&wc);
+    g_msg_taskbar = RegisterWindowMessageW(L"TaskbarCreated");
 
     DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
     g.hwnd = CreateWindowExW(0, wc.lpszClassName, L"ancora", style, CW_USEDEFAULT, CW_USEDEFAULT, 100, 100,

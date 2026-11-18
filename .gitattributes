@@ -12,3 +12,10 @@
 *.vrdrivermanifest text
 *.md  text
 *.xml text
+
+# hashed byte for byte into loader.id (build_driver.bat), so LF on every checkout
+driver/src/driver_ancora.cpp text eol=lf
+driver/src/ancora_host_api.h text eol=lf
+gui/src/ancora_steamvr.h text eol=lf
+gui/ancora.vrmanifest text eol=lf
+driver/ancora/driver.vrdrivermanifest text eol=lf
