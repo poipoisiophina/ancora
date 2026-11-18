@@ -186,10 +186,12 @@ The translations were drafted by machine. If yours reads oddly, see
 2. Windows **Settings > Apps > Installed apps**, find **ancora**, click
    **Uninstall**.
 
-This removes everything ancora added, including its SteamVR entries. Before
+This removes ancora and its SteamVR entries. Your settings file
+`%LOCALAPPDATA%\ancora\ancora.ini` stays, so a reinstall finds your tuning again;
+delete the `ancora` folder to remove it too. Before
 it changes a SteamVR settings file, ancora saves a copy to
-`%TEMP%\ancora-backup`, so you can put a file back if something went wrong.
-Windows clears that folder with its other temporary files.
+`%LOCALAPPDATA%\ancora-backup`, so you can put a file back if something went wrong.
+Uninstalling does not delete that folder.
 
 ---
 
@@ -248,8 +250,11 @@ Everything is rebuilt from source; the repo holds no binaries.
 
 Needs Visual Studio 2022 Build Tools with C++ (x64), git, and Windows 10 or 11.
 
-Tests run on every build, and a failure stops it, so nothing untested is
-deployed into a running SteamVR or packed into an installer:
+Tests run on every build, and a failure stops it, so a failing test never
+reaches a running SteamVR or an installer. They cover the math and the file
+handling; the hook glue (`driver_ancora.cpp`, and in `ancora_logic.cpp` the
+component tracking and the update callbacks) has no automated test yet and is
+checked by running it in SteamVR:
 
 - `test/ancora_test.cpp`, driver side: center offset, deadzone shape, curve,
   edge stretch, edge measuring, edge
@@ -312,7 +317,8 @@ A string missing from a language shows in English, and Diagnostics says how many
 
 ancora is released under the BSD 3-Clause License, the same license as the OpenVR
 SDK it builds against: see [LICENSE](LICENSE). The installer ships OpenVR's
-`openvr_api.dll`; its notice is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+`openvr_api.dll`; its notice is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)
+(installed as `THIRD-PARTY-NOTICES.txt`).
 
 ancora is not affiliated with, endorsed by, or sponsored by Valve or Meta.
 SteamVR, Steam, Meta and Quest are trademarks of their respective owners, used

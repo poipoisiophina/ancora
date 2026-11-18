@@ -9,7 +9,7 @@
 ; left alone and only ancora_logic.dll (hot reloaded by the driver), the panel and
 ; the other files are replaced while SteamVR runs.
 
-#define AppVersion "0.2.1"
+#define AppVersion "0.2.2"
 
 [Setup]
 AppId={{6AB13E94-DDD3-4AAB-B3FE-6965F0462422}
@@ -93,8 +93,9 @@ Source: "..\src\bin\*"; DestDir: "{app}\diag"; Flags: ignoreversion recursesubdi
 ; license and the OpenVR notice its license asks to ship with openvr_api.dll
 Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
 Source: "..\THIRD-PARTY-NOTICES.md"; DestDir: "{app}"; DestName: "THIRD-PARTY-NOTICES.txt"; Flags: ignoreversion
-; an existing config is kept on upgrade
-Source: "..\driver\ancora\ancora.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
+; an existing config is kept on upgrade, and on uninstall: it holds the measured
+; centers and edges, which a reinstall should find again
+Source: "..\driver\ancora\ancora.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall
 
 [InstallDelete]
 ; stale hot reload copies of the logic dll
@@ -109,8 +110,9 @@ Type: files; Name: "{app}\diag\reader.exe"
 ; already registered in a hot update, and --register needs SteamVR closed
 Filename: "{app}\ancora.exe"; Parameters: "--register --root ""{app}"""; \
   StatusMsg: "{cm:Registering}"; Flags: runhidden waituntilterminated; Check: not IsHotUpdate
-; the panel that setup closed comes back in the tray
-Filename: "{app}\ancora.exe"; Parameters: "--tray"; \
+; the panel that setup closed comes back in the tray, started the way it was: a panel
+; SteamVR started (--steamvr) closes itself when SteamVR quits, a hand started one does not
+Filename: "{app}\ancora.exe"; Parameters: "{code:PanelArgs}"; \
   Flags: nowait runasoriginaluser; Check: PanelWasRunning
 
 [UninstallRun]
@@ -118,8 +120,9 @@ Filename: "{app}\ancora.exe"; Parameters: "--unregister --root ""{app}"""; \
   RunOnceId: "ancoraUnregister"; Flags: runhidden waituntilterminated
 
 [UninstallDelete]
-; everything ancora created after install: config, hot reload copies
-Type: filesandordirs; Name: "{app}"
+; what ancora created after install (hot reload copies, logs), but not {app}\ancora.ini
+Type: filesandordirs; Name: "{app}\driver"
+Type: filesandordirs; Name: "{app}\diag"
 
 [Code]
 const
@@ -129,6 +132,10 @@ const
 var
   HotUpdate: Boolean;      { SteamVR runs and the installed loader is the new one }
   WasRunning: Boolean;     { the panel was open when setup closed it }
+  FromSteamVR: Boolean;    { and SteamVR had started it (--steamvr) }
+
+function GetWindowThreadProcessId(Wnd: HWND; var Pid: Cardinal): Cardinal;
+  external 'GetWindowThreadProcessId@user32.dll stdcall';
 
 function IsHotUpdate(): Boolean;
 begin
@@ -140,39 +147,68 @@ begin
   Result := WasRunning;
 end;
 
+{ the arguments the closed panel gets again }
+function PanelArgs(Param: String): String;
+begin
+  if FromSteamVR then Result := '--steamvr' else Result := '--tray';
+end;
+
+{ True when a running ancora.exe was started with --steamvr (its command line, by WMI);
+  False when there is none, or when the query fails: then the plain tray start is used }
+function PanelStartedBySteamVR(): Boolean;
+var
+  Locator, Service, Procs: Variant;
+begin
+  Result := False;
+  try
+    Locator := CreateOleObject('WbemScripting.SWbemLocator');
+    Service := Locator.ConnectServer('.', 'root\CIMV2');
+    Procs := Service.ExecQuery('SELECT ProcessId FROM Win32_Process WHERE Name = ''ancora.exe'' AND CommandLine LIKE ''%--steamvr%''');
+    Result := Procs.Count > 0;
+  except
+    Result := False;
+  end;
+end;
+
 { A running panel holds ancora.exe open and only hides to the tray on a normal close.
   WM_CLOSE with wParam 1 makes it exit (every version of the panel does this); a panel
   that has not gone after 3 s is ended, so setup never stops on "files in use". }
 procedure ClosePanel();
 var
   I, Code: Integer;
+  Wnd: HWND;
+  Pid: Cardinal;
 begin
   if FindWindowByClassName('ancora_panel') = 0 then Exit;
   WasRunning := True;
+  FromSteamVR := PanelStartedBySteamVR();
   PostMessage(FindWindowByClassName('ancora_panel'), WM_CLOSE, 1, 0);
   for I := 1 to 30 do
   begin
     if FindWindowByClassName('ancora_panel') = 0 then Exit;
     Sleep(100);
   end;
-  Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /IM ancora.exe', '', SW_HIDE, ewWaitUntilTerminated, Code);
+  { only the process that owns the panel window, not every process called ancora.exe }
+  Wnd := FindWindowByClassName('ancora_panel');
+  if (Wnd <> 0) and (GetWindowThreadProcessId(Wnd, Pid) <> 0) then
+    Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /PID ' + IntToStr(Pid), '', SW_HIDE, ewWaitUntilTerminated, Code);
 end;
 
-{ runs before setup checks for files in use }
-function PrepareToInstall(var NeedsRestart: Boolean): String;
-begin
-  ClosePanel();
-  Result := '';
-end;
-
+{ False when the query itself fails (WMI broken): setup then goes on, and a loader that is
+  still held shows up as Setup's own "file in use" prompt instead of an aborted setup }
 function SteamVRRunning(): Boolean;
 var
   Locator, Service, Procs: Variant;
 begin
-  Locator := CreateOleObject('WbemScripting.SWbemLocator');
-  Service := Locator.ConnectServer('.', 'root\CIMV2');
-  Procs := Service.ExecQuery('SELECT ProcessId FROM Win32_Process WHERE Name = ''vrserver.exe'' OR Name = ''vrmonitor.exe''');
-  Result := Procs.Count > 0;
+  Result := False;
+  try
+    Locator := CreateOleObject('WbemScripting.SWbemLocator');
+    Service := Locator.ConnectServer('.', 'root\CIMV2');
+    Procs := Service.ExecQuery('SELECT ProcessId FROM Win32_Process WHERE Name = ''vrserver.exe'' OR Name = ''vrmonitor.exe''');
+    Result := Procs.Count > 0;
+  except
+    Result := False;
+  end;
 end;
 
 { the install folder of the installed ancora, '' when there is none }
@@ -217,7 +253,8 @@ begin
   if Dir = '' then Exit;
   if not FileExists(Dir + '\driver\ancora\bin\win64\driver_ancora.dll') then Exit;
   if not FileExists(Dir + '\driver\ancora\logic\ancora_logic.dll') then Exit;
-  ExtractTemporaryFile('loader.id');
+  { called again from PrepareToInstall: extract only once }
+  if not FileExists(ExpandConstant('{tmp}\loader.id')) then ExtractTemporaryFile('loader.id');
   if not LoadStringFromFile(ExpandConstant('{tmp}\loader.id'), Mine) then Exit;
   Mine := Trim(Mine);
   if Mine = '' then Exit;
@@ -227,7 +264,9 @@ begin
     Result := IsLegacyRelease() and (Mine = LegacyLoaderId);
 end;
 
-function InitializeSetup(): Boolean;
+{ decides hot update or full install from what runs now, and when it has to be a full
+  install while SteamVR runs, asks to close it until it is closed; False = cancelled }
+function SettleSteamVR(): Boolean;
 begin
   Result := True;
   HotUpdate := SteamVRRunning() and LoaderUnchanged();
@@ -237,6 +276,25 @@ begin
       Result := False;
       Exit;
     end;
+end;
+
+function InitializeSetup(): Boolean;
+begin
+  Result := SettleSteamVR();
+end;
+
+{ runs before setup checks for files in use. SteamVR can have been started since
+  InitializeSetup (the wizard pages take minutes), so the decision is made again right
+  before the files are copied: a loader that SteamVR holds must never be overwritten }
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  Result := '';
+  if not SettleSteamVR() then
+  begin
+    Result := SetupMessage(msgSetupAborted);
+    Exit;
+  end;
+  ClosePanel();
 end;
 
 function InitializeUninstall(): Boolean;
@@ -249,4 +307,28 @@ begin
       Exit;
     end;
   ClosePanel();   { its files go next }
+end;
+
+{ ancora.ini holds the measured centers and edges and outlives the uninstall. An install
+  that was upgraded from an older setup still has the old removal entry for it in its
+  uninstall log, which the never-uninstall flag cannot change, so the file is put aside
+  before the files go and put back after }
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  Ini, Kept: String;
+begin
+  Ini := ExpandConstant('{app}\ancora.ini');
+  Kept := ExpandConstant('{tmp}\ancora.ini.kept');
+  if CurUninstallStep = usUninstall then
+  begin
+    if FileExists(Ini) then FileCopy(Ini, Kept, False);
+  end
+  else if CurUninstallStep = usPostUninstall then
+  begin
+    if FileExists(Kept) then
+    begin
+      ForceDirectories(ExpandConstant('{app}'));
+      FileCopy(Kept, Ini, False);
+    end;
+  end;
 end;

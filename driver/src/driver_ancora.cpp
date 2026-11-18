@@ -99,8 +99,9 @@ uint32_t host_get_string(uint64_t c, int32_t p, char* buf, uint32_t n) {
     ETrackedPropertyError e;
     return VRProperties()->GetStringProperty(c, (ETrackedDeviceProperty)p, buf, n, &e);
 }
-void host_send_scalar(void* iface, uint64_t h, float v, double dt) {
-    if (Patched* t = table_of(iface)) t->update_scalar(iface, h, v, dt);
+int32_t host_send_scalar(void* iface, uint64_t h, float v, double dt) {
+    if (Patched* t = table_of(iface)) return t->update_scalar(iface, h, v, dt);
+    return VRInputError_InvalidHandle;
 }
 void host_send_bool(void* iface, uint64_t h, bool v, double dt) {
     if (Patched* t = table_of(iface)) t->update_bool(iface, h, v, dt);
@@ -137,6 +138,8 @@ bool reload_logic() {
         if (mod) FreeLibrary(mod);
         return false;
     }
+    // file work of the old logic ends first, while input updates still flow
+    if (g_logic && g_logic->quiesce) g_logic->quiesce();
     AcquireSRWLockExclusive(&g_lock);
     unload_logic();          // the old logic stops writing before the new one starts
     g_logic = logic;
@@ -209,8 +212,10 @@ EVRInputError hk_update_scalar(void* self, VRInputComponentHandle_t h, float v, 
     Patched* t = table_of(self);
     if (!t) return VRInputError_InvalidHandle;
     AcquireSRWLockShared(&g_lock);
-    if (g_logic && g_logic->on_scalar) g_logic->on_scalar(self, h, &v, dt);
+    int32_t handled = -1;   // the logic sent the value itself, under its own lock
+    if (g_logic && g_logic->on_scalar) handled = g_logic->on_scalar(self, h, &v, dt);
     ReleaseSRWLockShared(&g_lock);
+    if (handled >= 0) return (EVRInputError)handled;
     return t->update_scalar(self, h, v, dt);
 }
 
@@ -312,6 +317,7 @@ public:
         return VRInitError_None;
     }
     void Cleanup() override {
+        if (g_logic && g_logic->quiesce) g_logic->quiesce();
         AcquireSRWLockExclusive(&g_lock);
         unpatch_all();
         unload_logic();

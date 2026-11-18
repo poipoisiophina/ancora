@@ -12,6 +12,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <atomic>
 #include <mutex>
 #include <thread>
 #include <string>
@@ -44,7 +45,9 @@ struct Config {
 };
 
 struct Stick {
-    uint64_t hx = 0, hy = 0, ht = 0;   // 0 = not found
+    // 0 = not found; written under g_mu, read by on_scalar/on_bool before they take it
+    std::atomic<uint64_t> hx{0}, hy{0}, ht{0};
+    uint64_t container = 0;            // the device the three handles belong to
     float raw_x = 0, raw_y = 0;
     bool  touch = false;
     void* iface = nullptr;
@@ -250,6 +253,14 @@ void on_create(int kind, uint64_t c, const char* name, uint64_t h, void* iface) 
     if (i < 0) return;
     std::lock_guard<std::mutex> lk(g_mu);
     Stick& s = g_s[i];
+    // x, y and touch must come from one device: a second device (an emulator, a
+    // second runtime) creating inputs for the same hand starts a fresh slot, so its
+    // handles never mix with the first one's
+    if (s.container != c) {
+        s.hx = 0; s.hy = 0; s.ht = 0;
+        s.iface = nullptr;
+        s.container = c;
+    }
     if (x) s.hx = h;
     if (y) s.hy = h;
     if (t) s.ht = h;
@@ -322,7 +333,7 @@ void worker() {
     }
 }
 
-void on_scalar(void*, uint64_t h, float* v, double dt) {
+int32_t on_scalar(void* iface, uint64_t h, float* v, double dt) {
     for (int i = 0; i < 2; ++i) {
         Stick& s = g_s[i];
         bool is_x = s.hx && h == s.hx, is_y = s.hy && h == s.hy;
@@ -338,6 +349,8 @@ void on_scalar(void*, uint64_t h, float* v, double dt) {
         float x, y;
         output(s, i, now, x, y);
         *v = is_x ? x : y;
+        // every send happens under g_mu, so the order of values a game receives is the
+        // order they were computed in, whichever thread computed them
         // the deadzone, edge stretch and gate depend on both axes: when this update
         // changed what the other axis should be, send that too, since a driver that
         // only sends changed axes would leave it stale
@@ -353,7 +366,9 @@ void on_scalar(void*, uint64_t h, float* v, double dt) {
         ++g_updates[i];
         s.last_ms = GetTickCount64();
         publish();
+        return H->send_scalar(iface, h, *v, dt);
     }
+    return -1;
 }
 
 void on_frame() {
@@ -383,7 +398,25 @@ void on_frame() {
     }
 }
 
+bool g_quiesced = false;
+
+// stops the worker and saves a learned reach not saved yet. The loader calls this
+// before it takes its exclusive lock: both can wait on the ini lock for seconds,
+// and while the exclusive lock is held every driver's input updates wait too. A
+// reach learned between this call and shutdown() is not saved
+void quiesce() {
+    if (g_quiesced) return;
+    g_quiesced = true;
+    if (g_worker.joinable()) {
+        SetEvent(g_worker_stop);
+        g_worker.join();
+    }
+    if (g_worker_stop) { CloseHandle(g_worker_stop); g_worker_stop = nullptr; }
+    save_learned(now_precise_ms() + kEdgeSaveMs);
+}
+
 void start(uint32_t generation) {
+    g_quiesced = false;
     g_start_ms = GetTickCount64();
     open_state(generation);
     load_config(true);
@@ -392,14 +425,8 @@ void start(uint32_t generation) {
 }
 
 void shutdown() {
-    // the worker first, before g_mu is taken, since it takes g_mu itself; a learned
-    // reach not saved yet is saved now rather than lost
-    if (g_worker.joinable()) {
-        SetEvent(g_worker_stop);
-        g_worker.join();
-    }
-    if (g_worker_stop) { CloseHandle(g_worker_stop); g_worker_stop = nullptr; }
-    save_learned(now_precise_ms() + kEdgeSaveMs);
+    // normally already done by quiesce(); the worker must be gone before g_mu is taken
+    quiesce();
     // hand the sticks back unfiltered so nothing stays parked at 0
     std::lock_guard<std::mutex> lk(g_mu);
     g_cfg.enable = false;
@@ -410,7 +437,7 @@ void shutdown() {
     log("logic shutdown");
 }
 
-const AncoraLogic kLogic{ANCORA_API_VERSION, start, on_create, on_bool, on_scalar, on_frame, shutdown};
+const AncoraLogic kLogic{ANCORA_API_VERSION, start, on_create, on_bool, on_scalar, on_frame, quiesce, shutdown};
 
 std::wstring widen(const std::string& s) {
     int n = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), (int)s.size(), nullptr, 0);

@@ -29,7 +29,7 @@
 //                                 0 = done, 1 = SteamVR running or failed. --root is the
 //                                 install folder (default %LOCALAPPDATA%\ancora), Steam
 //                                 file backups go to --backup-dir (default
-//                                 %TEMP%\ancora-backup, which outlives an uninstall)
+//                                 %LOCALAPPDATA%\ancora-backup, which outlives an uninstall)
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -278,13 +278,15 @@ void live_poll() {
         if (!g_live.view) { CloseHandle(g_live.map); g_live.map = nullptr; g_live.valid = false; return; }
     }
     AncoraState s{};
+    bool got = false;
     for (int tries = 0; tries < 8; ++tries) {
         uint32_t a = g_live.view->seq;
         if (a & 1) continue;
         std::memcpy(&s, (const void*)g_live.view, sizeof(s));
         MemoryBarrier();
-        if (g_live.view->seq == a) { s.seq = a; break; }
+        if (g_live.view->seq == a) { s.seq = a; got = true; break; }
     }
+    if (!got) return;   // the driver was writing all 8 times: keep the last whole snapshot
     g_live.valid = s.magic == ANCORA_STATE_MAGIC && s.version == ANCORA_STATE_VERSION;
     g_live.snap = s;
 }
@@ -2822,11 +2824,10 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
         if (!has((std::wstring(L"--") + action).c_str())) continue;
         attach_console();
         // backups outside the install folder: the uninstaller deletes that folder
-        // right after --unregister, and the backups must outlive it
-        wchar_t tmp[MAX_PATH]{};
-        GetTempPathW(MAX_PATH, tmp);
+        // right after --unregister, and the backups must outlive it; not in %TEMP%,
+        // which Storage Sense clears, and these are the only copy of the Steam files
         std::wstring root = arg_after(L"--root", (local_appdata() + L"\\ancora").c_str());
-        std::wstring backups = arg_after(L"--backup-dir", (std::wstring(tmp) + L"ancora-backup").c_str());
+        std::wstring backups = arg_after(L"--backup-dir", (local_appdata() + L"\\ancora-backup").c_str());
         while (root.size() > 3 && (root.back() == L'\\' || root.back() == L'/')) root.pop_back();
         return svr::run(action, root, backups);
     }
