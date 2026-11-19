@@ -921,6 +921,82 @@ void test_gate() {
     check(!touched, "gate: a touch while held at the rim restarts the fallback's quarter second");
 }
 
+// one push straight left (180 deg, sector 32): held at m for 150 ms, then released
+double push_left(EdgeLearner& L, EdgeReach& e, EdgeReach& best, float m, double t, bool typical, bool* changed = nullptr) {
+    bool c = false;
+    for (int k = 0; k < 150; ++k, t += 1) c |= L.feed(e, best, -m, 0.0f, t, typical);
+    for (int k = 0; k < 20; ++k, t += 1) c |= L.feed(e, best, 0.0f, 0.0f, t, typical);
+    if (changed) *changed = c;
+    return t;
+}
+
+void test_edge_full_and_typical() {
+    const int kLeft = kEdgeSectors / 2;
+    EdgeReach r8 = flat(0.8f);
+    check(edge_map(r8, 0.68f, 0, 0.68f, 0, 0.85f) == 1.0f, "full: at 0.85 of the reach the output is full",
+          "got %.4f at 0.68 of reach 0.8", edge_map(r8, 0.68f, 0, 0.68f, 0, 0.85f));
+    check_near(edge_map(r8, 0.34f, 0, 0.34f, 0, 0.85f), 0.5, 1e-4, "full: half of 0.85 of the reach gives half");
+    check(edge_map(r8, 0.768f, 0, 0.768f, 0) == 1.0f && edge_map(r8, 0.67f, 0, 0.67f, 0) < 0.9f,
+          "full: the default stays at 96 % of the reach");
+    StickSettings st;
+    st.correct = true;
+    st.edge = r8;
+    st.edge_full = 0.85f;
+    float ox, oy;
+    stick_output(st, false, false, 0, 0, -0.68f, 0.0f, ox, oy);
+    check_near(ox, -1.0, 1e-4, "full: the stick output uses the hand's share");
+
+    // a stick that reaches 0.89 once but mostly 0.62..0.75 to the left
+    const float pushes[12] = {0.62f, 0.70f, 0.72f, 0.75f, 0.68f, 0.89f, 0.71f, 0.74f, 0.66f, 0.73f, 0.70f, 0.69f};
+    {
+        EdgeLearner L;
+        EdgeReach e = flat(0.89f), best = flat(0.89f);
+        double t = 0;
+        for (int i = 0; i < 5; ++i) t = push_left(L, e, best, pushes[i], t, true);
+        check_near(e.r[kLeft], 0.89, 1e-6, "typical: fewer than 6 pushes change nothing");
+        for (int i = 5; i < 12; ++i) t = push_left(L, e, best, pushes[i], t, true);
+        check_near(e.r[kLeft], 0.73, 1e-4, "typical: the reach is the 75th percentile of the last 12 pushes");
+        check_near(best.r[kLeft], 0.89, 1e-6, "typical: the best reach is kept");
+        check_near(e.r[kLeft - 4], 0.89, 1e-6, "typical: other directions are left alone");
+        float o = edge_map(e, -0.70f, 0, 0.70f, 0);
+        check(o > 0.99f, "typical: a 0.70 push to the left now gives full output", "got %.4f", o);
+    }
+    {
+        EdgeLearner L;
+        EdgeReach e = flat(0.89f), best = flat(0.89f);
+        double t = 0;
+        for (int i = 0; i < 12; ++i) t = push_left(L, e, best, pushes[i], t, false);
+        check_near(e.r[kLeft], 0.89, 1e-6, "typical: off (best), the same pushes leave the furthest reach");
+    }
+    {
+        EdgeLearner L;
+        EdgeReach e = flat(0.89f), best = flat(0.89f);
+        double t = 0;
+        for (int i = 0; i < 12; ++i) t = push_left(L, e, best, 0.45f, t, true);
+        check_near(e.r[kLeft], 0.89, 1e-6, "typical: part pushes under 0.6 of the best are left out");
+        for (int i = 0; i < 12; ++i) t = push_left(L, e, best, 0.55f, t, true);
+        check_near(e.r[kLeft], 0.64, 1e-4, "typical: never more than 0.25 below the best reach");
+        bool changed = false;
+        t = push_left(L, e, best, 0.95f, t, true, &changed);
+        check(changed && near(best.r[kLeft], 0.95, 1e-4), "typical: a further push raises the best reach",
+              "best %.4f", best.r[kLeft]);
+    }
+
+    using namespace ancfg;
+    Config c = parse("[ancora]\nright_edge_full=0.85\nright_edge_learn=Typical\nleft_edge_full=abc\n");
+    check(near(c.hand[1].edge_full, 0.85, 1e-6) && c.hand[1].edge_typical, "config: edge_full and edge_learn read per hand");
+    check(near(c.hand[0].edge_full, 0.96, 1e-6) && !c.hand[0].edge_typical,
+          "config: a missing or unreadable edge_full is 0.96, a missing edge_learn is best");
+    Config lo = parse("[ancora]\nright_edge_full=0.2\nleft_edge_full=1.5\n");
+    check(near(lo.hand[1].edge_full, 0.5, 1e-6) && near(lo.hand[0].edge_full, 1.0, 1e-6), "config: edge_full kept within 0.50..1.00");
+    Config w;
+    w.hand[1].edge_full = 0.85f;
+    w.hand[1].edge_typical = true;
+    Config back = parse(format(w));
+    check(near(back.hand[1].edge_full, 0.85, 1e-6) && back.hand[1].edge_typical && !back.hand[0].edge_typical,
+          "config: edge_full and edge_learn survive a write and read");
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -942,6 +1018,7 @@ int main(int argc, char** argv) {
     test_shape();
     test_curve();
     test_gate();
+    test_edge_full_and_typical();
     std::printf("%d test(s), %d failure(s)\n", g_count, g_fails);
     return g_fails ? 1 : 0;
 }

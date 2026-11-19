@@ -60,6 +60,7 @@ struct StickSettings {
     DeadzoneShape deadzone_shape;   // share of the deadzone per direction, .on false = round
     CenterOffset center;        // rest point moved back to 0,0, .on false when off
     EdgeReach edge;             // in use, .on false when off
+    float edge_full = kEdgeFullDefault;   // share of the reach that gives full output
     float curve = 0.0f;         // response curve (ancora_deadzone.h), 0 = off
 };
 
@@ -80,7 +81,7 @@ inline void stick_output(const StickSettings& s, bool gate_closed, bool has_avg,
     bool curve = s.curve > 0.0f;
     if (dz > 0.0f || s.edge.on || curve) {
         float m = std::sqrt(x * x + y * y);
-        float o = edge_map(s.edge, x, y, m, dz);
+        float o = edge_map(s.edge, x, y, m, dz, s.edge_full);
         if (o <= 0.0f) { out_x = out_y = 0.0f; return; }
         o = curve_apply(s.curve, o);
         x *= o / m;

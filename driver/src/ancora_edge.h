@@ -9,6 +9,7 @@
 // steps a strong reading just beside it would also raise the worn spot itself.
 
 #pragma once
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -48,14 +49,19 @@ inline float edge_reach(const EdgeReach& e, float x, float y) {
 
 // A stick does not stop at the same place on every push, and learning keeps the
 // furthest push ever seen. Full output comes kEdgeOuter short of that reach, so an
-// ordinary full push still gives full. Only with edge stretch on.
+// ordinary full push still gives full. Only with edge stretch on. Per hand the
+// share can be set lower (<hand>_edge_full, kEdgeFullMin..1) for a stick whose
+// reach varies a lot from push to push.
 const float kEdgeOuter = 0.04f;
+const float kEdgeFullDefault = 1.0f - kEdgeOuter;
+const float kEdgeFullMin = 0.5f;
 
-// output magnitude for raw magnitude m toward (x, y); dz = radial deadzone (0 = off)
-inline float edge_map(const EdgeReach& e, float x, float y, float m, float dz) {
+// output magnitude for raw magnitude m toward (x, y); dz = radial deadzone (0 = off);
+// full = share of the reach (past the deadzone) that gives full output
+inline float edge_map(const EdgeReach& e, float x, float y, float m, float dz, float full = kEdgeFullDefault) {
     if (m <= dz || m <= 0.0f) return 0.0f;
     float r = edge_reach(e, x, y);
-    if (e.on) r = dz + (r - dz) * (1.0f - kEdgeOuter);
+    if (e.on) r = dz + (r - dz) * full;
     if (r < dz + kEdgeMinSpan) r = dz + kEdgeMinSpan;
     float o = (m - dz) / (r - dz);
     return o > 1.0f ? 1.0f : o;
@@ -120,6 +126,28 @@ const int    kEdgeLowerPushes = 25;
 const float  kEdgeLowerMaxDrop = 0.10f;
 const int    kEdgeRecent = 64;          // readings kept for the hold window
 
+// Typical push learning (<hand>_edge_learn=typical), for a stick whose reach varies
+// from push to push, where the furthest push ever seen would leave most pushes
+// short of full. Each push counts once: the furthest reading it held for
+// kEdgeLearnHoldMs, for the direction nearest to where it was held. Pushes under
+// kEdgeTypicalFrom of the best reach are left out (a part push on purpose). Once a
+// direction has kEdgeTypicalMin pushes, its reach is the kEdgeTypicalPct percentile
+// of its last kEdgeTypicalKeep pushes, never above the best reach and never more
+// than kEdgeTypicalMaxDrop below it. The best reach still follows the furthest push.
+const int    kEdgeTypicalKeep = 12;
+const int    kEdgeTypicalMin = 6;
+const float  kEdgeTypicalPct = 0.75f;
+const float  kEdgeTypicalFrom = 0.6f;
+const float  kEdgeTypicalMaxDrop = 0.25f;
+
+// sector nearest to the direction of (x, y)
+inline int edge_nearest(float x, float y) {
+    int k, k1;
+    float f;
+    edge_pos(x, y, kEdgeSectors, k, k1, f);
+    return f < 0.5f ? k : k1;
+}
+
 struct EdgeLearner {
     // the current push
     bool   run = false;
@@ -135,23 +163,30 @@ struct EdgeLearner {
     // full pushes per direction that stopped short of the stored reach
     int    short_pushes[kEdgeSectors] = {};
     float  short_best[kEdgeSectors] = {};
+    // typical push learning: the current push's furthest held reading and where,
+    // and the last kEdgeTypicalKeep pushes per direction
+    float  push_peak = 0, peak_x = 0, peak_y = 0;
+    float  typ[kEdgeSectors][kEdgeTypicalKeep] = {};
+    int    typ_n[kEdgeSectors] = {}, typ_head[kEdgeSectors] = {};
 
     // a whole pair at time now (ms); e is the reach in use, best the furthest reach
     // ever confirmed per direction (raised along with e, the floor for lowering);
-    // true when e changed
-    bool feed(EdgeReach& e, EdgeReach& best, float x, float y, double now) {
+    // typical: learn the typical push instead of the furthest (see above);
+    // true when e or best changed
+    bool feed(EdgeReach& e, EdgeReach& best, float x, float y, double now, bool typical = false) {
         float m = std::sqrt(x * x + y * y);
         bool same = false;
         if (run && m > kEdgeCountFrom)
             same = (x * sx + y * sy) / m >= std::cos(kEdgeLearnSpread * 3.14159265f / 180);
         bool changed = false;
         if (!same) {
-            if (run) changed = end_push(e, best);
+            if (run) changed = typical ? end_typical(e, best) : end_push(e, best);
             run = m > kEdgeCountFrom;
             if (run) {
                 sx = x / m; sy = y / m; t0 = now;
                 start_held(x, y, m, now);
                 recent_n = recent_head = 0;
+                push_peak = 0;
             }
         }
         if (!run) return changed;
@@ -179,6 +214,12 @@ struct EdgeLearner {
         }
         if (count < kEdgeLearnHoldReads) return changed;
         int d = edge_learn_dir(x, y);
+        if (typical) {
+            if (lo > push_peak) { push_peak = lo; peak_x = x * lo / m; peak_y = y * lo / m; }
+            float held = lo > 1.0f ? 1.0f : lo;
+            if (d >= 0 && best.on && held - best.r[d] >= kEdgeLearnMin) { best.r[d] = held; changed = true; }
+            return changed;
+        }
         if (d >= 0 && e.on && lo >= e.r[d] - kEdgeLowerGap) { short_pushes[d] = 0; short_best[d] = 0; }
         float use = lo / m;
         if (edge_learn(e, x * use, y * use)) {
@@ -209,6 +250,33 @@ private:
         if (r < floor) r = floor;
         short_best[d] = 0;
         if (r >= e.r[d]) return false;   // already at the floor
+        e.r[d] = r;
+        return true;
+    }
+
+    bool end_typical(EdgeReach& e, const EdgeReach& best) {
+        run = false;
+        float m = push_peak;
+        push_peak = 0;
+        if (!e.on || m <= 0.0f) return false;
+        if (m > 1.0f) m = 1.0f;
+        int d = edge_nearest(peak_x, peak_y);
+        float ref = best.on ? best.r[d] : e.r[d];
+        if (m < kEdgeTypicalFrom * ref) return false;
+        typ[d][typ_head[d]] = m;
+        typ_head[d] = (typ_head[d] + 1) % kEdgeTypicalKeep;
+        if (typ_n[d] < kEdgeTypicalKeep) ++typ_n[d];
+        int n = typ_n[d];
+        if (n < kEdgeTypicalMin) return false;
+        float v[kEdgeTypicalKeep];
+        for (int i = 0; i < n; ++i) v[i] = typ[d][i];
+        std::sort(v, v + n);
+        float r = v[(int)std::lround(kEdgeTypicalPct * (n - 1))];
+        float floor = ref - kEdgeTypicalMaxDrop;
+        if (floor < kEdgeMinReach) floor = kEdgeMinReach;
+        if (r < floor) r = floor;
+        if (r > ref) r = ref;
+        if (std::fabs(r - e.r[d]) < kEdgeLearnMin) return false;
         e.r[d] = r;
         return true;
     }

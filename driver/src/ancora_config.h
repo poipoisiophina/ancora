@@ -32,6 +32,8 @@ struct HandConfig {
     bool  edge_bad = false;     // <hand>_edge had text that is not a valid reach list
     EdgeReach edge_base;        // furthest reach ever confirmed per direction, the floor
                                 // for lowering by wear (ancora_edge.h); off when missing
+    float edge_full = kEdgeFullDefault;   // share of the reach that gives full output
+    bool  edge_typical = false; // learn the typical push, not the furthest one
     DeadzoneShape deadzone_shape;   // share of the deadzone per direction, off = round
     float curve = 0.0f;         // response curve, 0 = off
 };
@@ -140,6 +142,12 @@ inline Config parse(const std::string& text) {
         h.edge_bad = !edge.empty() && !h.edge.on;
         h.edge_on = get_int(text, (k + "_edge_on").c_str(), 1) != 0;
         h.edge_base = edge_parse(get(text, (k + "_edge_base").c_str()).c_str());
+        std::string full = get(text, (k + "_edge_full").c_str());
+        char* full_end = nullptr;
+        float ef = (float)std::strtod(full.c_str(), &full_end);
+        if (full.empty() || full_end == full.c_str()) ef = kEdgeFullDefault;   // missing or not a number
+        h.edge_full = !(ef >= kEdgeFullMin) ? kEdgeFullMin : ef > 1.0f ? 1.0f : ef;
+        h.edge_typical = same_nocase(get(text, (k + "_edge_learn").c_str()), "typical");
     }
     bool found;
     std::string lang = get(text, "language", &found);
@@ -178,7 +186,9 @@ inline std::string format(const Config& c) {
         "; edge stretch: " + std::to_string(kEdgeSectors) + " measured reach values, from right counterclockwise\r\n"
         "; (the Tune page writes them; empty = off), whether to use them (1 = on), and the\r\n"
         "; furthest reach seen per direction (the driver keeps it; wear never lowers the\r\n"
-        "; stretch more than 0.10 below it)\r\n";
+        "; stretch more than 0.10 below it), the share of the reach that gives full\r\n"
+        "; output (0.50..1.00), and what learning during play follows: best = the\r\n"
+        "; furthest push, typical = most pushes (for a stick whose reach varies)\r\n";
     for (int i = 0; i < 2; ++i) {
         const HandConfig& h = c.hand[i];
         std::string k = kHandKey[i];
@@ -192,6 +202,8 @@ inline std::string format(const Config& c) {
         s += k + "_edge=" + edge_format(h.edge) + "\r\n";
         s += k + "_edge_on=" + std::to_string(h.edge_on ? 1 : 0) + "\r\n";
         s += k + "_edge_base=" + edge_format(h.edge_base) + "\r\n";
+        s += k + "_edge_full=" + num2(h.edge_full) + "\r\n";
+        s += k + "_edge_learn=" + std::string(h.edge_typical ? "typical" : "best") + "\r\n";
     }
     s += "; panel language: auto follows Windows, or a code such as de, ar, ja, zh-Hant\r\n";
     s += "language=" + c.language + "\r\n";

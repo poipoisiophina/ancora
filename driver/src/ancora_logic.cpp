@@ -42,6 +42,8 @@ struct Config {
     float curve[2]      = {0.0f, 0.0f};    // response curve, 0 = off
     int   average_ms[2] = {0, 0};          // moving average window, 0 = off
     EdgeReach edge[2];                     // edge stretch in use, off unless measured and on
+    float edge_full[2]  = {kEdgeFullDefault, kEdgeFullDefault};   // share of the reach for full output
+    bool  edge_typical[2] = {false, false};   // learn the typical push, not the furthest
 };
 
 struct Stick {
@@ -130,6 +132,7 @@ void output(const Stick& s, int i, double now, float& x, float& y) {
     st.deadzone_shape = g_cfg.deadzone_shape[i];
     st.curve = g_cfg.curve[i];
     st.edge = g_cfg.edge[i];
+    st.edge_full = g_cfg.edge_full[i];
     stick_output(st, gate_closed(s, i, now), s.avg.count > 0, s.avg.avg_x(), s.avg.avg_y(), s.raw_x, s.raw_y, x, y);
 }
 
@@ -221,6 +224,8 @@ void load_config(bool force) {
         c.curve[i] = h.curve;
         c.average_ms[i] = h.average_ms;
         c.edge[i] = ancfg::effective_edge(h);
+        c.edge_full[i] = h.edge_full;
+        c.edge_typical[i] = h.edge_typical;
         if (h.edge_bad) log(std::string(kHand[i]) + "_edge unreadable, edge stretch off");
         edge_text[i] = ancfg::get(text, (std::string(kHand[i]) + "_edge").c_str());
     }
@@ -230,16 +235,18 @@ void load_config(bool force) {
     double now = now_precise_ms();
     for (int i = 0; i < 2; ++i) { update_average(g_s[i], i, now); repush(i, 0, now); }
     publish();
-    char line[320];
+    char line[400];
     std::snprintf(line, sizeof(line),
-                  "config enable=%d left=%d gate=%d avg=%dms dz=%.2f%s center=%.3f,%.3f edge=%.2f curve=%.2f "
-                  "right=%d gate=%d avg=%dms dz=%.2f%s center=%.3f,%.3f edge=%.2f curve=%.2f",
+                  "config enable=%d left=%d gate=%d avg=%dms dz=%.2f%s center=%.3f,%.3f edge=%.2f full=%.2f%s curve=%.2f "
+                  "right=%d gate=%d avg=%dms dz=%.2f%s center=%.3f,%.3f edge=%.2f full=%.2f%s curve=%.2f",
                   c.enable, c.hand[0], c.touch_gate[0], c.average_ms[0], c.deadzone[0], c.deadzone_shape[0].on ? " shaped" : "",
                   c.center[0].x, c.center[0].y,
-                  c.edge[0].on ? c.edge[0].r[edge_shortest(c.edge[0])] : 0.0f, c.curve[0],
+                  c.edge[0].on ? c.edge[0].r[edge_shortest(c.edge[0])] : 0.0f, c.edge_full[0],
+                  c.edge_typical[0] ? " typical" : "", c.curve[0],
                   c.hand[1], c.touch_gate[1], c.average_ms[1], c.deadzone[1], c.deadzone_shape[1].on ? " shaped" : "",
                   c.center[1].x, c.center[1].y,
-                  c.edge[1].on ? c.edge[1].r[edge_shortest(c.edge[1])] : 0.0f, c.curve[1]);
+                  c.edge[1].on ? c.edge[1].r[edge_shortest(c.edge[1])] : 0.0f, c.edge_full[1],
+                  c.edge_typical[1] ? " typical" : "", c.curve[1]);
     log(line);
 }
 
@@ -294,7 +301,7 @@ void learn_edge(int i, double now) {
     if (!correcting(i) || !g_cfg.edge[i].on) return;
     float x, y;
     center_map(g_cfg.center[i], g_s[i].pair.x, g_s[i].pair.y, x, y);
-    g_s[i].learn.on_pair(g_cfg.edge[i], x, y, now);
+    g_s[i].learn.on_pair(g_cfg.edge[i], x, y, now, g_cfg.edge_typical[i]);
 }
 
 // write learned reach to the ini once the stick has stopped changing it; the

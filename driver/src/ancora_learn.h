@@ -44,9 +44,10 @@ struct EdgeLearnState {
     double last_ms = 0;                 // last change, ms
     std::string text;                   // <hand>_edge as last read from the ini
 
-    // a whole pair at time now (ms); returns true when it changed the reach
-    bool on_pair(EdgeReach& e, float x, float y, double now) {
-        if (!learner.feed(e, best, x, y, now)) return false;
+    // a whole pair at time now (ms); typical: learn the typical push, not the
+    // furthest (ancora_edge.h); returns true when it changed the reach or the best
+    bool on_pair(EdgeReach& e, float x, float y, double now, bool typical = false) {
+        if (!learner.feed(e, best, x, y, now, typical)) return false;
         dirty = true;
         last_ms = now;
         return true;
