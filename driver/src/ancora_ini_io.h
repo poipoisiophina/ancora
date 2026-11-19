@@ -94,6 +94,13 @@ inline bool set_key(const std::wstring& path, const char* key, const std::string
     return update(path, [&](const std::string& t) { return set(t, key, value); });
 }
 
+// keys a newer version added, with their defaults (add_missing); nothing is
+// written when none are missing or the file does not exist
+inline bool add_missing_keys(const std::wstring& path) {
+    if (GetFileAttributesW(path.c_str()) == INVALID_FILE_ATTRIBUTES) return true;
+    return update(path, [](const std::string& t) { return t.empty() ? t : add_missing(t); });
+}
+
 // <hand>_edge and <hand>_edge_base together, as one change
 inline bool set_edge(const std::wstring& path, int hand, const EdgeReach& edge, const EdgeReach& base) {
     std::string k = kHandKey[hand];

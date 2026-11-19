@@ -9,7 +9,7 @@
 ; left alone and only ancora_logic.dll (hot reloaded by the driver), the panel and
 ; the other files are replaced while SteamVR runs.
 
-#define AppVersion "0.2.3"
+#define AppVersion "0.2.4"
 
 [Setup]
 AppId={{6AB13E94-DDD3-4AAB-B3FE-6965F0462422}
@@ -107,6 +107,11 @@ Type: files; Name: "{app}\diag\probe.exe"
 Type: files; Name: "{app}\diag\reader.exe"
 
 [Run]
+; an ancora.ini kept from an older version gets the settings added since, with their
+; defaults; every line already in it stays. Locked like the panel's and the driver's
+; writes, so it is safe while SteamVR runs
+Filename: "{app}\ancora.exe"; Parameters: "--add-missing-keys --root ""{app}"""; \
+  Flags: runhidden waituntilterminated
 ; already registered in a hot update, and --register needs SteamVR closed
 Filename: "{app}\ancora.exe"; Parameters: "--register --root ""{app}"""; \
   StatusMsg: "{cm:Registering}"; Flags: runhidden waituntilterminated; Check: not IsHotUpdate

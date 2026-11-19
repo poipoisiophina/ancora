@@ -141,6 +141,19 @@ beside it, and readings shorter than a fiftieth of a second are ignored. Games
 get full a little (4 %) before the furthest edge seen, so an ordinary full
 push still counts as full.
 
+Some sticks vary a lot from push to push: one push in a while goes much
+further than the rest, the edge follows that one, and most pushes then stay
+short of full. Two settings in `ancora.ini` help there, per hand (`left_` or
+`right_`). They are not on the panel yet:
+
+- `right_edge_learn=typical` follows how far you usually push instead of the
+  furthest push ever: each direction takes the 75th percentile of its last 12
+  full pushes, once it has 6. Pushes under 0.6 of the furthest reach are left
+  out as part pushes on purpose, and it never goes more than 0.25 below the
+  furthest reach. `best` (the default) is the behaviour described above.
+- `right_edge_full=0.85` gives full output at 85 % of the edge instead of
+  96 % (0.50 to 1.00, default 0.96).
+
 The stretched directions get a little more sensitive near the edge. Your
 deadzone keeps working as before. The Status page draws the outline in yellow
 while a stretch is on. To undo it, press **Remove ... stretch** on the Tune page.
@@ -232,7 +245,8 @@ haptics and your SteamVR bindings are untouched.
 
 **Where are my settings?**
 In `%LOCALAPPDATA%\ancora\ancora.ini`. The panel edits it for you; you
-never need to open it.
+only need to open it for the two edge settings that are not on the panel yet
+(see "Stick does not reach full in some directions?").
 
 ---
 

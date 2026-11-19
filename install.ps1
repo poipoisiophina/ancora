@@ -96,6 +96,9 @@ Copy-Item $files.diag $diag -Recurse
 $ini = Join-Path $root 'ancora.ini'
 if (Test-Path $ini) {
     Write-Host "keeping existing config $ini"
+    # settings added since the file was made get their defaults; existing lines stay
+    & (Join-Path $root 'ancora.exe') --add-missing-keys --root $root | Write-Host
+    if ($LASTEXITCODE -ne 0) { Write-Warning "could not add new settings to $ini" }
 } else {
     Copy-Item $files.ini $ini
     Write-Host "installed default config $ini"

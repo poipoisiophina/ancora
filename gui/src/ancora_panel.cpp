@@ -24,6 +24,9 @@
 //   ancora.exe --icon-png f.png   write the 16/32/48/256 px icons side by side, exit
 //   ancora.exe --icon-ico f.ico   write the app icon file that the build embeds, exit
 //   ancora.exe --selftest         check ini read/write and the tune math, exit code 0 = pass
+//   ancora.exe --add-missing-keys [--root dir]
+//                                 add the settings a newer version brought to an existing
+//                                 dir\ancora.ini with their defaults, exit code 0 = done
 //   ancora.exe --check | --register | --unregister [--root dir] [--backup-dir dir]
 //                                 SteamVR side of an install (ancora_steamvr.h), exit code
 //                                 0 = done, 1 = SteamVR running or failed. --root is the
@@ -2820,6 +2823,11 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int) {
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
     if (has(L"--selftest")) { attach_console(); return selftest(); }
+    if (has(L"--add-missing-keys")) {
+        std::wstring root = arg_after(L"--root", (local_appdata() + L"\\ancora").c_str());
+        while (root.size() > 3 && (root.back() == L'\\' || root.back() == L'/')) root.pop_back();
+        return ancfg::add_missing_keys(root + L"\\ancora.ini") ? 0 : 1;
+    }
     for (const wchar_t* action : {L"check", L"register", L"unregister"}) {
         if (!has((std::wstring(L"--") + action).c_str())) continue;
         attach_console();

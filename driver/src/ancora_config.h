@@ -239,4 +239,24 @@ inline std::string set(const std::string& text, const char* key, const std::stri
     return out + "[ancora]" + nl + line + nl;
 }
 
+// text with every key of the default file that text lacks added with its default
+// value, so an ini from an older version shows the newer settings. A key is only
+// added when that leaves the settings as read unchanged (a file without enable=
+// reads as off, so enable=1 is never added). Lines already there stay as they are.
+inline std::string add_missing(const std::string& text) {
+    const std::string defaults = format(Config{});
+    const std::string before = format(parse(text));
+    std::string out = text;
+    each_line(defaults, [&](size_t, size_t, const Line& l, bool in) {
+        if (!in || l.kind != 2) return true;
+        bool found;
+        get(out, l.name.c_str(), &found);
+        if (found) return true;
+        std::string next = set(out, l.name.c_str(), l.value);
+        if (format(parse(next)) == before) out = next;
+        return true;
+    });
+    return out;
+}
+
 } // namespace ancfg

@@ -997,6 +997,32 @@ void test_edge_full_and_typical() {
           "config: edge_full and edge_learn survive a write and read");
 }
 
+void test_add_missing() {
+    using namespace ancfg;
+    // an ini of 0.2.2: no edge_full / edge_learn, own values, a comment and an unknown key
+    std::string old =
+        "; mine\r\n[ancora]\r\nenable=1\r\nright=1\r\nright_touch_gate=0\r\nright_deadzone=0.36\r\n"
+        "right_edge_learn=typical\r\nmy_key=7\r\n";
+    std::string got = add_missing(old);
+    bool kept = got.compare(0, old.size(), old) == 0;
+    check(kept, "add_missing: every line already there stays as it was, in place");
+    bool found;
+    get(got, "left_edge_full", &found);
+    bool a = found && get(got, "left_edge_full") == "0.96";
+    get(got, "right_edge_full", &found);
+    bool b = found && get(got, "right_edge_full") == "0.96" && get(got, "left_edge_learn") == "best";
+    check(a && b, "add_missing: missing keys come in with their default values");
+    check(get(got, "right_edge_learn") == "typical" && get(got, "right_touch_gate") == "0" && get(got, "my_key") == "7",
+          "add_missing: values already set are not changed");
+    check(format(parse(got)) == format(parse(old)), "add_missing: the settings as read do not change");
+    check(add_missing(got) == got, "add_missing: a second run changes nothing");
+    std::string off = "[ancora]\r\nright=1\r\n";
+    get(add_missing(off), "enable", &found);
+    check(!found && !parse(add_missing(off)).enable, "add_missing: a file without enable= stays off, enable=1 is not added");
+    std::string full = format(Config{});
+    check(add_missing(full) == full, "add_missing: the default file needs nothing");
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -1019,6 +1045,7 @@ int main(int argc, char** argv) {
     test_curve();
     test_gate();
     test_edge_full_and_typical();
+    test_add_missing();
     std::printf("%d test(s), %d failure(s)\n", g_count, g_fails);
     return g_fails ? 1 : 0;
 }
