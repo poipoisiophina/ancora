@@ -152,6 +152,17 @@
   <what_language>Limbă</what_language>
   <note_copied>Diagnosticare copiată</note_copied>
   <note_no_log>Locația jurnalului SteamVR necunoscută</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Niciunul</pad_none>
+  <pad_listen>Apasă un buton pe controler</pad_listen>
+  <pad_absent>Neconectat</pad_absent>
+  <pad_stick_left>Stick stânga</pad_stick_left>
+  <pad_stick_right>Stick dreapta</pad_stick_right>
+  <tip_pad>Un controler Xbox sau PS4/PS5, cu fir sau Bluetooth, mișcă acest stick cât timp îl împingi; la centru, stick-ul controlerului merge ca înainte. Îl citește SteamVR, deci merge și când jocul e în fundal. Alege întâi controlerul, apoi stick-ul lui.</tip_pad>
+  <what_left_pad>Gamepad stânga</what_left_pad>
+  <what_right_pad>Gamepad dreapta</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} e împins, jocurile primesc stick-ul lui.</sub_pad>
   <tray_open>Deschideți ancora</tray_open>
   <tray_exit>Ieșire</tray_exit>
 </language>

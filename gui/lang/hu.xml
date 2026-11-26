@@ -152,6 +152,17 @@
   <what_language>Nyelv</what_language>
   <note_copied>Diagnosztika másolva</note_copied>
   <note_no_log>A SteamVR napló helye ismeretlen</note_no_log>
+  <set_pad>Kontroller</set_pad>
+  <pad_none>Nincs</pad_none>
+  <pad_listen>Nyomj meg egy gombot a kontrolleren</pad_listen>
+  <pad_absent>Nincs csatlakoztatva</pad_absent>
+  <pad_stick_left>Bal kar</pad_stick_left>
+  <pad_stick_right>Jobb kar</pad_stick_right>
+  <tip_pad>Egy Xbox vagy PS4/PS5 kontroller, kábellel vagy Bluetooth-on, mozgatja ezt a kart, amíg nyomod; középen a kontroller saját karja működik, mint eddig. A SteamVR olvassa, így akkor is működik, ha a játék a háttérben van. Előbb a kontrollert válaszd, aztán a karját.</tip_pad>
+  <what_left_pad>Bal kontroller</what_left_pad>
+  <what_right_pad>Jobb kontroller</what_right_pad>
+  <state_pad>Kontroller</state_pad>
+  <sub_pad>{name} nyomva, a játékok az ő karját kapják.</sub_pad>
   <tray_open>ancora megnyitása</tray_open>
   <tray_exit>Kilépés</tray_exit>
 </language>

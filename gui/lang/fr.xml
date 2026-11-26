@@ -152,6 +152,17 @@
   <what_language>Langue</what_language>
   <note_copied>Diagnostic copié</note_copied>
   <note_no_log>Emplacement du journal SteamVR inconnu</note_no_log>
+  <set_pad>Manette</set_pad>
+  <pad_none>Aucune</pad_none>
+  <pad_listen>Appuyez sur un bouton de la manette</pad_listen>
+  <pad_absent>Non connectée</pad_absent>
+  <pad_stick_left>Stick gauche</pad_stick_left>
+  <pad_stick_right>Stick droit</pad_stick_right>
+  <tip_pad>Une manette Xbox ou PS4/PS5, filaire ou Bluetooth, déplace ce stick tant que vous la poussez ; au centre, le stick du contrôleur fonctionne comme avant. SteamVR la lit, donc cela marche même quand le jeu est en arrière-plan. Choisissez d'abord la manette, puis son stick.</tip_pad>
+  <what_left_pad>Manette gauche</what_left_pad>
+  <what_right_pad>Manette droite</what_right_pad>
+  <state_pad>Manette</state_pad>
+  <sub_pad>{name} est poussée, les jeux reçoivent son stick.</sub_pad>
   <tray_open>Ouvrir ancora</tray_open>
   <tray_exit>Quitter</tray_exit>
 </language>

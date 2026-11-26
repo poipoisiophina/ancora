@@ -152,6 +152,17 @@
   <what_language>Lingua</what_language>
   <note_copied>Diagnostica copiata</note_copied>
   <note_no_log>Posizione del log di SteamVR sconosciuta</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Nessuno</pad_none>
+  <pad_listen>Premi un tasto sul pad</pad_listen>
+  <pad_absent>Non collegato</pad_absent>
+  <pad_stick_left>Levetta sinistra</pad_stick_left>
+  <pad_stick_right>Levetta destra</pad_stick_right>
+  <tip_pad>Un pad Xbox o PS4/PS5, via cavo o Bluetooth, muove questa levetta mentre lo spingi; al centro, la levetta del controller funziona come prima. Lo legge SteamVR, quindi funziona anche con il gioco in secondo piano. Scegli prima il pad, poi la sua levetta.</tip_pad>
+  <what_left_pad>Gamepad sinistro</what_left_pad>
+  <what_right_pad>Gamepad destro</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} è spinto, i giochi ricevono la sua levetta.</sub_pad>
   <tray_open>Apri ancora</tray_open>
   <tray_exit>Esci</tray_exit>
 </language>

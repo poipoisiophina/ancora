@@ -152,6 +152,17 @@
   <what_language>Sprache</what_language>
   <note_copied>Diagnose kopiert</note_copied>
   <note_no_log>Ort des SteamVR-Logs unbekannt</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Keins</pad_none>
+  <pad_listen>Taste am Pad drücken</pad_listen>
+  <pad_absent>Nicht verbunden</pad_absent>
+  <pad_stick_left>Linker Stick</pad_stick_left>
+  <pad_stick_right>Rechter Stick</pad_stick_right>
+  <tip_pad>Ein Xbox- oder PS4/PS5-Pad, per Kabel oder Bluetooth, bewegt diesen Stick, solange du es drückst; in der Mitte arbeitet der Stick des Controllers wie bisher. SteamVR liest es, daher geht es auch, wenn das Spiel im Hintergrund ist. Erst das Pad wählen, dann seinen Stick.</tip_pad>
+  <what_left_pad>Linkes Gamepad</what_left_pad>
+  <what_right_pad>Rechtes Gamepad</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} wird gedrückt, Spiele bekommen seinen Stick.</sub_pad>
   <tray_open>ancora öffnen</tray_open>
   <tray_exit>Beenden</tray_exit>
 </language>

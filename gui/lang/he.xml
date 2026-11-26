@@ -152,6 +152,17 @@
   <what_language>שפה</what_language>
   <note_copied>האבחון הועתק</note_copied>
   <note_no_log>מיקום היומן של SteamVR לא ידוע</note_no_log>
+  <set_pad>בקר משחק</set_pad>
+  <pad_none>ללא</pad_none>
+  <pad_listen>לחצו על כפתור בבקר</pad_listen>
+  <pad_absent>לא מחובר</pad_absent>
+  <pad_stick_left>סטיק שמאלי</pad_stick_left>
+  <pad_stick_right>סטיק ימני</pad_stick_right>
+  <tip_pad>בקר Xbox או PS4/PS5, בכבל או ב־Bluetooth, מזיז את הסטיק הזה כל עוד אתם דוחפים אותו; במרכז, הסטיק של הבקר עובד כמו קודם. SteamVR קורא אותו, כך שזה עובד גם כשהמשחק ברקע. בחרו קודם את הבקר, ואז את הסטיק שלו.</tip_pad>
+  <what_left_pad>בקר משחק שמאלי</what_left_pad>
+  <what_right_pad>בקר משחק ימני</what_right_pad>
+  <state_pad>בקר משחק</state_pad>
+  <sub_pad>{name} נדחף, ולכן המשחקים מקבלים את הסטיק שלו.</sub_pad>
   <tray_open>פתיחת ancora</tray_open>
   <tray_exit>יציאה</tray_exit>
 </language>

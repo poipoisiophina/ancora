@@ -152,6 +152,17 @@
   <what_language>Език</what_language>
   <note_copied>Диагностиката е копирана</note_copied>
   <note_no_log>Мястото на дневника на SteamVR е неизвестно</note_no_log>
+  <set_pad>Геймпад</set_pad>
+  <pad_none>Няма</pad_none>
+  <pad_listen>Натиснете бутон на пада</pad_listen>
+  <pad_absent>Не е свързан</pad_absent>
+  <pad_stick_left>Ляв стик</pad_stick_left>
+  <pad_stick_right>Десен стик</pad_stick_right>
+  <tip_pad>Пад за Xbox или PS4/PS5, с кабел или Bluetooth, движи този стик, докато го натискате; в центъра стикът на контролера работи както преди. SteamVR го чете, затова работи и когато играта е на заден план. Изберете първо пада, после неговия стик.</tip_pad>
+  <what_left_pad>Ляв геймпад</what_left_pad>
+  <what_right_pad>Десен геймпад</what_right_pad>
+  <state_pad>Геймпад</state_pad>
+  <sub_pad>{name} е натиснат, игрите получават неговия стик.</sub_pad>
   <tray_open>Отвори ancora</tray_open>
   <tray_exit>Изход</tray_exit>
 </language>

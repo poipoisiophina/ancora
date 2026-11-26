@@ -152,6 +152,17 @@
   <what_language>язык</what_language>
   <note_copied>Диагностика скопирована</note_copied>
   <note_no_log>Расположение журнала SteamVR неизвестно</note_no_log>
+  <set_pad>Геймпад</set_pad>
+  <pad_none>Нет</pad_none>
+  <pad_listen>Нажмите кнопку на геймпаде</pad_listen>
+  <pad_absent>Не подключён</pad_absent>
+  <pad_stick_left>Левый стик</pad_stick_left>
+  <pad_stick_right>Правый стик</pad_stick_right>
+  <tip_pad>Геймпад Xbox или PS4/PS5, по проводу или Bluetooth, двигает этот стик, пока вы его отклоняете; в центре стик контроллера работает как раньше. Его читает SteamVR, поэтому всё работает, даже когда игра в фоне. Сначала выберите геймпад, затем его стик.</tip_pad>
+  <what_left_pad>Левый геймпад</what_left_pad>
+  <what_right_pad>Правый геймпад</what_right_pad>
+  <state_pad>Геймпад</state_pad>
+  <sub_pad>{name} отклонён, игры получают его стик.</sub_pad>
   <tray_open>Открыть ancora</tray_open>
   <tray_exit>Выход</tray_exit>
 </language>

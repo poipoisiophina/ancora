@@ -152,6 +152,17 @@
   <what_language>Lingwa</what_language>
   <note_copied>Dijanjostika kkopjata</note_copied>
   <note_no_log>Il-post tal-log ta' SteamVR mhux magħruf</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Xejn</pad_none>
+  <pad_listen>Agħfas buttuna fuq il-pad</pad_listen>
+  <pad_absent>Mhux imqabbad</pad_absent>
+  <pad_stick_left>Stick tax-xellug</pad_stick_left>
+  <pad_stick_right>Stick tal-lemin</pad_stick_right>
+  <tip_pad>Pad tal-Xbox jew PS4/PS5, bil-wajer jew Bluetooth, iċċaqlaq dan l-istick sakemm timbuttaha; fiċ-ċentru, l-istick tal-kontrollur jaħdem bħal qabel. SteamVR jaqraha, għalhekk taħdem anke meta l-logħba tkun fl-isfond. Agħżel il-pad l-ewwel, imbagħad l-istick tagħha.</tip_pad>
+  <what_left_pad>Gamepad tax-xellug</what_left_pad>
+  <what_right_pad>Gamepad tal-lemin</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} qed tiġi mbuttata, il-logħob jieħu l-istick tagħha.</sub_pad>
   <tray_open>Iftaħ ancora</tray_open>
   <tray_exit>Oħroġ</tray_exit>
 </language>

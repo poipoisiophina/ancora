@@ -83,6 +83,15 @@ what it does):
 - **Curve**: small pushes give less, full pushes stay full, so slow, careful
   movement is easier. It does not fix drift. Leave it **off** unless you want
   finer control near the middle.
+- **Gamepad**: lets an Xbox, PS4 or PS5 pad (wired or Bluetooth) move this
+  stick. Click the first box to pick the pad: from the list of connected pads
+  (by the names they report), or choose **Press a button on the pad** and press
+  any button on the one you want, within 10 seconds. Only the picked pad
+  works; other pads are ignored. The second box picks its **Left stick** or
+  **Right stick**. While you push the pad's stick, games get it; let go and the
+  controller's stick works as usual.
+  SteamVR reads the pad, so it also works while the game window is in the
+  background. The controller itself must be on, since the pad moves its stick.
 
 **Anchoring on** (top right) turns ancora on or off for everything.
 

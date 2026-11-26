@@ -152,6 +152,17 @@
   <what_language>زبان</what_language>
   <note_copied>عیب‌یابی کپی شد</note_copied>
   <note_no_log>محل گزارش SteamVR نامعلوم است</note_no_log>
+  <set_pad>دسته بازی</set_pad>
+  <pad_none>هیچ</pad_none>
+  <pad_listen>یک دکمه روی دسته را فشار دهید</pad_listen>
+  <pad_absent>وصل نیست</pad_absent>
+  <pad_stick_left>استیک چپ</pad_stick_left>
+  <pad_stick_right>استیک راست</pad_stick_right>
+  <tip_pad>یک دسته Xbox یا PS4/PS5، با سیم یا بلوتوث، تا وقتی آن را فشار می‌دهید این استیک را حرکت می‌دهد؛ در وسط، استیک کنترلر مثل قبل کار می‌کند. SteamVR آن را می‌خواند، پس حتی وقتی بازی در پس‌زمینه است کار می‌کند. اول دسته را انتخاب کنید، بعد استیک آن را.</tip_pad>
+  <what_left_pad>دسته بازی چپ</what_left_pad>
+  <what_right_pad>دسته بازی راست</what_right_pad>
+  <state_pad>دسته بازی</state_pad>
+  <sub_pad>{name} فشار داده شده، بازی‌ها استیک آن را می‌گیرند.</sub_pad>
   <tray_open>باز کردن ancora</tray_open>
   <tray_exit>خروج</tray_exit>
 </language>

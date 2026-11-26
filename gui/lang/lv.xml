@@ -152,6 +152,17 @@
   <what_language>Valoda</what_language>
   <note_copied>Diagnostika nokopēta</note_copied>
   <note_no_log>SteamVR žurnāla atrašanās vieta nav zināma</note_no_log>
+  <set_pad>Spēļu pults</set_pad>
+  <pad_none>Nav</pad_none>
+  <pad_listen>Nospiediet pults pogu</pad_listen>
+  <pad_absent>Nav savienota</pad_absent>
+  <pad_stick_left>Kreisā svira</pad_stick_left>
+  <pad_stick_right>Labā svira</pad_stick_right>
+  <tip_pad>Xbox vai PS4/PS5 pults, ar vadu vai Bluetooth, kustina šo sviru, kamēr to spiežat; centrā kontroliera svira darbojas kā iepriekš. To nolasa SteamVR, tāpēc tas darbojas arī tad, kad spēle ir fonā. Vispirms izvēlieties pulti, tad tās sviru.</tip_pad>
+  <what_left_pad>Kreisā spēļu pults</what_left_pad>
+  <what_right_pad>Labā spēļu pults</what_right_pad>
+  <state_pad>Spēļu pults</state_pad>
+  <sub_pad>{name} ir nospiesta, spēles saņem tās sviru.</sub_pad>
   <tray_open>Atvērt ancora</tray_open>
   <tray_exit>Iziet</tray_exit>
 </language>

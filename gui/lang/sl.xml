@@ -152,6 +152,17 @@
   <what_language>Jezik</what_language>
   <note_copied>Diagnostika kopirana</note_copied>
   <note_no_log>Mesto dnevnika SteamVR ni znano</note_no_log>
+  <set_pad>Igralni plošček</set_pad>
+  <pad_none>Brez</pad_none>
+  <pad_listen>Pritisnite gumb na ploščku</pad_listen>
+  <pad_absent>Ni povezan</pad_absent>
+  <pad_stick_left>Leva palica</pad_stick_left>
+  <pad_stick_right>Desna palica</pad_stick_right>
+  <tip_pad>Plošček Xbox ali PS4/PS5, žični ali Bluetooth, premika to palico, dokler ga potiskate; na sredini palica krmilnika deluje kot prej. Bere ga SteamVR, zato deluje tudi, ko je igra v ozadju. Najprej izberite plošček, nato njegovo palico.</tip_pad>
+  <what_left_pad>Levi plošček</what_left_pad>
+  <what_right_pad>Desni plošček</what_right_pad>
+  <state_pad>Igralni plošček</state_pad>
+  <sub_pad>{name} je potisnjen, igre dobijo njegovo palico.</sub_pad>
   <tray_open>Odpri ancora</tray_open>
   <tray_exit>Izhod</tray_exit>
 </language>

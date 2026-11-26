@@ -152,6 +152,17 @@
   <what_language>мова</what_language>
   <note_copied>Діагностику скопійовано</note_copied>
   <note_no_log>Розташування журналу SteamVR невідоме</note_no_log>
+  <set_pad>Геймпад</set_pad>
+  <pad_none>Немає</pad_none>
+  <pad_listen>Натисніть кнопку на геймпаді</pad_listen>
+  <pad_absent>Не підключено</pad_absent>
+  <pad_stick_left>Лівий стік</pad_stick_left>
+  <pad_stick_right>Правий стік</pad_stick_right>
+  <tip_pad>Геймпад Xbox або PS4/PS5, дротовий чи Bluetooth, рухає цей стік, поки ви його відхиляєте; у центрі стік контролера працює як раніше. Його читає SteamVR, тому все працює, навіть коли гра у фоні. Спершу виберіть геймпад, потім його стік.</tip_pad>
+  <what_left_pad>Лівий геймпад</what_left_pad>
+  <what_right_pad>Правий геймпад</what_right_pad>
+  <state_pad>Геймпад</state_pad>
+  <sub_pad>{name} відхилено, ігри отримують його стік.</sub_pad>
   <tray_open>Відкрити ancora</tray_open>
   <tray_exit>Вихід</tray_exit>
 </language>

@@ -152,6 +152,17 @@
   <what_language>Idioma</what_language>
   <note_copied>Diagnóstico copiado</note_copied>
   <note_no_log>Ubicación del registro de SteamVR desconocida</note_no_log>
+  <set_pad>Mando</set_pad>
+  <pad_none>Ninguno</pad_none>
+  <pad_listen>Pulsa un botón del mando</pad_listen>
+  <pad_absent>No conectado</pad_absent>
+  <pad_stick_left>Stick izquierdo</pad_stick_left>
+  <pad_stick_right>Stick derecho</pad_stick_right>
+  <tip_pad>Un mando de Xbox o PS4/PS5, con cable o Bluetooth, mueve este stick mientras lo empujas; en el centro, el stick del controlador funciona como antes. SteamVR lo lee, así que funciona aunque el juego esté en segundo plano. Elige primero el mando y luego su stick.</tip_pad>
+  <what_left_pad>Mando izquierdo</what_left_pad>
+  <what_right_pad>Mando derecho</what_right_pad>
+  <state_pad>Mando</state_pad>
+  <sub_pad>{name} está empujado, los juegos reciben su stick.</sub_pad>
   <tray_open>Abrir ancora</tray_open>
   <tray_exit>Salir</tray_exit>
 </language>

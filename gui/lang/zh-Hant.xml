@@ -152,6 +152,17 @@
   <what_language>語言</what_language>
   <note_copied>診斷已複製</note_copied>
   <note_no_log>SteamVR 記錄位置不明</note_no_log>
+  <set_pad>遊戲手把</set_pad>
+  <pad_none>無</pad_none>
+  <pad_listen>按下手把上的按鍵</pad_listen>
+  <pad_absent>未連線</pad_absent>
+  <pad_stick_left>左搖桿</pad_stick_left>
+  <pad_stick_right>右搖桿</pad_stick_right>
+  <tip_pad>有線或藍牙的 Xbox 或 PS4/PS5 手把，推動時由它控制這根搖桿；回到中間時，控制器的搖桿照常運作。由 SteamVR 讀取，所以遊戲在背景時也能用。先選手把，再選它的搖桿。</tip_pad>
+  <what_left_pad>左手把</what_left_pad>
+  <what_right_pad>右手把</what_right_pad>
+  <state_pad>遊戲手把</state_pad>
+  <sub_pad>{name} 正在推動，遊戲收到它的搖桿。</sub_pad>
   <tray_open>開啟 ancora</tray_open>
   <tray_exit>結束</tray_exit>
 </language>

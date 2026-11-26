@@ -152,6 +152,17 @@
   <what_language>Idioma</what_language>
   <note_copied>Diagnóstico copiado</note_copied>
   <note_no_log>Localização do registo do SteamVR desconhecida</note_no_log>
+  <set_pad>Comando</set_pad>
+  <pad_none>Nenhum</pad_none>
+  <pad_listen>Prima um botão no comando</pad_listen>
+  <pad_absent>Não ligado</pad_absent>
+  <pad_stick_left>Manípulo esquerdo</pad_stick_left>
+  <pad_stick_right>Manípulo direito</pad_stick_right>
+  <tip_pad>Um comando de Xbox ou PS4/PS5, com fio ou Bluetooth, move este manípulo enquanto o empurra; ao centro, o manípulo do controlador funciona como antes. O SteamVR lê-o, por isso funciona mesmo com o jogo em segundo plano. Escolha primeiro o comando, depois o manípulo.</tip_pad>
+  <what_left_pad>Comando esquerdo</what_left_pad>
+  <what_right_pad>Comando direito</what_right_pad>
+  <state_pad>Comando</state_pad>
+  <sub_pad>{name} está empurrado, os jogos recebem o manípulo dele.</sub_pad>
   <tray_open>Abrir o ancora</tray_open>
   <tray_exit>Sair</tray_exit>
 </language>

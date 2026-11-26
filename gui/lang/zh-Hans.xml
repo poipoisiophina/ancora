@@ -152,6 +152,17 @@
   <what_language>语言</what_language>
   <note_copied>诊断已复制</note_copied>
   <note_no_log>SteamVR 日志位置未知</note_no_log>
+  <set_pad>游戏手柄</set_pad>
+  <pad_none>无</pad_none>
+  <pad_listen>按下手柄上的按键</pad_listen>
+  <pad_absent>未连接</pad_absent>
+  <pad_stick_left>左摇杆</pad_stick_left>
+  <pad_stick_right>右摇杆</pad_stick_right>
+  <tip_pad>有线或蓝牙的 Xbox 或 PS4/PS5 手柄，推动时由它控制这根摇杆；回到中间时，控制器的摇杆照常工作。由 SteamVR 读取，所以游戏在后台时也能用。先选手柄，再选它的摇杆。</tip_pad>
+  <what_left_pad>左手柄</what_left_pad>
+  <what_right_pad>右手柄</what_right_pad>
+  <state_pad>游戏手柄</state_pad>
+  <sub_pad>{name} 正在推动，游戏收到它的摇杆。</sub_pad>
   <tray_open>打开 ancora</tray_open>
   <tray_exit>退出</tray_exit>
 </language>

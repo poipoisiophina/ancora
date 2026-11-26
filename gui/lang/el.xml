@@ -152,6 +152,17 @@
   <what_language>Γλώσσα</what_language>
   <note_copied>Τα διαγνωστικά αντιγράφηκαν</note_copied>
   <note_no_log>Άγνωστη θέση αρχείου SteamVR</note_no_log>
+  <set_pad>Χειριστήριο</set_pad>
+  <pad_none>Κανένα</pad_none>
+  <pad_listen>Πατήστε ένα κουμπί στο χειριστήριο</pad_listen>
+  <pad_absent>Δεν είναι συνδεδεμένο</pad_absent>
+  <pad_stick_left>Αριστερός μοχλός</pad_stick_left>
+  <pad_stick_right>Δεξιός μοχλός</pad_stick_right>
+  <tip_pad>Ένα χειριστήριο Xbox ή PS4/PS5, με καλώδιο ή Bluetooth, κινεί αυτόν τον μοχλό όσο το σπρώχνετε· στο κέντρο, ο μοχλός του χειριστηρίου VR δουλεύει όπως πριν. Το διαβάζει το SteamVR, οπότε δουλεύει και όταν το παιχνίδι είναι στο παρασκήνιο. Διαλέξτε πρώτα το χειριστήριο, μετά τον μοχλό του.</tip_pad>
+  <what_left_pad>Αριστερό χειριστήριο</what_left_pad>
+  <what_right_pad>Δεξί χειριστήριο</what_right_pad>
+  <state_pad>Χειριστήριο</state_pad>
+  <sub_pad>Το {name} πιέζεται, τα παιχνίδια παίρνουν τον μοχλό του.</sub_pad>
   <tray_open>Άνοιγμα ancora</tray_open>
   <tray_exit>Έξοδος</tray_exit>
 </language>

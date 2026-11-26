@@ -15,6 +15,7 @@
 #include "ancora_center.h"
 #include "ancora_deadzone.h"
 #include "ancora_edge.h"
+#include "ancora_pad.h"
 
 namespace ancfg {
 
@@ -36,11 +37,14 @@ struct HandConfig {
     bool  edge_typical = false; // learn the typical push, not the furthest one
     DeadzoneShape deadzone_shape;   // share of the deadzone per direction, off = round
     float curve = 0.0f;         // response curve, 0 = off
+    int   pad = PAD_OFF;        // gamepad stick that takes over this stick while pushed (ancora_pad.h)
+    std::string pad_device;     // the picked gamepad's id, empty = none
 };
 
 struct Config {
     bool enable = true;         // master switch; a file without the key reads as off
     HandConfig hand[2];         // 0 left, 1 right
+    float pad_deadzone = kPadDeadzoneDefault;   // gamepad sticks, radial
     std::string language = "auto";   // panel only, the driver ignores it
 };
 
@@ -148,8 +152,16 @@ inline Config parse(const std::string& text) {
         if (full.empty() || full_end == full.c_str()) ef = kEdgeFullDefault;   // missing or not a number
         h.edge_full = !(ef >= kEdgeFullMin) ? kEdgeFullMin : ef > 1.0f ? 1.0f : ef;
         h.edge_typical = same_nocase(get(text, (k + "_edge_learn").c_str()), "typical");
+        std::string pad = get(text, (k + "_pad").c_str());
+        h.pad = same_nocase(pad, "left") ? PAD_LEFT : same_nocase(pad, "right") ? PAD_RIGHT : PAD_OFF;
+        h.pad_device = pad_device_parse(get(text, (k + "_pad_device").c_str()));
     }
     bool found;
+    std::string pdz = get(text, "pad_deadzone", &found);
+    char* pdz_end = nullptr;
+    float pd = (float)std::strtod(pdz.c_str(), &pdz_end);
+    if (!found || pdz.empty() || pdz_end == pdz.c_str()) pd = kPadDeadzoneDefault;   // missing or not a number
+    c.pad_deadzone = !(pd >= 0.0f) ? 0.0f : pd > kPadDeadzoneMax ? kPadDeadzoneMax : pd;
     std::string lang = get(text, "language", &found);
     c.language = found && !lang.empty() ? lang : "auto";
     return c;
@@ -188,7 +200,10 @@ inline std::string format(const Config& c) {
         "; furthest reach seen per direction (the driver keeps it; wear never lowers the\r\n"
         "; stretch more than 0.10 below it), the share of the reach that gives full\r\n"
         "; output (0.50..1.00), and what learning during play follows: best = the\r\n"
-        "; furthest push, typical = most pushes (for a stick whose reach varies)\r\n";
+        "; furthest push, typical = most pushes (for a stick whose reach varies),\r\n"
+        "; and the gamepad stick (Xbox, PS4, PS5, ...) that takes over while it is pushed:\r\n"
+        "; off, left or right, and the id of the one pad that may do it (the Status page\r\n"
+        "; picks it; empty = none). SteamVR reads it, so it works while the game is in the background\r\n";
     for (int i = 0; i < 2; ++i) {
         const HandConfig& h = c.hand[i];
         std::string k = kHandKey[i];
@@ -204,7 +219,11 @@ inline std::string format(const Config& c) {
         s += k + "_edge_base=" + edge_format(h.edge_base) + "\r\n";
         s += k + "_edge_full=" + num2(h.edge_full) + "\r\n";
         s += k + "_edge_learn=" + std::string(h.edge_typical ? "typical" : "best") + "\r\n";
+        s += k + "_pad=" + std::string(pad_name(h.pad)) + "\r\n";
+        s += k + "_pad_device=" + h.pad_device + "\r\n";
     }
+    s += "; gamepad stick deadzone (0..0.50): a smaller push leaves the controller's stick in charge\r\n";
+    s += "pad_deadzone=" + num2(c.pad_deadzone) + "\r\n";
     s += "; panel language: auto follows Windows, or a code such as de, ar, ja, zh-Hant\r\n";
     s += "language=" + c.language + "\r\n";
     return s;

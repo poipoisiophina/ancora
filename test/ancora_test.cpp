@@ -1023,6 +1023,108 @@ void test_add_missing() {
     check(add_missing(full) == full, "add_missing: the default file needs nothing");
 }
 
+// gamepad takeover (ancora_pad.h) and its ini keys
+void test_pad() {
+    using namespace ancfg;
+    float x, y;
+    check(!pad_map(0.15f, 0.10f, 0.05f, x, y) && x == 0 && y == 0, "pad: a push inside the deadzone leaves the stick alone");
+    check(pad_map(0.15f, 1.0f, 0.0f, x, y) && near(x, 1.0, 1e-6) && y == 0, "pad: the rim still gives full");
+    check(pad_map(0.15f, 0.0f, 0.575f, x, y) && near(y, 0.5, 1e-5), "pad: halfway past the deadzone gives half",
+          "y %.5f", y);
+    check(pad_map(0.15f, -1.0f, -1.0f, x, y) && near(std::sqrt(x * x + y * y), 1.0, 1e-5) && x < 0 && y < 0,
+          "pad: a corner is clamped to full, direction kept");
+    check(pad_map(0.0f, 0.3f, 0.0f, x, y) && near(x, 0.3, 1e-6), "pad: deadzone 0 passes the stick as is");
+    PadReading r;
+    r.connected = true; r.lx = 0.0f; r.ly = 1.0f; r.rx = 1.0f; r.ry = 0.0f;
+    check(pad_takeover(PAD_LEFT, 0.15f, r, x, y) && near(y, 1.0, 1e-6) && x == 0, "pad: left picks the left stick");
+    check(pad_takeover(PAD_RIGHT, 0.15f, r, x, y) && near(x, 1.0, 1e-6) && y == 0, "pad: right picks the right stick");
+    check(!pad_takeover(PAD_OFF, 0.15f, r, x, y), "pad: off never takes over");
+    r.connected = false;
+    check(!pad_takeover(PAD_LEFT, 0.15f, r, x, y), "pad: a pad that went away never takes over");
+    check(near(pad_xinput_axis(-32768), -1.0, 1e-6) && near(pad_xinput_axis(32767), 1.0, 1e-6) && pad_xinput_axis(0) == 0,
+          "pad: XInput axes reach -1 and 1");
+    check(near(pad_axis(0, 0, 65535), -1.0, 1e-6) && near(pad_axis(65535, 0, 65535), 1.0, 1e-6) &&
+              std::fabs(pad_axis(32767, 0, 65535)) < 1e-4 && pad_axis(5, 7, 7) == 0,
+          "pad: raw axes map to -1..1, a broken range reads 0");
+
+    // Sony report layouts: sticks full right / full up, one face button, by layout
+    check(pad_sony_model(0x054C, 0x0CE6) == 5 && pad_sony_model(0x054C, 0x09CC) == 4 && pad_sony_model(0x054C, 0x1234) == 0 &&
+              pad_sony_model(0x045E, 0x0CE6) == 0,
+          "pad: PS4 and PS5 pads are known by their ids");
+    auto sony = [](int model, unsigned char id, int st, int bt, int n, int max_len, PadReading& out) {
+        unsigned char r[80] = {};
+        r[0] = id;
+        r[st] = 255; r[st + 1] = 0; r[st + 2] = 128; r[st + 3] = 255;   // lx right, ly up, rx middle, ry down
+        r[bt] = 0x08 | 0x20;                                            // d-pad released, a face button
+        r[bt + 2] = model == 4 ? 0xFC : 0x00;                          // DualShock 4 counter bits only
+        return pad_parse_sony(model, r, n, max_len, out);
+    };
+    struct Case { int model; unsigned char id; int st, bt, n, max_len; const char* what; };
+    const Case cases[] = {
+        {5, 0x01, 1, 8, 64, 64, "pad: DualSense USB report"},
+        {5, 0x31, 2, 9, 78, 78, "pad: DualSense Bluetooth full report"},
+        {5, 0x01, 1, 5, 10, 78, "pad: DualSense Bluetooth simple report"},
+        {4, 0x01, 1, 5, 64, 64, "pad: DualShock 4 USB report"},
+        {4, 0x11, 3, 7, 78, 78, "pad: DualShock 4 Bluetooth full report"},
+    };
+    for (const Case& k : cases) {
+        PadReading r;
+        bool ok = sony(k.model, k.id, k.st, k.bt, k.n, k.max_len, r);
+        check(ok && r.connected && near(r.lx, 1.0, 1e-6) && near(r.ly, 1.0, 1e-6) && std::fabs(r.rx) < 0.01f &&
+                  near(r.ry, -1.0, 1e-6) && r.buttons == 0x20,
+              k.what, "ok %d lx %.3f ly %.3f rx %.3f ry %.3f buttons %08x", ok, r.lx, r.ly, r.rx, r.ry, r.buttons);
+    }
+    {
+        PadReading r;
+        unsigned char bad[16] = {0x31};
+        check(!pad_parse_sony(4, bad, 16, 64, r) && !pad_parse_sony(5, bad, 8, 78, r) && !r.connected,
+              "pad: an unknown report or a short one is not read");
+        unsigned char dp[64] = {0x01, 128, 128, 128, 128, 0, 0, 0, 0x02};   // DualSense USB, d-pad right (2)
+        check(pad_parse_sony(5, dp, 64, 64, r) && r.buttons == 0x04, "pad: the d-pad counts as a button");
+    }
+
+    check(pad_device_parse("XInput:2") == "xinput:2" && pad_device_parse("HID:054C:09CC") == "hid:054c:09cc" &&
+              pad_device_parse("hid:054c:09cc#2") == "hid:054c:09cc#2" &&
+              pad_device_parse("joy:054c:0ce6") == "hid:054c:0ce6",
+          "pad: device ids read in any case, the earlier joy: as hid:");
+    check(pad_device_parse("").empty() && pad_device_parse("xinput:4").empty() && pad_device_parse("hid:zz:09cc").empty() &&
+              pad_device_parse("hid:054c:09cc#1").empty() && pad_device_parse("auto").empty(),
+          "pad: an unreadable device is none");
+    char ids[3][kPadIdLen] = {"xinput:0", "hid:054c:09cc", "hid:054c:09cc#2"};
+    check(pad_resolve(ids, 3, "hid:054c:09cc#2") == 2 && pad_resolve(ids, 3, "xinput:0") == 0,
+          "pad: an id picks its own pad");
+    check(pad_resolve(ids, 3, "") == -1 && pad_resolve(ids, 3, "xinput:1") == -1,
+          "pad: with none picked, or the picked one away, no pad drives the stick");
+    unsigned before[3] = {0, 4, 0}, now[3] = {0, 4, 0};
+    check(pad_pressed(before, now, 3) == -1, "pad: a button held since before is no pick");
+    now[2] = 1;
+    check(pad_pressed(before, now, 3) == 2, "pad: a new press picks that pad");
+    now[1] = 4 | 8;
+    check(pad_pressed(before, now, 3) == 1, "pad: the first pad with a new press wins");
+
+    Config d = parse("");
+    check(d.hand[0].pad == PAD_OFF && d.hand[1].pad == PAD_OFF && d.hand[0].pad_device.empty() &&
+              near(d.pad_deadzone, 0.15, 1e-6),
+          "pad: off by default, no pad picked, deadzone 0.15");
+    Config c = parse("[ancora]\nleft_pad=Right\nright_pad=left\nleft_pad_device=hid:054c:05c4\npad_deadzone=0.9\n");
+    check(c.hand[0].pad == PAD_RIGHT && c.hand[1].pad == PAD_LEFT && c.hand[0].pad_device == "hid:054c:05c4" &&
+              c.hand[1].pad_device.empty() && near(c.pad_deadzone, 0.5, 1e-6),
+          "pad: keys read per hand, the deadzone clamps to 0.50");
+    check(near(parse("[ancora]\npad_deadzone=x\n").pad_deadzone, 0.15, 1e-6) &&
+              parse("[ancora]\npad_deadzone=-1\n").pad_deadzone == 0.0f,
+          "pad: an unreadable deadzone is the default, a negative one 0");
+    Config back = parse(format(c));
+    check(back.hand[0].pad == PAD_RIGHT && back.hand[0].pad_device == "hid:054c:05c4" && near(back.pad_deadzone, 0.5, 1e-6),
+          "pad: format and parse round trip");
+    std::string old = "[ancora]\r\nenable=1\r\nleft=1\r\n";
+    std::string added = add_missing(old);
+    bool has_dev;
+    get(added, "right_pad_device", &has_dev);
+    check(get(added, "left_pad") == "off" && has_dev && get(added, "right_pad_device").empty() &&
+              get(added, "pad_deadzone") == "0.15",
+          "pad: an older ini gains the gamepad keys, all off");
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -1046,6 +1148,7 @@ int main(int argc, char** argv) {
     test_gate();
     test_edge_full_and_typical();
     test_add_missing();
+    test_pad();
     std::printf("%d test(s), %d failure(s)\n", g_count, g_fails);
     return g_fails ? 1 : 0;
 }

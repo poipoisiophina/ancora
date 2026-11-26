@@ -152,6 +152,17 @@
   <what_language>Keel</what_language>
   <note_copied>Diagnostika kopeeritud</note_copied>
   <note_no_log>SteamVR logi asukoht teadmata</note_no_log>
+  <set_pad>Mängupult</set_pad>
+  <pad_none>Puudub</pad_none>
+  <pad_listen>Vajuta puldi nuppu</pad_listen>
+  <pad_absent>Pole ühendatud</pad_absent>
+  <pad_stick_left>Vasak juhtkang</pad_stick_left>
+  <pad_stick_right>Parem juhtkang</pad_stick_right>
+  <tip_pad>Xboxi või PS4/PS5 pult, juhtme või Bluetoothiga, liigutab seda juhtkangi, kui sa seda lükkad; keskel töötab kontrolleri juhtkang nagu varem. SteamVR loeb seda, nii et see töötab ka siis, kui mäng on taustal. Vali kõigepealt pult, siis selle juhtkang.</tip_pad>
+  <what_left_pad>Vasak mängupult</what_left_pad>
+  <what_right_pad>Parem mängupult</what_right_pad>
+  <state_pad>Mängupult</state_pad>
+  <sub_pad>{name} on lükatud, mängud saavad selle juhtkangi.</sub_pad>
   <tray_open>Ava ancora</tray_open>
   <tray_exit>Välju</tray_exit>
 </language>

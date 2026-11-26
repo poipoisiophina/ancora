@@ -152,6 +152,17 @@
   <what_language>اللغة</what_language>
   <note_copied>نُسخ التشخيص</note_copied>
   <note_no_log>موقع سجل SteamVR غير معروف</note_no_log>
+  <set_pad>ذراع الألعاب</set_pad>
+  <pad_none>لا شيء</pad_none>
+  <pad_listen>اضغط زرًا في الذراع</pad_listen>
+  <pad_absent>غير متصل</pad_absent>
+  <pad_stick_left>العصا اليسرى</pad_stick_left>
+  <pad_stick_right>العصا اليمنى</pad_stick_right>
+  <tip_pad>ذراع Xbox أو PS4/PS5، سلكي أو بالبلوتوث، يحرّك هذه العصا ما دمت تدفعه؛ وعند المنتصف تعمل عصا وحدة التحكم كما كانت. يقرؤه SteamVR، لذا يعمل حتى واللعبة في الخلفية. اختر الذراع أولًا ثم عصاه.</tip_pad>
+  <what_left_pad>ذراع الألعاب اليسرى</what_left_pad>
+  <what_right_pad>ذراع الألعاب اليمنى</what_right_pad>
+  <state_pad>ذراع الألعاب</state_pad>
+  <sub_pad>{name} مدفوع، فتحصل الألعاب على عصاه.</sub_pad>
   <tray_open>فتح ancora</tray_open>
   <tray_exit>خروج</tray_exit>
 </language>

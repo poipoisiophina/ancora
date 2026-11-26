@@ -3,7 +3,8 @@
 // hand's /input/joystick/{x,y,touch} components and rewrites stick values per
 // ancora.ini, in this order (ancora_output.h): touch gate (thumb off the cap ->
 // 0,0), optional moving average, optional center offset, optional deadzone (in
-// its shape) and edge stretch, optional curve.
+// its shape) and edge stretch, optional curve. A gamepad stick set for the hand
+// (ancora_pad.h) replaces all of that while it is pushed.
 // Publishes live state to shared memory for the ancora panel.
 // Rebuild this dll while SteamVR runs; the loader swaps it in.
 
@@ -24,6 +25,7 @@
 #include "ancora_output.h"
 #include "ancora_config.h"
 #include "ancora_ini_io.h"
+#include "ancora_pad_read.h"
 
 using namespace vr;
 
@@ -44,6 +46,9 @@ struct Config {
     EdgeReach edge[2];                     // edge stretch in use, off unless measured and on
     float edge_full[2]  = {kEdgeFullDefault, kEdgeFullDefault};   // share of the reach for full output
     bool  edge_typical[2] = {false, false};   // learn the typical push, not the furthest
+    int   pad[2]        = {PAD_OFF, PAD_OFF};   // gamepad stick that takes over while pushed
+    std::string pad_device[2];          // the picked gamepad's id, empty = none (ancora_pad.h)
+    float pad_deadzone  = kPadDeadzoneDefault;
 };
 
 struct Stick {
@@ -61,6 +66,9 @@ struct Stick {
     float sent_x = 0, sent_y = 0;       // last values games received
     bool  sent = false;                 // sent_x/sent_y hold real values
     bool  was_closed = false;           // gate state at the last push
+    bool  pad_on = false;               // the gamepad stick is pushed: games get pad_x/pad_y
+    float pad_x = 0, pad_y = 0;
+    int   pad_index = -1;               // g_pads entry this hand uses, -1 = none
 };
 
 const char* kHand[2] = {"left", "right"};
@@ -78,6 +86,12 @@ std::string g_model[2];
 
 const uint64_t kConfigPollMs = 250;
 const uint64_t kMissingWarnMs = 20000;   // no stick seen this long after start: say so once
+
+// gamepads found by the pad thread's last scan, as the panel sees them; g_mu
+int g_pad_count = 0;
+char g_pad_id[kPadMax][kPadIdLen] = {};
+char g_pad_label[kPadMax][kPadNameLen] = {};
+PadReading g_pad_read[kPadMax];         // their last readings
 
 HANDLE g_state_map = nullptr;
 AncoraState* g_state = nullptr;
@@ -125,6 +139,8 @@ void update_average(Stick& s, int i, double now) {
 }
 
 void output(const Stick& s, int i, double now, float& x, float& y) {
+    // a pushed gamepad stick replaces the controller's stick and all its correction
+    if (g_cfg.enable && s.pad_on) { x = s.pad_x; y = s.pad_y; return; }
     StickSettings st;
     st.correct = correcting(i);
     st.deadzone = g_cfg.deadzone[i];
@@ -144,6 +160,11 @@ void publish() {
     MemoryBarrier();
     g_state->tick_ms = GetTickCount64();
     g_state->enable  = g_cfg.enable;
+    g_state->pad_count = (uint32_t)g_pad_count;
+    for (int k = 0; k < kPadMax; ++k) {
+        std::memcpy(g_state->pads[k].id, g_pad_id[k], kPadIdLen);
+        std::memcpy(g_state->pads[k].name, g_pad_label[k], kPadNameLen);
+    }
     for (int i = 0; i < 2; ++i) {
         const Stick& s = g_s[i];
         AncoraHandState& h = g_state->hand[i];
@@ -161,6 +182,9 @@ void publish() {
         h.last_update_ms = s.last_ms;
         h.pair_seq = s.pair.seq; h.pair_x = s.pair.x; h.pair_y = s.pair.y;
         h.gate_suspect = s.ht && g_cfg.touch_gate[i] && s.gate.suspect;
+        h.pad = (uint32_t)g_cfg.pad[i];
+        h.pad_active = g_cfg.enable && s.pad_on;
+        h.pad_index = s.pad_index;
         strncpy_s(h.model, g_model[i].c_str(), _TRUNCATE);
     }
     MemoryBarrier();
@@ -200,6 +224,19 @@ void repush(int i, double dt, double now) {
     s.sent_x = x; s.sent_y = y; s.sent = true;
 }
 
+// this hand's gamepad takeover from the last readings; true when what games get
+// changed (repush it), *listed when only the pad in use changed; g_mu held
+bool apply_pad(int i, bool* listed = nullptr) {
+    Stick& s = g_s[i];
+    int k = g_cfg.pad[i] == PAD_OFF ? -1 : pad_resolve(g_pad_id, g_pad_count, g_cfg.pad_device[i]);
+    float x, y;
+    bool on = pad_takeover(g_cfg.pad[i], g_cfg.pad_deadzone, k >= 0 ? g_pad_read[k] : PadReading{}, x, y);
+    bool changed = on != s.pad_on || (on && (x != s.pad_x || y != s.pad_y));
+    if (listed && k != s.pad_index) *listed = true;
+    s.pad_on = on; s.pad_x = x; s.pad_y = y; s.pad_index = k;
+    return changed;
+}
+
 void load_config(bool force) {
     WIN32_FILE_ATTRIBUTE_DATA fa;
     if (!GetFileAttributesExW(g_ini.c_str(), GetFileExInfoStandard, &fa)) {
@@ -226,15 +263,24 @@ void load_config(bool force) {
         c.edge[i] = ancfg::effective_edge(h);
         c.edge_full[i] = h.edge_full;
         c.edge_typical[i] = h.edge_typical;
+        c.pad[i] = h.pad;
+        c.pad_device[i] = h.pad_device;
         if (h.edge_bad) log(std::string(kHand[i]) + "_edge unreadable, edge stretch off");
         edge_text[i] = ancfg::get(text, (std::string(kHand[i]) + "_edge").c_str());
     }
+    c.pad_deadzone = f.pad_deadzone;
     std::lock_guard<std::mutex> lk(g_mu);
     for (int i = 0; i < 2; ++i) g_s[i].learn.reload(c.edge[i], g_cfg.edge[i], edge_text[i], f.hand[i].edge_base);
     g_cfg = c;
     double now = now_precise_ms();
-    for (int i = 0; i < 2; ++i) { update_average(g_s[i], i, now); repush(i, 0, now); }
+    for (int i = 0; i < 2; ++i) { apply_pad(i); update_average(g_s[i], i, now); repush(i, 0, now); }
     publish();
+    for (int i = 0; i < 2; ++i)
+        if (c.pad[i] != PAD_OFF)
+            log(std::string(kHand[i]) + " stick: " +
+                (c.pad_device[i].empty() ? std::string("gamepad stick set, but no pad picked")
+                                         : "gamepad " + c.pad_device[i] + " " + pad_name(c.pad[i]) +
+                                               " stick takes over while pushed, deadzone " + ancfg::num2(c.pad_deadzone)));
     char line[400];
     std::snprintf(line, sizeof(line),
                   "config enable=%d left=%d gate=%d avg=%dms dz=%.2f%s center=%.3f,%.3f edge=%.2f full=%.2f%s curve=%.2f "
@@ -331,7 +377,78 @@ void save_learned(double now) {
 // file work (saving learned reach, reading the config) runs here, on its own
 // thread, so a slow disk or a held ini lock never stalls SteamVR's frame
 std::thread g_worker;
-HANDLE g_worker_stop = nullptr;
+HANDLE g_worker_stop = nullptr;   // also stops the pad thread
+
+// gamepads (ancora_pad_read.h) on their own thread: an empty slot can take
+// milliseconds to answer, and SteamVR's frame must never wait for that. The list
+// is refreshed once a second, so the panel can offer every pad plugged in or
+// paired; the pads a hand uses are read every kPadPollMs while one is set
+std::thread g_pad_thread;
+const ULONGLONG kPadScanMs = 1000;
+const LONGLONG kPadPollMs = 4;
+
+#ifndef CREATE_WAITABLE_TIMER_HIGH_RESOLUTION
+#define CREATE_WAITABLE_TIMER_HIGH_RESOLUTION 0x00000002
+#endif
+
+void pad_worker() {
+    PadReader reader;
+    // a 4 ms wait: a plain Sleep or wait timeout would round up to the 15.6 ms tick
+    HANDLE timer = CreateWaitableTimerExW(nullptr, nullptr, CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
+    if (!timer) timer = CreateWaitableTimerExW(nullptr, nullptr, 0, TIMER_ALL_ACCESS);
+    ULONGLONG last_scan = 0;
+    int last_count = -1;
+    for (;;) {
+        bool used[kPadMax] = {}, any = false;
+        {
+            std::lock_guard<std::mutex> lk(g_mu);
+            for (int i = 0; i < 2; ++i)
+                if (g_cfg.enable && g_cfg.pad[i] != PAD_OFF) {
+                    any = true;
+                    if (g_s[i].pad_index >= 0) used[g_s[i].pad_index] = true;
+                }
+        }
+        ULONGLONG t = GetTickCount64();
+        bool list_changed = false;
+        if (!last_scan || t - last_scan >= kPadScanMs) {
+            last_scan = t;
+            list_changed = reader.scan();
+        } else if (any) {
+            for (int k = 0; k < reader.count; ++k) if (used[k]) reader.poll(k);
+        }
+        {
+            std::lock_guard<std::mutex> lk(g_mu);
+            g_pad_count = reader.count;
+            for (int k = 0; k < kPadMax; ++k) {
+                std::memcpy(g_pad_id[k], reader.dev[k].id, kPadIdLen);
+                std::memcpy(g_pad_label[k], reader.dev[k].name, kPadNameLen);
+                g_pad_read[k] = reader.dev[k].last;
+            }
+            bool listed = list_changed;
+            double now = now_precise_ms();
+            for (int i = 0; i < 2; ++i)
+                if (apply_pad(i, &listed)) { update_average(g_s[i], i, now); repush(i, 0, now); listed = true; }
+            if (listed) publish();
+        }
+        if (list_changed || reader.count != last_count) {
+            std::string names;
+            for (int k = 0; k < reader.count; ++k)
+                names += std::string(k ? ", " : "") + reader.dev[k].id + " (" + reader.dev[k].name + ")";
+            log("gamepads: " + (reader.count ? names : std::string("none")));
+            last_count = reader.count;
+        }
+        if (any && timer) {
+            LARGE_INTEGER due;
+            due.QuadPart = -kPadPollMs * 10000;   // relative, in 100 ns units
+            SetWaitableTimer(timer, &due, 0, nullptr, nullptr, FALSE);
+            HANDLE w[2] = {g_worker_stop, timer};
+            if (WaitForMultipleObjects(2, w, FALSE, INFINITE) == WAIT_OBJECT_0) break;
+        } else if (WaitForSingleObject(g_worker_stop, any ? (DWORD)kPadPollMs : 250) != WAIT_TIMEOUT) {
+            break;
+        }
+    }
+    if (timer) CloseHandle(timer);
+}
 
 void worker() {
     while (WaitForSingleObject(g_worker_stop, (DWORD)kConfigPollMs) == WAIT_TIMEOUT) {
@@ -414,10 +531,9 @@ bool g_quiesced = false;
 void quiesce() {
     if (g_quiesced) return;
     g_quiesced = true;
-    if (g_worker.joinable()) {
-        SetEvent(g_worker_stop);
-        g_worker.join();
-    }
+    if (g_worker_stop) SetEvent(g_worker_stop);
+    if (g_worker.joinable()) g_worker.join();
+    if (g_pad_thread.joinable()) g_pad_thread.join();
     if (g_worker_stop) { CloseHandle(g_worker_stop); g_worker_stop = nullptr; }
     save_learned(now_precise_ms() + kEdgeSaveMs);
 }
@@ -428,7 +544,10 @@ void start(uint32_t generation) {
     open_state(generation);
     load_config(true);
     g_worker_stop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
-    if (g_worker_stop) g_worker = std::thread(worker);
+    if (g_worker_stop) {
+        g_worker = std::thread(worker);
+        g_pad_thread = std::thread(pad_worker);
+    }
 }
 
 void shutdown() {

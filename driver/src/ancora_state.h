@@ -7,7 +7,7 @@
 
 #define ANCORA_STATE_NAME    "Local\\ancora_state_v1"
 #define ANCORA_STATE_MAGIC   0x41434F52u   // "ACOR"
-#define ANCORA_STATE_VERSION 6
+#define ANCORA_STATE_VERSION 7
 #define ANCORA_STATE_BYTES   4096          // section size; the struct must fit
 
 struct AncoraHandState {
@@ -32,6 +32,17 @@ struct AncoraHandState {
     // the stick was held at its rim with touch reading off, so the gate stopped
     // trusting the thumb sensor until it reads touch again (ancora_output.h)
     uint32_t gate_suspect;
+    // gamepad stick for this hand (PAD_OFF, PAD_LEFT, PAD_RIGHT, ancora_pad.h) and
+    // whether it is pushed now, so games get it in place of out_x/out_y's stick
+    uint32_t pad;
+    uint32_t pad_active;
+    int32_t  pad_index;         // AncoraState::pads entry it uses, -1 = none found
+};
+
+// a gamepad the driver found (ancora_pad.h, ancora_pad_read.h)
+struct AncoraPadInfo {
+    char id[24];                // kPadIdLen, the <hand>_pad_device value that picks it
+    char name[64];              // kPadNameLen, UTF-8
 };
 
 struct AncoraState {
@@ -42,4 +53,6 @@ struct AncoraState {
     uint64_t tick_ms;           // GetTickCount64 of the last write
     uint32_t enable;            // master switch as applied
     AncoraHandState hand[2];    // 0 left, 1 right
+    uint32_t pad_count;         // gamepads found, at most 8 (kPadMax)
+    AncoraPadInfo pads[8];
 };

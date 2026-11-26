@@ -152,6 +152,17 @@
   <what_language>Taal</what_language>
   <note_copied>Diagnose gekopieerd</note_copied>
   <note_no_log>Locatie van SteamVR-logboek onbekend</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Geen</pad_none>
+  <pad_listen>Druk op een knop van de pad</pad_listen>
+  <pad_absent>Niet verbonden</pad_absent>
+  <pad_stick_left>Linker stick</pad_stick_left>
+  <pad_stick_right>Rechter stick</pad_stick_right>
+  <tip_pad>Een Xbox- of PS4/PS5-pad, met kabel of Bluetooth, beweegt deze stick zolang je hem duwt; in het midden werkt de stick van de controller als voorheen. SteamVR leest hem, dus het werkt ook als het spel op de achtergrond staat. Kies eerst de pad, dan zijn stick.</tip_pad>
+  <what_left_pad>Linker gamepad</what_left_pad>
+  <what_right_pad>Rechter gamepad</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} wordt geduwd, games krijgen zijn stick.</sub_pad>
   <tray_open>ancora openen</tray_open>
   <tray_exit>Afsluiten</tray_exit>
 </language>

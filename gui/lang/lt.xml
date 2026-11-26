@@ -152,6 +152,17 @@
   <what_language>Kalba</what_language>
   <note_copied>Diagnostika nukopijuota</note_copied>
   <note_no_log>SteamVR žurnalo vieta nežinoma</note_no_log>
+  <set_pad>Pultelis</set_pad>
+  <pad_none>Nėra</pad_none>
+  <pad_listen>Paspauskite pultelio mygtuką</pad_listen>
+  <pad_absent>Neprijungtas</pad_absent>
+  <pad_stick_left>Kairė svirtis</pad_stick_left>
+  <pad_stick_right>Dešinė svirtis</pad_stick_right>
+  <tip_pad>Xbox ar PS4/PS5 pultelis, laidu ar Bluetooth, judina šią svirtį, kol ją stumiate; centre valdiklio svirtis veikia kaip anksčiau. Jį skaito SteamVR, todėl veikia ir kai žaidimas fone. Pirma pasirinkite pultelį, tada jo svirtį.</tip_pad>
+  <what_left_pad>Kairysis pultelis</what_left_pad>
+  <what_right_pad>Dešinysis pultelis</what_right_pad>
+  <state_pad>Pultelis</state_pad>
+  <sub_pad>{name} stumiamas, žaidimai gauna jo svirtį.</sub_pad>
   <tray_open>Atverti ancora</tray_open>
   <tray_exit>Išeiti</tray_exit>
 </language>

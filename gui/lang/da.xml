@@ -152,6 +152,17 @@
   <what_language>Sprog</what_language>
   <note_copied>Diagnostik kopieret</note_copied>
   <note_no_log>SteamVR-loggens placering ukendt</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Ingen</pad_none>
+  <pad_listen>Tryk på en knap på pad'en</pad_listen>
+  <pad_absent>Ikke forbundet</pad_absent>
+  <pad_stick_left>Venstre stik</pad_stick_left>
+  <pad_stick_right>Højre stik</pad_stick_right>
+  <tip_pad>En Xbox- eller PS4/PS5-pad, med kabel eller Bluetooth, flytter dette stik, mens du skubber den; i midten virker controllerens stik som før. SteamVR læser den, så det virker, også når spillet er i baggrunden. Vælg først pad'en, derefter dens stik.</tip_pad>
+  <what_left_pad>Venstre gamepad</what_left_pad>
+  <what_right_pad>Højre gamepad</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} skubbes, så spil får dens stik.</sub_pad>
   <tray_open>Åbn ancora</tray_open>
   <tray_exit>Afslut</tray_exit>
 </language>

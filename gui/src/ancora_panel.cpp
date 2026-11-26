@@ -60,6 +60,7 @@
 #include "../../driver/src/ancora_edge.h"
 #include "../../driver/src/ancora_config.h"
 #include "../../driver/src/ancora_ini_io.h"
+#include "../../driver/src/ancora_pad_read.h"
 #include "ancora_lang.h"
 #include "ancora_steamvr.h"
 // written by build_driver.bat from AppVersion in packaging\ancora.iss
@@ -330,6 +331,14 @@ void fake_state(uint64_t now) {
     r.touch = 1; r.tracked = 7; r.gated = 0; r.updates = (uint32_t)(t * 500);
     strcpy_s(r.model, "Oculus Quest3 (Right Controller)");
     r.last_update_ms = now;
+    // two pads; the names are what such pads report themselves
+    s.pad_count = 2;
+    strcpy_s(s.pads[0].id, "xinput:0");
+    strcpy_s(s.pads[0].name, "Controller (Xbox One For Windows)");
+    strcpy_s(s.pads[1].id, "joy:054c:0ce6");
+    strcpy_s(s.pads[1].name, "DualSense Wireless Controller");
+    l.pad = PAD_OFF; l.pad_index = 0;
+    r.pad = PAD_OFF; r.pad_index = 0;
     g_live.valid = true;
 }
 
@@ -693,7 +702,8 @@ void trace(const char* f, ...) {
 // ---- focusable regions -------------------------------------------------------------------
 enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_AVERAGE, ID_SLIDER, ID_CURVE,
           ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_TUNE_EDGE, ID_TUNE_EDGE_APPLY,
-          ID_TUNE_EDGE_CLEAR, ID_EDGE_ON, ID_TUNE_EDGE_FINISH, ID_TUNE_CENTER_CLEAR, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG };
+          ID_TUNE_EDGE_CLEAR, ID_EDGE_ON, ID_TUNE_EDGE_FINISH, ID_TUNE_CENTER_CLEAR, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG,
+          ID_PAD_DEVICE, ID_PAD };
 struct Region { D2D1_RECT_F r; Id id; int hand; };
 std::vector<Region> g_regions;     // rebuilt every frame, in focus order
 Id g_focus = ID_NAV_STATUS;
@@ -1070,6 +1080,68 @@ void draw_footer(ID2D1RenderTarget* t) {
 }
 
 // ---- status page ----------------------------------------------------------------------------
+// ---- gamepads (ancora_pad.h) -----------------------------------------------------------------
+// one pad as the panel shows it: its id and the name it reports itself
+struct PadEntry { std::string id; std::wstring name; };
+
+// the pads the driver found, from the live state
+std::vector<PadEntry> pads_live() {
+    std::vector<PadEntry> v;
+    int n = g_live.valid ? (int)std::min<uint32_t>(g_live.snap.pad_count, kPadMax) : 0;
+    for (int k = 0; k < n; ++k) {
+        const AncoraPadInfo& p = g_live.snap.pads[k];
+        v.push_back({std::string(p.id, strnlen(p.id, sizeof(p.id))),
+                     widen(std::string(p.name, strnlen(p.name, sizeof(p.name))))});
+    }
+    return v;
+}
+
+// the panel's own look at the pads (ancora_pad_read.h), for the pad menu and the
+// pick by press, so both work while SteamVR is off; same order and ids as the driver
+struct PadListen {
+    int hand = -1;                  // picking for this hand, -1 = not picking
+    uint64_t until = 0, next_scan = 0;
+    PadReader reader;
+    unsigned before[kPadMax] = {};  // buttons already held, which do not count
+};
+PadListen g_listen;
+std::vector<PadEntry> g_pads_seen;  // the panel's last own scan, names while SteamVR is off
+D2D1_RECT_F g_pad_box[2] = {};      // the device boxes, where the pad menu opens
+
+std::vector<PadEntry> pads_of(const PadReader& r) {
+    std::vector<PadEntry> v;
+    for (int k = 0; k < r.count; ++k) v.push_back({r.dev[k].id, widen(r.dev[k].name)});
+    return v;
+}
+
+// the name of pad k; two pads with the same name get " 1", " 2", ... in list order
+std::wstring pad_label(const std::vector<PadEntry>& v, size_t k) {
+    std::wstring w = v[k].name;
+    int same = 1;
+    bool twin = false;
+    for (size_t j = 0; j < v.size(); ++j)
+        if (j != k && v[j].name == v[k].name) { twin = true; if (j < k) ++same; }
+    if (w.size() > 28) w = w.substr(0, 27) + L"\x2026";
+    if (twin) w += L" " + std::to_wstring(same);
+    return w;
+}
+
+// what a hand's device box shows, and in what colour
+std::wstring pad_device_label(int hand, uint32_t& color) {
+    const std::string& want = g.cfg.hand[hand].pad_device;
+    color = kText;
+    if (g_listen.hand == hand) { color = kBrass; return tr(S_pad_listen); }
+    if (want.empty()) { color = kMuted; return tr(S_pad_none); }
+    std::vector<PadEntry> live = pads_live();
+    for (size_t k = 0; k < live.size(); ++k) if (live[k].id == want) return pad_label(live, k);
+    // SteamVR off: the name from the panel's own scan, the pad is not driving anything now
+    if (!g_live.valid)
+        for (size_t k = 0; k < g_pads_seen.size(); ++k)
+            if (g_pads_seen[k].id == want) { color = kMuted; return pad_label(g_pads_seen, k); }
+    color = kWarn;
+    return tr(S_pad_absent);
+}
+
 struct HandView {
     std::wstring word, sub;
     uint32_t color;
@@ -1087,6 +1159,9 @@ HandView describe_hand(int i, uint64_t now) {
     if ((h.tracked & 3) != 3 || !h.last_update_ms) return {tr(S_state_not_connected), tr(S_sub_wake), kWarn};
     if (!connected(h, now))
         return {tr(S_state_not_connected), sub(tr(S_sub_silent), {{L"n", num((now - h.last_update_ms) / 1000.0, 0)}}), kWarn};
+    std::vector<PadEntry> pads = pads_live();
+    if (s.enable && h.pad_active && h.pad_index >= 0 && h.pad_index < (int)pads.size())
+        return {tr(S_state_pad), sub(tr(S_sub_pad), {{L"name", pad_label(pads, (size_t)h.pad_index)}}), kOut};
     if (!s.enable || !h.enable) return {tr(S_state_not_corrected), tr(S_sub_unchanged), kMuted};
     if (h.touch_gate && (h.tracked & 4) && !h.touch)
         return {tr(S_state_anchored), m > 0.02f ? sub(tr(S_sub_drifting), {{L"value", num(m, 2)}}) : tr(S_sub_thumb_off),
@@ -1170,9 +1245,9 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
         if (k == 2) text(t, tr(thumb_label(h)), g.f_body, b.left + 12, b.top + 23, thumb_color(h), bw - 24);
     }
 
-    // per hand settings: five rows
-    const int rows = 5;
-    const float rh = 37;
+    // per hand settings: six rows
+    const int rows = 6;
+    const float rh = 32;
     D2D1_RECT_F well = {x0 + 22, ry + 60, x0 + 470 - 22, ry + 60 + rows * rh};
     fill_round(t, well, 12, kWell);
     auto row = [&](int n) { return D2D1_RECT_F{well.left, well.top + n * rh, well.right, well.top + (n + 1) * rh}; };
@@ -1182,6 +1257,8 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     tip(row(2), S_tip_deadzone, ID_SLIDER, i);
     tip(row(3), S_tip_curve, ID_CURVE, i);
     tip(row(4), S_tip_edge, ID_EDGE_ON, i);
+    tip(row(5), S_tip_pad, ID_PAD_DEVICE, i);
+    tip(row(5), S_tip_pad, ID_PAD, i);
     text(t, tr(S_set_gate), g.f_body, gate.left + 14, gate.top + rh / 2 - 11, kText, gate.right - gate.left - 90);
     draw_switch(t, gate.right - 14 - 46, gate.top + rh / 2 - 13, hc.touch_gate);
     if (focused(ID_GATE, i)) ring(t, gate, 12);
@@ -1212,6 +1289,34 @@ void draw_hand_card(ID2D1RenderTarget* t, int i, uint64_t now) {
     }
     if (focused(ID_EDGE_ON, i)) ring(t, edge, 12);
     region(edge, ID_EDGE_ON, i);
+
+    // gamepad: which pad, and which of its sticks takes over while pushed
+    D2D1_RECT_F pad = row(5);
+    float ty = pad.top + rh / 2 - 11;
+    float stick_w = 104, dev_w = 178;
+    D2D1_RECT_F stick = {pad.right - 8 - stick_w, pad.top + 3, pad.right - 8, pad.bottom - 3};
+    D2D1_RECT_F dev = {stick.left - 6 - dev_w, pad.top + 3, stick.left - 6, pad.bottom - 3};
+    text(t, tr(S_set_pad), g.f_body, pad.left + 14, ty, kText, dev.left - pad.left - 20);
+    int sel = hc.pad;
+    fill_round(t, dev, 8, kSel);
+    uint32_t dev_color;
+    std::wstring dev_text = pad_device_label(i, dev_color);
+    text(t, dev_text, g.f_body, dev.left + 8, ty, dev_color, dev_w - 16, DWRITE_TEXT_ALIGNMENT_CENTER);
+    g_pad_box[i] = dev;
+    if (focused(ID_PAD_DEVICE, i)) ring(t, dev, 10);
+    region(dev, ID_PAD_DEVICE, i);
+    // the stick choice only means something once a pad is picked: until then it
+    // reads off and cannot be changed
+    bool picked = !hc.pad_device.empty();
+    if (!picked) sel = PAD_OFF;
+    fill_round(t, stick, 8, kSel, picked ? 1.0f : 0.4f);
+    std::wstring sv = tr(sel == PAD_LEFT ? S_pad_stick_left : sel == PAD_RIGHT ? S_pad_stick_right : S_value_off);
+    text(t, sv, g.f_body, stick.left + 8, ty, !picked ? kDim : h.pad_active && live ? kOut : sel ? kText : kMuted,
+         stick_w - 16, DWRITE_TEXT_ALIGNMENT_CENTER);
+    if (picked) {
+        if (focused(ID_PAD, i)) ring(t, stick, 10);
+        region(stick, ID_PAD, i);
+    }
 }
 
 void draw_status(ID2D1RenderTarget* t, uint64_t now) {
@@ -1787,6 +1892,112 @@ void copy_diagnostics() {
     }
 }
 
+// ---- picking a hand's gamepad: from the menu, or by a button pressed on the pad
+float ui_scale();
+const uint64_t kPadListenMs = 10000;   // how long a press is waited for
+
+// the one pad that may move this hand's stick (empty = none); picking a pad with
+// no stick chosen yet also chooses the stick on the hand's own side, and None
+// turns the stick choice off with it, as one ini change
+void pad_pick(int hand, const std::string& id) {
+    HandConfig& hc = g.cfg.hand[hand];
+    ensure_file();
+    hc.pad_device = id;
+    if (id.empty()) hc.pad = PAD_OFF;
+    else if (hc.pad == PAD_OFF) hc.pad = hand ? PAD_RIGHT : PAD_LEFT;
+    std::string k = ascii(kHandKey[hand]);
+    ancfg::update(g_ini, [&](const std::string& t) {
+        return ancfg::set(ancfg::set(t, (k + "_pad_device").c_str(), id), (k + "_pad").c_str(), pad_name(hc.pad));
+    });
+    saved(tr(hand ? S_what_right_pad : S_what_left_pad));
+}
+
+void pad_listen_stop() {
+    g_listen.hand = -1;
+    g_listen.reader.close();   // the panel holds no pad open while it does not pick
+}
+
+void pad_listen_start(int hand) {
+    g_listen.hand = hand;
+    uint64_t now = GetTickCount64();
+    g_listen.until = now + kPadListenMs;
+    g_listen.next_scan = now + 1000;
+    g_listen.reader.scan();
+    g_pads_seen = pads_of(g_listen.reader);
+    for (int k = 0; k < kPadMax; ++k) g_listen.before[k] = g_listen.reader.dev[k].last.buttons;
+}
+
+// every frame while picking by press; true when the view changed. XInput and the
+// joystick API answer whether or not this window has focus, so the press can come
+// while a game is in front
+bool pad_listen_tick() {
+    if (g_listen.hand < 0) return false;
+    uint64_t now = GetTickCount64();
+    if (now >= g_listen.until) { pad_listen_stop(); return true; }
+    PadReader& r = g_listen.reader;
+    if (now >= g_listen.next_scan) {
+        // a pad switched on now counts from scratch: its first press may be the one
+        // that wakes it (the PS or Xbox button)
+        std::string ids[kPadMax];
+        unsigned held[kPadMax];
+        for (int k = 0; k < r.count; ++k) { ids[k] = r.dev[k].id; held[k] = g_listen.before[k]; }
+        int old_count = r.count;
+        r.scan();
+        g_listen.next_scan = now + 1000;
+        for (int k = 0; k < r.count; ++k) {
+            g_listen.before[k] = 0;
+            for (int j = 0; j < old_count; ++j) if (ids[j] == r.dev[k].id) g_listen.before[k] = held[j];
+        }
+        g_pads_seen = pads_of(r);
+    } else {
+        for (int k = 0; k < r.count; ++k) r.poll(k);
+    }
+    unsigned cur[kPadMax] = {};
+    for (int k = 0; k < r.count; ++k) cur[k] = r.dev[k].last.buttons;
+    int hit = pad_pressed(g_listen.before, cur, r.count);
+    // a button let go may be pressed again and then counts
+    for (int k = 0; k < r.count; ++k) g_listen.before[k] &= cur[k];
+    if (hit < 0) return false;
+    int hand = g_listen.hand;
+    std::string id = r.dev[hit].id;   // before stop, which empties the reader
+    pad_listen_stop();
+    pad_pick(hand, id);
+    return true;
+}
+
+// every pad connected now, None, and the pick by press, below the device box
+void pad_menu(int hand) {
+    PadReader r;
+    r.scan();
+    g_pads_seen = pads_of(r);
+    const std::string& cur = g.cfg.hand[hand].pad_device;
+    HMENU menu = CreatePopupMenu();
+    UINT mf = MF_STRING | (g.rtl ? MFT_RIGHTORDER | MFT_RIGHTJUSTIFY : 0);
+    AppendMenuW(menu, mf | (cur.empty() ? MF_CHECKED : 0), 1000, tr(S_pad_none).c_str());
+    AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    bool listed = cur.empty();
+    for (size_t k = 0; k < g_pads_seen.size(); ++k) {
+        bool on = g_pads_seen[k].id == cur;
+        listed |= on;
+        AppendMenuW(menu, mf | (on ? MF_CHECKED : 0), 1001 + (UINT)k, pad_label(g_pads_seen, k).c_str());
+    }
+    // the picked pad is away: shown, so it is clear why nothing moves
+    if (!listed) AppendMenuW(menu, mf | MF_CHECKED | MF_GRAYED, 999, tr(S_pad_absent).c_str());
+    AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+    AppendMenuW(menu, mf, 1100, tr(S_pad_listen).c_str());
+    float sc = ui_scale();
+    const D2D1_RECT_F& b = g_pad_box[hand];
+    float edge = g.rtl ? kW - b.left : b.left;
+    POINT pt = {(LONG)(edge * sc), (LONG)(b.bottom * sc)};
+    ClientToScreen(g.hwnd, &pt);
+    UINT flags = TPM_RETURNCMD | TPM_TOPALIGN | (g.rtl ? TPM_RIGHTALIGN | TPM_LAYOUTRTL : TPM_LEFTALIGN);
+    int cmd = TrackPopupMenu(menu, flags, pt.x, pt.y, 0, g.hwnd, nullptr);
+    DestroyMenu(menu);
+    if (cmd == 1000) pad_pick(hand, "");
+    else if (cmd == 1100) pad_listen_start(hand);
+    else if (cmd > 1000 && cmd < 1001 + (int)g_pads_seen.size()) pad_pick(hand, g_pads_seen[cmd - 1001].id);
+}
+
 void activate(Id id, int hand) {
     switch (id) {
     case ID_NAV_STATUS: g.page = PAGE_STATUS; break;
@@ -1809,6 +2020,17 @@ void activate(Id id, int hand) {
         g.cfg.hand[hand].touch_gate = !g.cfg.hand[hand].touch_gate;
         write_bool(g_ini, hand_key(hand, L"_touch_gate"), g.cfg.hand[hand].touch_gate);
         saved(tr(hand ? S_what_right_gate : S_what_left_gate));
+        break;
+    case ID_PAD:
+        if (g.cfg.hand[hand].pad_device.empty()) break;   // no pad picked: nothing to choose
+        ensure_file();
+        g.cfg.hand[hand].pad = (g.cfg.hand[hand].pad + 1) % 3;   // off, left stick, right stick
+        write_key(g_ini, hand_key(hand, L"_pad"), widen(pad_name(g.cfg.hand[hand].pad)));
+        saved(tr(hand ? S_what_right_pad : S_what_left_pad));
+        break;
+    case ID_PAD_DEVICE:
+        if (g_listen.hand == hand) pad_listen_stop();
+        else pad_menu(hand);
         break;
     case ID_TUNE_HAND:  if (g_tune.hand != hand) tune_reset(hand); break;
     case ID_TUNE_START: tune_start(); break;
@@ -2009,6 +2231,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     case WM_TIMER:
         if (wp == kTimerTip) { KillTimer(h, kTimerTip); if (active_tip()) redraw(); }
         if (wp == kTimerFrame && refresh_fast()) redraw();
+        if (wp == kTimerFrame && pad_listen_tick()) redraw();
         if (wp == kTimerSlow) {
             bool shown = IsWindowVisible(h) && !IsIconic(h);   // not in the tray, not minimised
             refresh_slow(shown);
@@ -2134,7 +2357,8 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         } else if (wp == VK_RETURN || wp == VK_SPACE) {
             if (g_focus != ID_SLIDER && g_focus != ID_AVERAGE && g_focus != ID_CURVE) activate(g_focus, g_focus_hand);
         } else if (wp == VK_ESCAPE) {
-            if (g.page != PAGE_STATUS) { g.page = PAGE_STATUS; g_focus = ID_NAV_STATUS; g_focus_hand = 0; }
+            if (g_listen.hand >= 0) pad_listen_stop();
+            else if (g.page != PAGE_STATUS) { g.page = PAGE_STATUS; g_focus = ID_NAV_STATUS; g_focus_hand = 0; }
             else hide_panel();
         }
         redraw();

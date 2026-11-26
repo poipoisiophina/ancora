@@ -154,6 +154,17 @@
   <what_language>toki</what_language>
   <note_copied>lukin insa li sama</note_copied>
   <note_no_log>mi sona ala e ma pi lipu SteamVR</note_no_log>
+  <set_pad>ilo musi</set_pad>
+  <pad_none>ala</pad_none>
+  <pad_listen>o luka e nena lon ilo musi</pad_listen>
+  <pad_absent>ilo li pana ala</pad_absent>
+  <pad_stick_left>palisa open</pad_stick_left>
+  <pad_stick_right>palisa pini</pad_stick_right>
+  <tip_pad>ilo musi Xbox anu PS4/PS5 li tawa e palisa ni lon tenpo sina tawa e ona; lon insa la palisa pi ilo luka li pali sama tenpo pini. SteamVR li lukin e ona, la ona li pali lon tenpo musi li lon monsi. o pana e ilo musi, o pana e palisa ona.</tip_pad>
+  <what_left_pad>ilo musi open</what_left_pad>
+  <what_right_pad>ilo musi pini</what_right_pad>
+  <state_pad>ilo musi</state_pad>
+  <sub_pad>jan li tawa e {name}, la musi li kama jo e palisa ona.</sub_pad>
   <tray_open>o open e ancora</tray_open>
   <tray_exit>o pini</tray_exit>
 </language>

@@ -178,6 +178,19 @@
   <note_copied>Diagnostics copied</note_copied>
   <note_no_log>SteamVR log location unknown</note_no_log>
 
+  <!-- gamepad row on each status card; {name} is the name a pad reports -->
+  <set_pad>Gamepad</set_pad>
+  <pad_none>None</pad_none>
+  <pad_listen>Press a button on the pad</pad_listen>
+  <pad_absent>Not connected</pad_absent>
+  <pad_stick_left>Left stick</pad_stick_left>
+  <pad_stick_right>Right stick</pad_stick_right>
+  <tip_pad>An Xbox, PS4 or PS5 pad, wired or Bluetooth, moves this stick while you push it; centered, the controller's stick works as before. SteamVR reads it, so it works while the game is in the background. Pick the pad first, then its stick.</tip_pad>
+  <what_left_pad>Left gamepad</what_left_pad>
+  <what_right_pad>Right gamepad</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} is pushed, so games get its stick.</sub_pad>
+
   <!-- tray icon menu -->
   <tray_open>Open ancora</tray_open>
   <tray_exit>Exit</tray_exit>

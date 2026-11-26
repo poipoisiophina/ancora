@@ -152,6 +152,17 @@
   <what_language>Språk</what_language>
   <note_copied>Diagnostik kopierad</note_copied>
   <note_no_log>SteamVR-loggens plats okänd</note_no_log>
+  <set_pad>Handkontroll</set_pad>
+  <pad_none>Ingen</pad_none>
+  <pad_listen>Tryck på en knapp på kontrollen</pad_listen>
+  <pad_absent>Inte ansluten</pad_absent>
+  <pad_stick_left>Vänster spak</pad_stick_left>
+  <pad_stick_right>Höger spak</pad_stick_right>
+  <tip_pad>En Xbox- eller PS4/PS5-kontroll, med sladd eller Bluetooth, styr den här spaken medan du trycker den; i mitten fungerar kontrollens spak som förut. SteamVR läser den, så det fungerar även när spelet är i bakgrunden. Välj först kontrollen, sedan dess spak.</tip_pad>
+  <what_left_pad>Vänster handkontroll</what_left_pad>
+  <what_right_pad>Höger handkontroll</what_right_pad>
+  <state_pad>Handkontroll</state_pad>
+  <sub_pad>{name} trycks, så spel får dess spak.</sub_pad>
   <tray_open>Öppna ancora</tray_open>
   <tray_exit>Avsluta</tray_exit>
 </language>

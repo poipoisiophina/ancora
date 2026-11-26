@@ -152,6 +152,17 @@
   <what_language>Jezik</what_language>
   <note_copied>Dijagnostika kopirana</note_copied>
   <note_no_log>Lokacija zapisnika SteamVR nepoznata</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Nijedan</pad_none>
+  <pad_listen>Pritisnite tipku na kontroleru</pad_listen>
+  <pad_absent>Nije spojen</pad_absent>
+  <pad_stick_left>Lijeva palica</pad_stick_left>
+  <pad_stick_right>Desna palica</pad_stick_right>
+  <tip_pad>Xbox ili PS4/PS5 kontroler, žičani ili Bluetooth, pomiče ovu palicu dok ga gurate; u sredini palica kontrolera radi kao prije. Čita ga SteamVR, pa radi i kad je igra u pozadini. Prvo odaberite kontroler, zatim njegovu palicu.</tip_pad>
+  <what_left_pad>Lijevi gamepad</what_left_pad>
+  <what_right_pad>Desni gamepad</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} je pomaknut, igre dobivaju njegovu palicu.</sub_pad>
   <tray_open>Otvori ancora</tray_open>
   <tray_exit>Izlaz</tray_exit>
 </language>

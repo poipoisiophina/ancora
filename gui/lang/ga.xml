@@ -152,6 +152,17 @@
   <what_language>Teanga</what_language>
   <note_copied>Diagnóisic cóipeáilte</note_copied>
   <note_no_log>Suíomh loga SteamVR anaithnid</note_no_log>
+  <set_pad>Ceap stiúrtha</set_pad>
+  <pad_none>Dada</pad_none>
+  <pad_listen>Brúigh cnaipe ar an gceap</pad_listen>
+  <pad_absent>Gan cheangal</pad_absent>
+  <pad_stick_left>Bata clé</pad_stick_left>
+  <pad_stick_right>Bata deas</pad_stick_right>
+  <tip_pad>Bogann ceap Xbox nó PS4/PS5, le sreang nó Bluetooth, an bata seo fad is a bhrúnn tú é; sa lár, oibríonn bata an rialaitheora mar a bhí. Léann SteamVR é, mar sin oibríonn sé fiú nuair atá an cluiche sa chúlra. Roghnaigh an ceap ar dtús, ansin a bhata.</tip_pad>
+  <what_left_pad>Ceap clé</what_left_pad>
+  <what_right_pad>Ceap deas</what_right_pad>
+  <state_pad>Ceap stiúrtha</state_pad>
+  <sub_pad>Tá {name} á bhrú, mar sin faigheann cluichí a bhata.</sub_pad>
   <tray_open>Oscail ancora</tray_open>
   <tray_exit>Scoir</tray_exit>
 </language>

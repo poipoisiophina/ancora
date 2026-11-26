@@ -152,6 +152,17 @@
   <what_language>Jazyk</what_language>
   <note_copied>Diagnostika zkopírována</note_copied>
   <note_no_log>Umístění protokolu SteamVR neznámé</note_no_log>
+  <set_pad>Gamepad</set_pad>
+  <pad_none>Žádný</pad_none>
+  <pad_listen>Stiskněte tlačítko na ovladači</pad_listen>
+  <pad_absent>Nepřipojeno</pad_absent>
+  <pad_stick_left>Levá páčka</pad_stick_left>
+  <pad_stick_right>Pravá páčka</pad_stick_right>
+  <tip_pad>Ovladač Xbox nebo PS4/PS5, kabelem nebo přes Bluetooth, pohybuje touto páčkou, když ho tlačíte; ve středu funguje páčka ovladače jako dřív. Čte ho SteamVR, takže funguje i se hrou na pozadí. Nejprve vyberte ovladač, pak jeho páčku.</tip_pad>
+  <what_left_pad>Levý gamepad</what_left_pad>
+  <what_right_pad>Pravý gamepad</what_right_pad>
+  <state_pad>Gamepad</state_pad>
+  <sub_pad>{name} je vychýlen, hry dostávají jeho páčku.</sub_pad>
   <tray_open>Otevřít ancora</tray_open>
   <tray_exit>Ukončit</tray_exit>
 </language>

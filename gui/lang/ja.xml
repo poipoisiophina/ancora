@@ -152,6 +152,17 @@
   <what_language>言語</what_language>
   <note_copied>診断をコピーしました</note_copied>
   <note_no_log>SteamVR ログの場所が不明です</note_no_log>
+  <set_pad>ゲームパッド</set_pad>
+  <pad_none>なし</pad_none>
+  <pad_listen>パッドのボタンを押してください</pad_listen>
+  <pad_absent>未接続</pad_absent>
+  <pad_stick_left>左スティック</pad_stick_left>
+  <pad_stick_right>右スティック</pad_stick_right>
+  <tip_pad>有線または Bluetooth の Xbox や PS4/PS5 のパッドで、倒している間このスティックを動かします。中央に戻すとコントローラーのスティックが今まで通り使えます。SteamVR が読み取るので、ゲームがバックグラウンドでも動きます。先にパッドを、次にスティックを選びます。</tip_pad>
+  <what_left_pad>左ゲームパッド</what_left_pad>
+  <what_right_pad>右ゲームパッド</what_right_pad>
+  <state_pad>ゲームパッド</state_pad>
+  <sub_pad>{name} が倒されているので、ゲームにはそのスティックが届きます。</sub_pad>
   <tray_open>ancora を開く</tray_open>
   <tray_exit>終了</tray_exit>
 </language>

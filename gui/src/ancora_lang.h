@@ -56,6 +56,8 @@
     X(tip_gate) X(tip_smoothing) X(tip_deadzone) X(tip_curve) X(tip_edge) \
     X(what_left_edge) X(what_right_edge) \
     X(what_language) X(note_copied) X(note_no_log) \
+    X(set_pad) X(pad_none) X(pad_listen) X(pad_absent) X(pad_stick_left) X(pad_stick_right) \
+    X(tip_pad) X(what_left_pad) X(what_right_pad) X(state_pad) X(sub_pad) \
     X(tray_open) X(tray_exit)
 
 enum Str {

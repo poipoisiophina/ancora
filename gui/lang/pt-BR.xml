@@ -152,6 +152,17 @@
   <what_language>Idioma</what_language>
   <note_copied>Diagnóstico copiado</note_copied>
   <note_no_log>Local do log do SteamVR desconhecido</note_no_log>
+  <set_pad>Controle</set_pad>
+  <pad_none>Nenhum</pad_none>
+  <pad_listen>Aperte um botão no controle</pad_listen>
+  <pad_absent>Não conectado</pad_absent>
+  <pad_stick_left>Analógico esquerdo</pad_stick_left>
+  <pad_stick_right>Analógico direito</pad_stick_right>
+  <tip_pad>Um controle de Xbox ou PS4/PS5, com fio ou Bluetooth, move este analógico enquanto você o empurra; no centro, o analógico do controlador funciona como antes. O SteamVR o lê, então funciona mesmo com o jogo em segundo plano. Escolha primeiro o controle, depois o analógico.</tip_pad>
+  <what_left_pad>Controle esquerdo</what_left_pad>
+  <what_right_pad>Controle direito</what_right_pad>
+  <state_pad>Controle</state_pad>
+  <sub_pad>{name} está empurrado, os jogos recebem o analógico dele.</sub_pad>
   <tray_open>Abrir ancora</tray_open>
   <tray_exit>Sair</tray_exit>
 </language>

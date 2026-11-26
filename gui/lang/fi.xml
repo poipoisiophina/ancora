@@ -152,6 +152,17 @@
   <what_language>Kieli</what_language>
   <note_copied>Vianmääritys kopioitu</note_copied>
   <note_no_log>SteamVR-lokin sijainti tuntematon</note_no_log>
+  <set_pad>Peliohjain</set_pad>
+  <pad_none>Ei mitään</pad_none>
+  <pad_listen>Paina ohjaimen painiketta</pad_listen>
+  <pad_absent>Ei yhdistetty</pad_absent>
+  <pad_stick_left>Vasen sauva</pad_stick_left>
+  <pad_stick_right>Oikea sauva</pad_stick_right>
+  <tip_pad>Xbox- tai PS4/PS5-ohjain, johdolla tai Bluetoothilla, liikuttaa tätä sauvaa, kun painat sitä; keskellä ohjaimen oma sauva toimii kuten ennen. SteamVR lukee sen, joten se toimii myös pelin ollessa taustalla. Valitse ensin ohjain, sitten sen sauva.</tip_pad>
+  <what_left_pad>Vasen peliohjain</what_left_pad>
+  <what_right_pad>Oikea peliohjain</what_right_pad>
+  <state_pad>Peliohjain</state_pad>
+  <sub_pad>{name} on painettuna, joten pelit saavat sen sauvan.</sub_pad>
   <tray_open>Avaa ancora</tray_open>
   <tray_exit>Lopeta</tray_exit>
 </language>
