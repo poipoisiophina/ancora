@@ -279,6 +279,9 @@ void on_create(int kind, uint64_t c, const char* name, uint64_t h, void* iface) 
     if (y) s.hy = h;
     if (t) s.ht = h;
     if (x || y) s.iface = iface;
+    // the mouse stick took this hand before its stick could be sent (a reload, the
+    // controller turned on): send the knob now, not at the controller's next update
+    if (g_cfg.enable && s.mouse_on && s.iface && s.hx && s.hy) repush(i, 0, now_precise_ms());
     g_model[i] = str_prop(c, Prop_ModelNumber_String);
     publish();
     log(std::string("tracking ") + kHand[i] + " " + name + " of " + str_prop(c, Prop_ModelNumber_String));
@@ -372,12 +375,16 @@ void mouse_worker() {
     HANDLE changed = CreateEventW(nullptr, FALSE, FALSE, L"" ANCORA_MOUSE_EVENT);
     if (!m || !changed) log("mouse stick shared memory failed " + std::to_string(GetLastError()) + ", mouse stick off");
     bool held = false;
+    uint64_t good_tick = 0;   // GetTickCount64 of the last consistent read
     while (m && changed) {
         HANDLE w[2] = {g_worker_stop, changed};
         if (WaitForMultipleObjects(2, w, FALSE, held ? kMouseCheckMs : INFINITE) == WAIT_OBJECT_0) break;
         AncoraMouse b{};
-        if (!read_mouse(m, b)) continue;   // mid write: the next write or check reads it
-        uint64_t now_tick = GetTickCount64();
+        bool read = read_mouse(m, b);
+        uint64_t now_tick = GetTickCount64();   // after the read, so the block's age is not negative
+        if (read) good_tick = now_tick;
+        else if (!held || !mouse_read_lost(good_tick, now_tick)) continue;   // the next write or check reads it
+        else b = AncoraMouse{};   // left mid write (panel crashed or frozen in a write): holds neither stick
         std::lock_guard<std::mutex> lk(g_mu);
         double now = now_precise_ms();
         held = false;
@@ -386,6 +393,7 @@ void mouse_worker() {
             Stick& s = g_s[i];
             bool on = mouse_holds(b, i, now_tick);
             float x = on ? b.x : 0.0f, y = on ? b.y : 0.0f;
+            mouse_rim(x, y);   // the panel's knob is inside already; another writer's may not be
             held |= on;
             if (on == s.mouse_on && (!on || (x == s.mouse_x && y == s.mouse_y))) continue;
             if (on != s.mouse_on) log(std::string("mouse stick ") + (on ? "takes over " : "released ") + kHand[i] + " stick");

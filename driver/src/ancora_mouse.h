@@ -6,8 +6,11 @@
 // game gets it whichever window is in front.
 // Shared memory, single writer (the panel), seqlock: seq is odd while writing.
 // The panel rewrites the block at least every frame while the knob is held; a
-// block older than kMouseStaleMs counts as released, so a closed or crashed
-// panel never leaves a stick pushed. The named event wakes the logic on a write.
+// block older than kMouseStaleMs counts as released, and so does a block left
+// mid write for that long, so a closed, crashed or frozen panel never leaves a
+// stick pushed. The logic checks what it reads (time, finite values, inside the
+// unit circle), since any process of the session can write the block. The named
+// event wakes the logic on a write.
 // The plain functions below have no Windows API, for test\ancora_test.cpp.
 
 #pragma once
@@ -28,6 +31,16 @@ struct AncoraMouse {
 };
 
 const uint64_t kMouseStaleMs = 250;
+// how far ahead of the logic's clock read a block may be stamped; both read the
+// same system tick, so a block further ahead was not written by the panel
+const uint64_t kMouseAheadMs = 50;
+
+// (x, y) held at the unit circle when past it, direction kept; hypot, so a huge
+// value keeps its direction instead of overflowing to 0,0
+inline void mouse_rim(float& x, float& y) {
+    float m = std::hypot(x, y);
+    if (m > 1.0f) { x /= m; y /= m; }
+}
 
 // knob for a drag of (dx, dy) pixels from where it was grabbed, screen y down,
 // on a pad of radius pixels: the offset as a share of the radius, y up, held at
@@ -37,13 +50,21 @@ inline void mouse_knob(float dx, float dy, float radius, float& x, float& y) {
     if (!(radius > 0.0f)) return;
     x = dx / radius;
     y = -dy / radius;
-    float m = std::sqrt(x * x + y * y);
-    if (m > 1.0f) { x /= m; y /= m; }
+    mouse_rim(x, y);
 }
 
-// whether a block written at tick by the panel holds the knob for hand i now
+// whether a block written at tick by the panel holds the knob for hand i now:
+// the panel's magic, this hand, finite values, and a time neither stale nor
+// further ahead than kMouseAheadMs
 inline bool mouse_holds(const AncoraMouse& m, int i, uint64_t now) {
     if (m.magic != ANCORA_MOUSE_MAGIC || m.hand != i) return false;
-    int64_t age = (int64_t)(now - m.tick_ms);   // the panel's clock read may be a little ahead
-    return age <= (int64_t)kMouseStaleMs;
+    if (!std::isfinite(m.x) || !std::isfinite(m.y)) return false;
+    int64_t age = (int64_t)(now - m.tick_ms);
+    return age >= -(int64_t)kMouseAheadMs && age <= (int64_t)kMouseStaleMs;
+}
+
+// no consistent read of the block since good (the panel is mid write, or stopped
+// in one): whether a held knob is let go at now
+inline bool mouse_read_lost(uint64_t good, uint64_t now) {
+    return (int64_t)(now - good) > (int64_t)kMouseStaleMs;
 }

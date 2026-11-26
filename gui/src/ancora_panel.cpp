@@ -1484,20 +1484,37 @@ struct MouseStick {
     HANDLE changed = nullptr;       // wakes the driver's mouse thread
     int hand = 0;                   // the stick the knob drives: 0 left, 1 right
     bool held = false;
+    // GetAsyncKeyState read the button down during this hold. Only then does an
+    // up reading mean let go, since input posted to the window, touch and pen may
+    // never show the button down there
+    bool seen_down = false;
     float grab_x = 0, grab_y = 0;   // where the drag started, layout units, unmirrored
     float x = 0, y = 0;             // knob, -1..1, y up
     float cx = 0, cy = 0, R = 170;  // the pad, layout units, unmirrored
 };
 MouseStick g_ms;
 
+// the section and the event, each made once and kept; a part that failed is tried
+// again on the next write, without a new handle for a part that worked
 bool mouse_open() {
     if (g_ms.m) return true;
-    g_ms.map = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, ANCORA_MOUSE_BYTES, L"" ANCORA_MOUSE_NAME);
-    g_ms.m = g_ms.map ? (AncoraMouse*)MapViewOfFile(g_ms.map, FILE_MAP_WRITE, 0, 0, ANCORA_MOUSE_BYTES) : nullptr;
-    g_ms.changed = CreateEventW(nullptr, FALSE, FALSE, L"" ANCORA_MOUSE_EVENT);
-    if (!g_ms.m) return false;
+    if (!g_ms.map)
+        g_ms.map = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, ANCORA_MOUSE_BYTES, L"" ANCORA_MOUSE_NAME);
+    if (g_ms.map) g_ms.m = (AncoraMouse*)MapViewOfFile(g_ms.map, FILE_MAP_WRITE, 0, 0, ANCORA_MOUSE_BYTES);
+    if (!g_ms.changed) g_ms.changed = CreateEventW(nullptr, FALSE, FALSE, L"" ANCORA_MOUSE_EVENT);
+    if (!g_ms.m) {
+        static bool told = false;
+        if (!told) { told = true; trace("mouse stick shared memory failed %lu", GetLastError()); }
+        return false;
+    }
     if (g_ms.m->seq & 1) g_ms.m->seq = g_ms.m->seq + 1;   // an earlier panel stopped mid write
     return true;
+}
+
+// the button that sends WM_LBUTTONDOWN is down now. GetAsyncKeyState reads the
+// physical buttons, so with the buttons swapped that is the right one
+bool mouse_button_down() {
+    return GetAsyncKeyState(GetSystemMetrics(SM_SWAPBUTTON) ? VK_RBUTTON : VK_LBUTTON) < 0;
 }
 
 // the knob as it is now, for the driver; also refreshes the time a held knob is kept
@@ -1521,6 +1538,7 @@ void redraw();
 // x, y: layout units, unmirrored
 void mouse_begin(float x, float y) {
     g_ms.held = true;
+    g_ms.seen_down = mouse_button_down();
     g_ms.grab_x = x; g_ms.grab_y = y;
     g_ms.x = g_ms.y = 0;
     SetCapture(g.hwnd);
@@ -1532,7 +1550,8 @@ void mouse_drag(float x, float y) {
     mouse_write();
 }
 
-// let go (button up, capture lost, page or window closed): the stick is the controller's again
+// let go (button up, button found up on a frame, capture lost, Esc, another page,
+// minimised, tray or window closed): the stick is the controller's again
 void mouse_end() {
     if (!g_ms.held) return;
     g_ms.held = false;   // before ReleaseCapture, whose WM_CAPTURECHANGED comes back here
@@ -1545,6 +1564,13 @@ void mouse_end() {
 void mouse_choose(int hand) {
     if (g_ms.held) return;
     g_ms.hand = hand;
+}
+
+// every page change goes through here: the knob is on the Mouse stick page only,
+// so another page lets go of it
+void set_page(Page p) {
+    if (p != g.page) mouse_end();
+    g.page = p;
 }
 
 void draw_mouse(ID2D1RenderTarget* t, uint64_t now) {
@@ -1932,10 +1958,10 @@ void copy_diagnostics() {
 
 void activate(Id id, int hand) {
     switch (id) {
-    case ID_NAV_STATUS: g.page = PAGE_STATUS; break;
-    case ID_NAV_TUNE:   g.page = PAGE_TUNE; break;
-    case ID_NAV_DIAG:   g.page = PAGE_DIAG; break;
-    case ID_NAV_MOUSE:  g.page = PAGE_MOUSE; break;
+    case ID_NAV_STATUS: set_page(PAGE_STATUS); break;
+    case ID_NAV_TUNE:   set_page(PAGE_TUNE); break;
+    case ID_NAV_DIAG:   set_page(PAGE_DIAG); break;
+    case ID_NAV_MOUSE:  set_page(PAGE_MOUSE); break;
     case ID_MOUSE_LEFT: case ID_MOUSE_RIGHT: mouse_choose(id == ID_MOUSE_RIGHT ? 1 : 0); break;
     case ID_MASTER:
         ensure_file();
@@ -1985,7 +2011,7 @@ void activate(Id id, int hand) {
     case ID_TUNE_EDGE_FINISH: tune_finish_edge_early(); break;
     case ID_EDGE_ON:
         if (!g.cfg.hand[hand].edge.on) {   // nothing measured yet: open the Tune page on this hand
-            g.page = PAGE_TUNE;
+            set_page(PAGE_TUNE);
             if (g_tune.hand != hand || !tune_measuring()) tune_reset(hand);
             break;
         }
@@ -2155,7 +2181,15 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     case WM_TIMER:
         if (wp == kTimerTip) { KillTimer(h, kTimerTip); if (active_tip()) redraw(); }
         if (wp == kTimerFrame && refresh_fast()) redraw();
-        if (wp == kTimerFrame && g_ms.held) mouse_write();   // keeps a held knob fresh for the driver
+        if (wp == kTimerFrame && g_ms.held) {
+            // the button is up although no button-up came here (it went to another
+            // desktop, or a tool that injects the mouse lost it): let go; else keep
+            // the held knob fresh for the driver
+            bool down = mouse_button_down();
+            g_ms.seen_down |= down;
+            if (g_ms.seen_down && !down) mouse_end();
+            else mouse_write();
+        }
         if (wp == kTimerSlow) {
             bool shown = IsWindowVisible(h) && !IsIconic(h);   // not in the tray, not minimised
             refresh_slow(shown);
@@ -2173,6 +2207,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         discard_target();   // recreated at the new scale on the next paint
         // minimised to the taskbar: idle like the tray (no frames, no full refresh)
         if (wp == SIZE_MINIMIZED) {
+            mouse_end();   // no frames to keep a held knob fresh
             KillTimer(h, kTimerFrame);
             if (tune_measuring()) tune_reset(g_tune.hand);
             SetProcessWorkingSetSize(GetCurrentProcess(), (SIZE_T)-1, (SIZE_T)-1);
@@ -2297,7 +2332,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         } else if (wp == VK_ESCAPE && g_ms.held) {
             mouse_end();
         } else if (wp == VK_ESCAPE) {
-            if (g.page != PAGE_STATUS) { g.page = PAGE_STATUS; g_focus = ID_NAV_STATUS; g_focus_hand = 0; }
+            if (g.page != PAGE_STATUS) { set_page(PAGE_STATUS); g_focus = ID_NAV_STATUS; g_focus_hand = 0; }
             else hide_panel();
         }
         redraw();

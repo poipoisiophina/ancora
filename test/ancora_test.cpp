@@ -1018,10 +1018,32 @@ void test_mouse() {
     check(mouse_holds(m, 1, 10000) && !mouse_holds(m, 0, 10000), "mouse: the knob holds only the chosen stick");
     check(mouse_holds(m, 1, 10250) && !mouse_holds(m, 1, 10251), "mouse: a block 250 ms old still holds, older is released");
     check(mouse_holds(m, 1, 9990), "mouse: a block a little ahead of this clock read still holds");
+    check(mouse_holds(m, 1, 9950) && !mouse_holds(m, 1, 9949), "mouse: a block 50 ms ahead still holds, further is refused");
+    m.tick_ms = 10000 + (1ull << 40);
+    check(!mouse_holds(m, 1, 10000), "mouse: a block stamped far ahead never holds, so it cannot hold for good");
+    m.tick_ms = 10000;
+    m.x = std::numeric_limits<float>::quiet_NaN();
+    check(!mouse_holds(m, 1, 10000), "mouse: a knob that is not a number holds nothing");
+    m.x = 0.5f; m.y = std::numeric_limits<float>::infinity();
+    check(!mouse_holds(m, 1, 10000), "mouse: an infinite knob holds nothing");
+    m.y = 0.5f;
     m.hand = -1;
     check(!mouse_holds(m, 0, 10000) && !mouse_holds(m, 1, 10000), "mouse: released holds neither stick");
     m.hand = 0; m.magic = 0;
     check(!mouse_holds(m, 0, 10000), "mouse: a block the panel never wrote holds nothing");
+
+    x = 0.3f; y = -0.4f;
+    mouse_rim(x, y);
+    check(x == 0.3f && y == -0.4f, "mouse: a knob inside the circle is kept");
+    x = 3; y = 4;
+    mouse_rim(x, y);
+    check(near(x, 0.6, 1e-6) && near(y, 0.8, 1e-6), "mouse: a knob past the rim is held at it, direction kept");
+    x = 1e30f; y = 0;
+    mouse_rim(x, y);
+    check(near(x, 1.0, 1e-6) && y == 0, "mouse: a huge knob keeps its direction, no overflow to 0,0");
+
+    check(!mouse_read_lost(10000, 10250) && mouse_read_lost(10000, 10251),
+          "mouse: a block left mid write lets go of the stick once 250 ms pass without a good read");
 }
 
 void test_add_missing() {
