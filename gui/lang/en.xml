@@ -14,6 +14,7 @@
   <nav_status>Status</nav_status>
   <nav_tune>Tune</nav_tune>
   <nav_diag>Diagnostics</nav_diag>
+  <nav_mouse>Mouse stick</nav_mouse>
   <rail_steamvr_on>SteamVR running</rail_steamvr_on>
   <rail_steamvr_off>SteamVR off</rail_steamvr_off>
   <rail_both>Both controllers</rail_both>
@@ -179,6 +180,12 @@
   <note_no_log>SteamVR log location unknown</note_no_log>
 
   <!-- tray icon menu -->
+
+  <!-- mouse stick page -->
+  <mouse_hint>Hold the knob and drag it: the chosen controller's stick follows it, and the game gets it while its window is in the background. Let go and the stick is the controller's again.</mouse_hint>
+  <mouse_anchoring_off>{what} is off, so the mouse stick does nothing. Turn it on at the top of the {page} page.</mouse_anchoring_off>
+  <mouse_tip>Tip: in VR, dock the ancora window to one of your controllers in SteamVR (desktop view, add a view of the ancora window, attach it to a controller), so the pad stays in reach of the mouse while you play.</mouse_tip>
+
   <tray_open>Open ancora</tray_open>
   <tray_exit>Exit</tray_exit>
 </language>

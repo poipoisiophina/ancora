@@ -4,6 +4,7 @@
   <nav_status>Stav</nav_status>
   <nav_tune>Ladenie</nav_tune>
   <nav_diag>Diagnostika</nav_diag>
+  <nav_mouse>Myšia páčka</nav_mouse>
   <rail_steamvr_on>SteamVR beží</rail_steamvr_on>
   <rail_steamvr_off>SteamVR vypnuté</rail_steamvr_off>
   <rail_both>Oba ovládače</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Jazyk</what_language>
   <note_copied>Diagnostika skopírovaná</note_copied>
   <note_no_log>Umiestnenie protokolu SteamVR neznáme</note_no_log>
+  <mouse_hint>Držte gombík a ťahajte ho: páčka zvoleného ovládača ho nasleduje a hra ju dostáva, aj keď je jej okno na pozadí. Pustite a páčka patrí opäť ovládaču.</mouse_hint>
+  <mouse_anchoring_off>{what} je vypnuté, takže myšia páčka nič nerobí. Zapnite ho hore na stránke {page}.</mouse_anchoring_off>
+  <mouse_tip>Tip: vo VR pripojte okno ancora k jednému z ovládačov v SteamVR (zobrazenie plochy, pridajte zobrazenie okna ancora, pripnite ho k ovládaču), aby plocha zostala pri hraní na dosah myši.</mouse_tip>
   <tray_open>Otvoriť ancora</tray_open>
   <tray_exit>Ukončiť</tray_exit>
 </language>

@@ -4,6 +4,7 @@
   <nav_status>Állapot</nav_status>
   <nav_tune>Hangolás</nav_tune>
   <nav_diag>Diagnosztika</nav_diag>
+  <nav_mouse>Egérkar</nav_mouse>
   <rail_steamvr_on>SteamVR fut</rail_steamvr_on>
   <rail_steamvr_off>SteamVR ki</rail_steamvr_off>
   <rail_both>Mindkét kontroller</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Nyelv</what_language>
   <note_copied>Diagnosztika másolva</note_copied>
   <note_no_log>A SteamVR napló helye ismeretlen</note_no_log>
+  <mouse_hint>Tartsd lenyomva a gombot és húzd: a kiválasztott kontroller karja követi, és a játék megkapja, amíg az ablaka a háttérben van. Engedd el, és a kar újra a kontrolleré.</mouse_hint>
+  <mouse_anchoring_off>{what} ki van kapcsolva, így az egérkar nem csinál semmit. Kapcsold be a(z) {page} oldal tetején.</mouse_anchoring_off>
+  <mouse_tip>Tipp: VR-ben rögzítsd az ancora ablakát az egyik kontrolleredhez a SteamVR-ben (asztali nézet, add hozzá az ancora ablak nézetét, csatold egy kontrollerhez), így játék közben az egér eléri a felületet.</mouse_tip>
   <tray_open>ancora megnyitása</tray_open>
   <tray_exit>Kilépés</tray_exit>
 </language>

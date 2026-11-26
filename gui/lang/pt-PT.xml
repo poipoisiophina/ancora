@@ -4,6 +4,7 @@
   <nav_status>Estado</nav_status>
   <nav_tune>Afinar</nav_tune>
   <nav_diag>Diagnóstico</nav_diag>
+  <nav_mouse>Manípulo do rato</nav_mouse>
   <rail_steamvr_on>SteamVR em execução</rail_steamvr_on>
   <rail_steamvr_off>SteamVR desligado</rail_steamvr_off>
   <rail_both>Ambos os comandos</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Idioma</what_language>
   <note_copied>Diagnóstico copiado</note_copied>
   <note_no_log>Localização do registo do SteamVR desconhecida</note_no_log>
+  <mouse_hint>Mantenha o botão premido e arraste-o: o manípulo do comando escolhido segue-o, e o jogo recebe-o enquanto a janela dele está em segundo plano. Largue e o manípulo volta a ser do comando.</mouse_hint>
+  <mouse_anchoring_off>{what} está desligado, por isso o manípulo do rato não faz nada. Ligue no topo da página {page}.</mouse_anchoring_off>
+  <mouse_tip>Dica: em VR, acople a janela do ancora a um dos seus comandos no SteamVR (vista do ambiente de trabalho, adicione uma vista da janela do ancora, fixe-a a um comando), para o pad ficar ao alcance do rato enquanto joga.</mouse_tip>
   <tray_open>Abrir o ancora</tray_open>
   <tray_exit>Sair</tray_exit>
 </language>

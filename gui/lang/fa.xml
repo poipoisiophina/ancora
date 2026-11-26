@@ -4,6 +4,7 @@
   <nav_status>وضعیت</nav_status>
   <nav_tune>تنظیم</nav_tune>
   <nav_diag>عیب‌یابی</nav_diag>
+  <nav_mouse>استیک ماوس</nav_mouse>
   <rail_steamvr_on>SteamVR در حال اجرا</rail_steamvr_on>
   <rail_steamvr_off>SteamVR خاموش</rail_steamvr_off>
   <rail_both>هر دو دسته</rail_both>
@@ -152,6 +153,9 @@
   <what_language>زبان</what_language>
   <note_copied>عیب‌یابی کپی شد</note_copied>
   <note_no_log>محل گزارش SteamVR نامعلوم است</note_no_log>
+  <mouse_hint>دستگیره را نگه دارید و بکشید: استیک کنترلر انتخاب‌شده آن را دنبال می‌کند و بازی آن را می‌گیرد، حتی وقتی پنجره‌اش در پس‌زمینه است. رها کنید و استیک دوباره مال کنترلر است.</mouse_hint>
+  <mouse_anchoring_off>{what} خاموش است، پس استیک ماوس کاری نمی‌کند. آن را بالای صفحه {page} روشن کنید.</mouse_anchoring_off>
+  <mouse_tip>نکته: در VR، پنجره ancora را در SteamVR به یکی از کنترلرهایتان بچسبانید (نمای دسکتاپ، نمایی از پنجره ancora اضافه کنید، آن را به کنترلر وصل کنید) تا صفحه هنگام بازی در دسترس ماوس بماند.</mouse_tip>
   <tray_open>باز کردن ancora</tray_open>
   <tray_exit>خروج</tray_exit>
 </language>

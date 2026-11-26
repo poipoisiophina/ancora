@@ -4,6 +4,7 @@
   <nav_status>ステータス</nav_status>
   <nav_tune>調整</nav_tune>
   <nav_diag>診断</nav_diag>
+  <nav_mouse>マウススティック</nav_mouse>
   <rail_steamvr_on>SteamVR 実行中</rail_steamvr_on>
   <rail_steamvr_off>SteamVR 停止中</rail_steamvr_off>
   <rail_both>コントローラー 2 台</rail_both>
@@ -152,6 +153,9 @@
   <what_language>言語</what_language>
   <note_copied>診断をコピーしました</note_copied>
   <note_no_log>SteamVR ログの場所が不明です</note_no_log>
+  <mouse_hint>ノブを押したままドラッグすると、選んだコントローラーのスティックがそれに従います。ゲームのウィンドウが背面にあってもゲームに届きます。離すとスティックはコントローラーに戻ります。</mouse_hint>
+  <mouse_anchoring_off>{what}がオフなので、マウススティックは何もしません。{page}ページの上部でオンにしてください。</mouse_anchoring_off>
+  <mouse_tip>ヒント: VR では、SteamVR で ancora のウィンドウをコントローラーのどちらかに固定してください（デスクトップビュー、ancora ウィンドウのビューを追加、コントローラーに取り付け）。プレイ中もパッドがマウスで操作できる位置に保たれます。</mouse_tip>
   <tray_open>ancora を開く</tray_open>
   <tray_exit>終了</tray_exit>
 </language>

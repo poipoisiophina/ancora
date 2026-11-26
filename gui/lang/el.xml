@@ -4,6 +4,7 @@
   <nav_status>Κατάσταση</nav_status>
   <nav_tune>Ρύθμιση</nav_tune>
   <nav_diag>Διαγνωστικά</nav_diag>
+  <nav_mouse>Μοχλός ποντικιού</nav_mouse>
   <rail_steamvr_on>Το SteamVR τρέχει</rail_steamvr_on>
   <rail_steamvr_off>Το SteamVR είναι κλειστό</rail_steamvr_off>
   <rail_both>Και τα δύο χειριστήρια</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Γλώσσα</what_language>
   <note_copied>Τα διαγνωστικά αντιγράφηκαν</note_copied>
   <note_no_log>Άγνωστη θέση αρχείου SteamVR</note_no_log>
+  <mouse_hint>Κρατήστε το κουμπί και σύρετέ το: ο μοχλός του επιλεγμένου χειριστηρίου το ακολουθεί, και το παιχνίδι τον παίρνει ενώ το παράθυρό του είναι στο παρασκήνιο. Αφήστε το και ο μοχλός ανήκει ξανά στο χειριστήριο.</mouse_hint>
+  <mouse_anchoring_off>{what}: ανενεργό, οπότε ο μοχλός ποντικιού δεν κάνει τίποτα. Ενεργοποιήστε το στο πάνω μέρος της σελίδας {page}.</mouse_anchoring_off>
+  <mouse_tip>Συμβουλή: στο VR, προσαρτήστε το παράθυρο του ancora σε ένα από τα χειριστήριά σας στο SteamVR (προβολή επιφάνειας εργασίας, προσθήκη προβολής του παραθύρου ancora, σύνδεση σε χειριστήριο), ώστε η επιφάνεια να μένει στην εμβέλεια του ποντικιού ενώ παίζετε.</mouse_tip>
   <tray_open>Άνοιγμα ancora</tray_open>
   <tray_exit>Έξοδος</tray_exit>
 </language>

@@ -4,6 +4,7 @@
   <nav_status>Olek</nav_status>
   <nav_tune>Häälestus</nav_tune>
   <nav_diag>Diagnostika</nav_diag>
+  <nav_mouse>Hiire juhtkang</nav_mouse>
   <rail_steamvr_on>SteamVR töötab</rail_steamvr_on>
   <rail_steamvr_off>SteamVR väljas</rail_steamvr_off>
   <rail_both>Mõlemad kontrollerid</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Keel</what_language>
   <note_copied>Diagnostika kopeeritud</note_copied>
   <note_no_log>SteamVR logi asukoht teadmata</note_no_log>
+  <mouse_hint>Hoia nuppu all ja lohista: valitud kontrolleri juhtkang järgib seda ja mäng saab selle, kui mängu aken on taustal. Lase lahti ja juhtkang on taas kontrolleri oma.</mouse_hint>
+  <mouse_anchoring_off>{what} on väljas, seega hiire juhtkang ei tee midagi. Lülita see sisse lehe {page} ülaosas.</mouse_anchoring_off>
+  <mouse_tip>Nõuanne: VR-is kinnita ancora aken SteamVR-is ühe oma kontrolleri külge (töölauavaade, lisa ancora akna vaade, kinnita see kontrolleri külge), et alus oleks mängides hiire käeulatuses.</mouse_tip>
   <tray_open>Ava ancora</tray_open>
   <tray_exit>Välju</tray_exit>
 </language>

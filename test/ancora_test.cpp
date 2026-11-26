@@ -23,6 +23,7 @@
 #include "../driver/src/ancora_learn.h"
 #include "../driver/src/ancora_output.h"
 #include "../driver/src/ancora_config.h"
+#include "../driver/src/ancora_mouse.h"
 #include <fstream>
 #include <sstream>
 
@@ -997,6 +998,32 @@ void test_edge_full_and_typical() {
           "config: edge_full and edge_learn survive a write and read");
 }
 
+// the mouse stick (ancora_mouse.h): the knob and when a held knob counts
+void test_mouse() {
+    float x, y;
+    mouse_knob(0, 0, 150, x, y);
+    check(x == 0 && y == 0, "mouse: no drag is centered");
+    mouse_knob(75, 0, 150, x, y);
+    check(near(x, 0.5, 1e-6) && y == 0, "mouse: half the radius right is half right");
+    mouse_knob(0, -150, 150, x, y);
+    check(x == 0 && near(y, 1.0, 1e-6), "mouse: dragging up the screen is stick up");
+    mouse_knob(600, 600, 150, x, y);
+    check(near(std::sqrt(x * x + y * y), 1.0, 1e-5) && x > 0 && y < 0 && near(x, -y, 1e-5),
+          "mouse: past the rim holds full push, direction kept");
+    mouse_knob(10, 10, 0, x, y);
+    check(x == 0 && y == 0, "mouse: a pad with no size gives nothing");
+
+    AncoraMouse m{};
+    m.magic = ANCORA_MOUSE_MAGIC; m.hand = 1; m.tick_ms = 10000; m.x = 0.5f; m.y = 0.5f;
+    check(mouse_holds(m, 1, 10000) && !mouse_holds(m, 0, 10000), "mouse: the knob holds only the chosen stick");
+    check(mouse_holds(m, 1, 10250) && !mouse_holds(m, 1, 10251), "mouse: a block 250 ms old still holds, older is released");
+    check(mouse_holds(m, 1, 9990), "mouse: a block a little ahead of this clock read still holds");
+    m.hand = -1;
+    check(!mouse_holds(m, 0, 10000) && !mouse_holds(m, 1, 10000), "mouse: released holds neither stick");
+    m.hand = 0; m.magic = 0;
+    check(!mouse_holds(m, 0, 10000), "mouse: a block the panel never wrote holds nothing");
+}
+
 void test_add_missing() {
     using namespace ancfg;
     // an ini of 0.2.2: no edge_full / edge_learn, own values, a comment and an unknown key
@@ -1046,6 +1073,7 @@ int main(int argc, char** argv) {
     test_gate();
     test_edge_full_and_typical();
     test_add_missing();
+    test_mouse();
     std::printf("%d test(s), %d failure(s)\n", g_count, g_fails);
     return g_fails ? 1 : 0;
 }

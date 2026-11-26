@@ -3,7 +3,8 @@
 // hand's /input/joystick/{x,y,touch} components and rewrites stick values per
 // ancora.ini, in this order (ancora_output.h): touch gate (thumb off the cap ->
 // 0,0), optional moving average, optional center offset, optional deadzone (in
-// its shape) and edge stretch, optional curve.
+// its shape) and edge stretch, optional curve. The panel's mouse stick
+// (ancora_mouse.h) replaces all of that for one hand while its knob is held.
 // Publishes live state to shared memory for the ancora panel.
 // Rebuild this dll while SteamVR runs; the loader swaps it in.
 
@@ -24,6 +25,7 @@
 #include "ancora_output.h"
 #include "ancora_config.h"
 #include "ancora_ini_io.h"
+#include "ancora_mouse.h"
 
 using namespace vr;
 
@@ -61,6 +63,8 @@ struct Stick {
     float sent_x = 0, sent_y = 0;       // last values games received
     bool  sent = false;                 // sent_x/sent_y hold real values
     bool  was_closed = false;           // gate state at the last push
+    bool  mouse_on = false;             // the panel's mouse stick holds it: games get mouse_x/mouse_y
+    float mouse_x = 0, mouse_y = 0;
 };
 
 const char* kHand[2] = {"left", "right"};
@@ -125,6 +129,9 @@ void update_average(Stick& s, int i, double now) {
 }
 
 void output(const Stick& s, int i, double now, float& x, float& y) {
+    // the mouse stick (ancora_mouse.h) replaces the controller's stick and all its
+    // correction while it is held; with ancora off nothing is changed, it included
+    if (g_cfg.enable && s.mouse_on) { x = s.mouse_x; y = s.mouse_y; return; }
     StickSettings st;
     st.correct = correcting(i);
     st.deadzone = g_cfg.deadzone[i];
@@ -340,6 +347,60 @@ void worker() {
     }
 }
 
+// the mouse stick (ancora_mouse.h) on its own thread: woken by the panel's event on
+// every write, and while the knob is held every kMouseCheckMs too, so a panel that
+// stopped writing releases the stick once its block is stale
+std::thread g_mouse_thread;
+const DWORD kMouseCheckMs = 50;
+
+// the block as one consistent copy; false when the panel is writing or never wrote
+bool read_mouse(const AncoraMouse* m, AncoraMouse& out) {
+    for (int tries = 0; tries < 4; ++tries) {
+        uint32_t a = m->seq;
+        MemoryBarrier();
+        out.magic = m->magic; out.tick_ms = m->tick_ms; out.hand = m->hand; out.x = m->x; out.y = m->y;
+        MemoryBarrier();
+        if (!(a & 1) && a == m->seq) return true;
+    }
+    return false;
+}
+
+void mouse_worker() {
+    static_assert(sizeof(AncoraMouse) <= ANCORA_MOUSE_BYTES, "mouse block must fit the section");
+    HANDLE map = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, ANCORA_MOUSE_BYTES, L"" ANCORA_MOUSE_NAME);
+    const AncoraMouse* m = map ? (const AncoraMouse*)MapViewOfFile(map, FILE_MAP_READ, 0, 0, ANCORA_MOUSE_BYTES) : nullptr;
+    HANDLE changed = CreateEventW(nullptr, FALSE, FALSE, L"" ANCORA_MOUSE_EVENT);
+    if (!m || !changed) log("mouse stick shared memory failed " + std::to_string(GetLastError()) + ", mouse stick off");
+    bool held = false;
+    while (m && changed) {
+        HANDLE w[2] = {g_worker_stop, changed};
+        if (WaitForMultipleObjects(2, w, FALSE, held ? kMouseCheckMs : INFINITE) == WAIT_OBJECT_0) break;
+        AncoraMouse b{};
+        if (!read_mouse(m, b)) continue;   // mid write: the next write or check reads it
+        uint64_t now_tick = GetTickCount64();
+        std::lock_guard<std::mutex> lk(g_mu);
+        double now = now_precise_ms();
+        held = false;
+        bool any = false;
+        for (int i = 0; i < 2; ++i) {
+            Stick& s = g_s[i];
+            bool on = mouse_holds(b, i, now_tick);
+            float x = on ? b.x : 0.0f, y = on ? b.y : 0.0f;
+            held |= on;
+            if (on == s.mouse_on && (!on || (x == s.mouse_x && y == s.mouse_y))) continue;
+            if (on != s.mouse_on) log(std::string("mouse stick ") + (on ? "takes over " : "released ") + kHand[i] + " stick");
+            s.mouse_on = on; s.mouse_x = x; s.mouse_y = y;
+            update_average(s, i, now);
+            repush(i, 0, now);
+            any = true;
+        }
+        if (any) publish();
+    }
+    if (m) UnmapViewOfFile(m);
+    if (map) CloseHandle(map);
+    if (changed) CloseHandle(changed);
+}
+
 int32_t on_scalar(void* iface, uint64_t h, float* v, double dt) {
     for (int i = 0; i < 2; ++i) {
         Stick& s = g_s[i];
@@ -414,10 +475,9 @@ bool g_quiesced = false;
 void quiesce() {
     if (g_quiesced) return;
     g_quiesced = true;
-    if (g_worker.joinable()) {
-        SetEvent(g_worker_stop);
-        g_worker.join();
-    }
+    if (g_worker_stop) SetEvent(g_worker_stop);   // stops the worker and the mouse thread
+    if (g_worker.joinable()) g_worker.join();
+    if (g_mouse_thread.joinable()) g_mouse_thread.join();
     if (g_worker_stop) { CloseHandle(g_worker_stop); g_worker_stop = nullptr; }
     save_learned(now_precise_ms() + kEdgeSaveMs);
 }
@@ -428,7 +488,10 @@ void start(uint32_t generation) {
     open_state(generation);
     load_config(true);
     g_worker_stop = CreateEventW(nullptr, TRUE, FALSE, nullptr);
-    if (g_worker_stop) g_worker = std::thread(worker);
+    if (g_worker_stop) {
+        g_worker = std::thread(worker);
+        g_mouse_thread = std::thread(mouse_worker);
+    }
 }
 
 void shutdown() {
@@ -438,7 +501,7 @@ void shutdown() {
     std::lock_guard<std::mutex> lk(g_mu);
     g_cfg.enable = false;
     double now = now_precise_ms();
-    for (int i = 0; i < 2; ++i) { g_s[i].avg.reset(); repush(i, 0, now); }
+    for (int i = 0; i < 2; ++i) { g_s[i].mouse_on = false; g_s[i].avg.reset(); repush(i, 0, now); }
     publish();
     close_state();
     log("logic shutdown");

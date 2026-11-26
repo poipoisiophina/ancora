@@ -4,6 +4,7 @@
   <nav_status>Stare</nav_status>
   <nav_tune>Reglare</nav_tune>
   <nav_diag>Diagnosticare</nav_diag>
+  <nav_mouse>Stick mouse</nav_mouse>
   <rail_steamvr_on>SteamVR rulează</rail_steamvr_on>
   <rail_steamvr_off>SteamVR oprit</rail_steamvr_off>
   <rail_both>Ambele controlere</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Limbă</what_language>
   <note_copied>Diagnosticare copiată</note_copied>
   <note_no_log>Locația jurnalului SteamVR necunoscută</note_no_log>
+  <mouse_hint>Ține butonul și trage-l: stick-ul controlerului ales îl urmează, iar jocul îl primește cât timp fereastra lui e în fundal. Dă drumul și stick-ul e din nou al controlerului.</mouse_hint>
+  <mouse_anchoring_off>{what} e oprită, deci stick-ul mouse nu face nimic. Pornește-o în partea de sus a paginii {page}.</mouse_anchoring_off>
+  <mouse_tip>Sfat: în VR, fixează fereastra ancora pe unul dintre controlere în SteamVR (vizualizare desktop, adaugă o vizualizare a ferestrei ancora, atașeaz-o la un controler), ca suprafața să rămână la îndemâna mouse-ului cât joci.</mouse_tip>
   <tray_open>Deschideți ancora</tray_open>
   <tray_exit>Ieșire</tray_exit>
 </language>

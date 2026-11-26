@@ -4,6 +4,7 @@
   <nav_status>Stat</nav_status>
   <nav_tune>Irfinar</nav_tune>
   <nav_diag>Dijanjostika</nav_diag>
+  <nav_mouse>Stick tal-maws</nav_mouse>
   <rail_steamvr_on>SteamVR qed jaħdem</rail_steamvr_on>
   <rail_steamvr_off>SteamVR mitfi</rail_steamvr_off>
   <rail_both>Iż-żewġ kontrolluri</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Lingwa</what_language>
   <note_copied>Dijanjostika kkopjata</note_copied>
   <note_no_log>Il-post tal-log ta' SteamVR mhux magħruf</note_no_log>
+  <mouse_hint>Żomm il-pum u kaxkru: l-istick tal-kontrollur magħżul isegwih, u l-logħba tieħdu waqt li t-tieqa tagħha tkun fl-isfond. Itlqu u l-istick ikun tal-kontrollur mill-ġdid.</mouse_hint>
+  <mouse_anchoring_off>{what} mitfi, għalhekk l-istick tal-maws ma jagħmel xejn. Ixgħlu fuq nett tal-paġna {page}.</mouse_anchoring_off>
+  <mouse_tip>Ħjiel: fil-VR, waħħal it-tieqa ta' ancora ma' wieħed mill-kontrolluri tiegħek f'SteamVR (veduta tad-desktop, żid veduta tat-tieqa ta' ancora, waħħalha ma' kontrollur), biex il-pad jibqa' fil-firxa tal-maws waqt li tilgħab.</mouse_tip>
   <tray_open>Iftaħ ancora</tray_open>
   <tray_exit>Oħroġ</tray_exit>
 </language>

@@ -4,6 +4,7 @@
   <nav_status>Stanje</nav_status>
   <nav_tune>Podešavanje</nav_tune>
   <nav_diag>Dijagnostika</nav_diag>
+  <nav_mouse>Palica mišem</nav_mouse>
   <rail_steamvr_on>SteamVR radi</rail_steamvr_on>
   <rail_steamvr_off>SteamVR isključen</rail_steamvr_off>
   <rail_both>Oba kontrolera</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Jezik</what_language>
   <note_copied>Dijagnostika kopirana</note_copied>
   <note_no_log>Lokacija zapisnika SteamVR nepoznata</note_no_log>
+  <mouse_hint>Držite gumb i povucite ga: palica odabranog kontrolera ga prati, a igra je dobiva dok je njezin prozor u pozadini. Pustite i palica je opet kontrolerova.</mouse_hint>
+  <mouse_anchoring_off>{what} je isključeno, pa palica mišem ne radi ništa. Uključite ga na vrhu stranice {page}.</mouse_anchoring_off>
+  <mouse_tip>Savjet: u VR-u pričvrstite prozor ancora na jedan od kontrolera u SteamVR-u (prikaz radne površine, dodajte prikaz prozora ancora, pričvrstite ga na kontroler), kako bi podloga tijekom igre bila na dohvat miša.</mouse_tip>
   <tray_open>Otvori ancora</tray_open>
   <tray_exit>Izlaz</tray_exit>
 </language>

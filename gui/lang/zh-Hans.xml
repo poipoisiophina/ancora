@@ -4,6 +4,7 @@
   <nav_status>状态</nav_status>
   <nav_tune>调校</nav_tune>
   <nav_diag>诊断</nav_diag>
+  <nav_mouse>鼠标摇杆</nav_mouse>
   <rail_steamvr_on>SteamVR 运行中</rail_steamvr_on>
   <rail_steamvr_off>SteamVR 未运行</rail_steamvr_off>
   <rail_both>两个控制器</rail_both>
@@ -152,6 +153,9 @@
   <what_language>语言</what_language>
   <note_copied>诊断已复制</note_copied>
   <note_no_log>SteamVR 日志位置未知</note_no_log>
+  <mouse_hint>按住旋钮并拖动：所选控制器的摇杆会跟随它，即使游戏窗口在后台，游戏也能收到。松开后摇杆恢复为控制器自己的。</mouse_hint>
+  <mouse_anchoring_off>{what}已关闭，所以鼠标摇杆不起作用。请在{page}页顶部打开它。</mouse_anchoring_off>
+  <mouse_tip>提示：在 VR 中，请在 SteamVR 里把 ancora 窗口停靠到你的一个控制器上（桌面视图，添加 ancora 窗口视图，附着到控制器），这样玩的时候鼠标也能操作摇杆面板。</mouse_tip>
   <tray_open>打开 ancora</tray_open>
   <tray_exit>退出</tray_exit>
 </language>

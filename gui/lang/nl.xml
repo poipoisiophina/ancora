@@ -4,6 +4,7 @@
   <nav_status>Status</nav_status>
   <nav_tune>Afstellen</nav_tune>
   <nav_diag>Diagnose</nav_diag>
+  <nav_mouse>Muisstick</nav_mouse>
   <rail_steamvr_on>SteamVR draait</rail_steamvr_on>
   <rail_steamvr_off>SteamVR uit</rail_steamvr_off>
   <rail_both>Beide controllers</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Taal</what_language>
   <note_copied>Diagnose gekopieerd</note_copied>
   <note_no_log>Locatie van SteamVR-logboek onbekend</note_no_log>
+  <mouse_hint>Houd de knop vast en sleep hem: de stick van de gekozen controller volgt hem, en het spel krijgt hem terwijl het venster op de achtergrond staat. Laat los en de stick is weer van de controller.</mouse_hint>
+  <mouse_anchoring_off>{what} staat uit, dus de muisstick doet niets. Zet het aan bovenaan de pagina {page}.</mouse_anchoring_off>
+  <mouse_tip>Tip: koppel in VR het ancora-venster in SteamVR aan een van je controllers (bureaubladweergave, voeg een weergave van het ancora-venster toe, maak die vast aan een controller), zodat het pad binnen bereik van de muis blijft tijdens het spelen.</mouse_tip>
   <tray_open>ancora openen</tray_open>
   <tray_exit>Afsluiten</tray_exit>
 </language>

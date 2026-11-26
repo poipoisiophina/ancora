@@ -4,6 +4,7 @@
   <nav_status>狀態</nav_status>
   <nav_tune>調校</nav_tune>
   <nav_diag>診斷</nav_diag>
+  <nav_mouse>滑鼠搖桿</nav_mouse>
   <rail_steamvr_on>SteamVR 執行中</rail_steamvr_on>
   <rail_steamvr_off>SteamVR 未執行</rail_steamvr_off>
   <rail_both>兩支控制器</rail_both>
@@ -152,6 +153,9 @@
   <what_language>語言</what_language>
   <note_copied>診斷已複製</note_copied>
   <note_no_log>SteamVR 記錄位置不明</note_no_log>
+  <mouse_hint>按住旋鈕並拖曳：所選控制器的搖桿會跟著它，即使遊戲視窗在背景，遊戲也收得到。放開後搖桿回到控制器本身。</mouse_hint>
+  <mouse_anchoring_off>{what}已關閉，所以滑鼠搖桿不起作用。請在{page}頁頂端開啟。</mouse_anchoring_off>
+  <mouse_tip>提示：在 VR 中，請在 SteamVR 裡把 ancora 視窗停靠到你的一個控制器上（桌面檢視，新增 ancora 視窗檢視，附著到控制器），這樣遊玩時滑鼠也能操作搖桿面板。</mouse_tip>
   <tray_open>開啟 ancora</tray_open>
   <tray_exit>結束</tray_exit>
 </language>

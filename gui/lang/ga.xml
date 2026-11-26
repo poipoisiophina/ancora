@@ -4,6 +4,7 @@
   <nav_status>Stádas</nav_status>
   <nav_tune>Tiúnadh</nav_tune>
   <nav_diag>Diagnóisic</nav_diag>
+  <nav_mouse>Bata luiche</nav_mouse>
   <rail_steamvr_on>SteamVR ag rith</rail_steamvr_on>
   <rail_steamvr_off>SteamVR múchta</rail_steamvr_off>
   <rail_both>An dá rialtóir</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Teanga</what_language>
   <note_copied>Diagnóisic cóipeáilte</note_copied>
   <note_no_log>Suíomh loga SteamVR anaithnid</note_no_log>
+  <mouse_hint>Coinnigh an cnap agus tarraing é: leanann bata an rialaitheora roghnaithe é, agus faigheann an cluiche é fad atá a fhuinneog sa chúlra. Scaoil é agus is leis an rialaitheoir an bata arís.</mouse_hint>
+  <mouse_anchoring_off>Tá {what} múchta, mar sin ní dhéanann an bata luiche faic. Cas air é ag barr an leathanaigh {page}.</mouse_anchoring_off>
+  <mouse_tip>Leid: i VR, ceangail fuinneog ancora le ceann de do rialaitheoirí in SteamVR (amharc deisce, cuir amharc ar fhuinneog ancora leis, ceangail le rialaitheoir é), ionas go mbeidh an ceap faoi raon na luiche agus tú ag imirt.</mouse_tip>
   <tray_open>Oscail ancora</tray_open>
   <tray_exit>Scoir</tray_exit>
 </language>

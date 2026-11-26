@@ -4,6 +4,7 @@
   <nav_status>Stato</nav_status>
   <nav_tune>Taratura</nav_tune>
   <nav_diag>Diagnostica</nav_diag>
+  <nav_mouse>Levetta mouse</nav_mouse>
   <rail_steamvr_on>SteamVR attivo</rail_steamvr_on>
   <rail_steamvr_off>SteamVR spento</rail_steamvr_off>
   <rail_both>Entrambi i controller</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Lingua</what_language>
   <note_copied>Diagnostica copiata</note_copied>
   <note_no_log>Posizione del log di SteamVR sconosciuta</note_no_log>
+  <mouse_hint>Tieni premuto il pomello e trascinalo: la levetta del controller scelto lo segue, e il gioco la riceve mentre la sua finestra è in secondo piano. Rilascia e la levetta torna al controller.</mouse_hint>
+  <mouse_anchoring_off>{what} è disattivato, quindi la levetta mouse non fa nulla. Attivalo in alto nella pagina {page}.</mouse_anchoring_off>
+  <mouse_tip>Suggerimento: in VR, aggancia la finestra di ancora a uno dei controller in SteamVR (vista desktop, aggiungi una vista della finestra di ancora, fissala a un controller), così il pad resta a portata del mouse mentre giochi.</mouse_tip>
   <tray_open>Apri ancora</tray_open>
   <tray_exit>Esci</tray_exit>
 </language>

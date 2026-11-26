@@ -4,6 +4,7 @@
   <nav_status>מצב</nav_status>
   <nav_tune>כוונון</nav_tune>
   <nav_diag>אבחון</nav_diag>
+  <nav_mouse>סטיק עכבר</nav_mouse>
   <rail_steamvr_on>SteamVR פועל</rail_steamvr_on>
   <rail_steamvr_off>SteamVR כבוי</rail_steamvr_off>
   <rail_both>שני בקרים</rail_both>
@@ -152,6 +153,9 @@
   <what_language>שפה</what_language>
   <note_copied>האבחון הועתק</note_copied>
   <note_no_log>מיקום היומן של SteamVR לא ידוע</note_no_log>
+  <mouse_hint>החזיקו את הידית וגררו אותה: הסטיק של הבקר שנבחר עוקב אחריה, והמשחק מקבל אותו כשהחלון שלו ברקע. שחררו והסטיק שוב של הבקר.</mouse_hint>
+  <mouse_anchoring_off>{what} כבוי, ולכן סטיק העכבר לא עושה דבר. הפעילו אותו בראש עמוד {page}.</mouse_anchoring_off>
+  <mouse_tip>טיפ: ב־VR, עגנו את חלון ancora לאחד הבקרים ב־SteamVR (תצוגת שולחן עבודה, הוסיפו תצוגה של חלון ancora, הצמידו אותה לבקר), כדי שהמשטח יישאר בהישג העכבר בזמן המשחק.</mouse_tip>
   <tray_open>פתיחת ancora</tray_open>
   <tray_exit>יציאה</tray_exit>
 </language>

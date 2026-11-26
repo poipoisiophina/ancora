@@ -4,6 +4,7 @@
   <nav_status>Status</nav_status>
   <nav_tune>Abstimmen</nav_tune>
   <nav_diag>Diagnose</nav_diag>
+  <nav_mouse>Maus-Stick</nav_mouse>
   <rail_steamvr_on>SteamVR läuft</rail_steamvr_on>
   <rail_steamvr_off>SteamVR aus</rail_steamvr_off>
   <rail_both>Beide Controller</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Sprache</what_language>
   <note_copied>Diagnose kopiert</note_copied>
   <note_no_log>Ort des SteamVR-Logs unbekannt</note_no_log>
+  <mouse_hint>Halte den Knopf und ziehe ihn: Der Stick des gewählten Controllers folgt ihm, und das Spiel bekommt ihn, während sein Fenster im Hintergrund ist. Loslassen, und der Stick gehört wieder dem Controller.</mouse_hint>
+  <mouse_anchoring_off>{what} ist aus, daher bewirkt der Maus-Stick nichts. Schalte es oben auf der Seite {page} ein.</mouse_anchoring_off>
+  <mouse_tip>Tipp: Docke in VR das ancora-Fenster in SteamVR an einen deiner Controller (Desktopansicht, Ansicht des ancora-Fensters hinzufügen, an einen Controller anheften), damit das Pad beim Spielen in Reichweite der Maus bleibt.</mouse_tip>
   <tray_open>ancora öffnen</tray_open>
   <tray_exit>Beenden</tray_exit>
 </language>

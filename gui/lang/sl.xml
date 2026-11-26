@@ -4,6 +4,7 @@
   <nav_status>Stanje</nav_status>
   <nav_tune>Nastavitev</nav_tune>
   <nav_diag>Diagnostika</nav_diag>
+  <nav_mouse>Miškina palica</nav_mouse>
   <rail_steamvr_on>SteamVR teče</rail_steamvr_on>
   <rail_steamvr_off>SteamVR izklopljen</rail_steamvr_off>
   <rail_both>Oba krmilnika</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Jezik</what_language>
   <note_copied>Diagnostika kopirana</note_copied>
   <note_no_log>Mesto dnevnika SteamVR ni znano</note_no_log>
+  <mouse_hint>Držite gumb in ga vlecite: palica izbranega krmilnika mu sledi, igra pa jo dobi, ko je njeno okno v ozadju. Spustite in palica je spet krmilnikova.</mouse_hint>
+  <mouse_anchoring_off>{what} je izklopljeno, zato miškina palica ne naredi nič. Vklopite ga na vrhu strani {page}.</mouse_anchoring_off>
+  <mouse_tip>Namig: v VR pripnite okno ancora na enega od krmilnikov v SteamVR (pogled namizja, dodajte pogled okna ancora, pripnite ga na krmilnik), da ostane ploščica med igranjem na dosegu miške.</mouse_tip>
   <tray_open>Odpri ancora</tray_open>
   <tray_exit>Izhod</tray_exit>
 </language>

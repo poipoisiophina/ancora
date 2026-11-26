@@ -4,6 +4,7 @@
   <nav_status>الحالة</nav_status>
   <nav_tune>الضبط</nav_tune>
   <nav_diag>التشخيص</nav_diag>
+  <nav_mouse>عصا الفأرة</nav_mouse>
   <rail_steamvr_on>SteamVR يعمل</rail_steamvr_on>
   <rail_steamvr_off>SteamVR متوقف</rail_steamvr_off>
   <rail_both>وحدتا تحكم</rail_both>
@@ -152,6 +153,9 @@
   <what_language>اللغة</what_language>
   <note_copied>نُسخ التشخيص</note_copied>
   <note_no_log>موقع سجل SteamVR غير معروف</note_no_log>
+  <mouse_hint>اضغط على المقبض واسحبه: تتبعه عصا وحدة التحكم المختارة، وتحصل عليها اللعبة ونافذتها في الخلفية. أفلته فتعود العصا لوحدة التحكم.</mouse_hint>
+  <mouse_anchoring_off>{what} متوقف، لذا لا تفعل عصا الفأرة شيئًا. شغّله أعلى صفحة {page}.</mouse_anchoring_off>
+  <mouse_tip>نصيحة: في الواقع الافتراضي، ثبّت نافذة ancora على إحدى وحدات التحكم في SteamVR (عرض سطح المكتب، أضف عرضًا لنافذة ancora، اربطه بوحدة تحكم)، لتبقى اللوحة في متناول الفأرة أثناء اللعب.</mouse_tip>
   <tray_open>فتح ancora</tray_open>
   <tray_exit>خروج</tray_exit>
 </language>

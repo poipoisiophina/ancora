@@ -4,6 +4,7 @@
   <nav_status>상태</nav_status>
   <nav_tune>조정</nav_tune>
   <nav_diag>진단</nav_diag>
+  <nav_mouse>마우스 스틱</nav_mouse>
   <rail_steamvr_on>SteamVR 실행 중</rail_steamvr_on>
   <rail_steamvr_off>SteamVR 꺼짐</rail_steamvr_off>
   <rail_both>컨트롤러 2개</rail_both>
@@ -152,6 +153,9 @@
   <what_language>언어</what_language>
   <note_copied>진단 복사됨</note_copied>
   <note_no_log>SteamVR 로그 위치를 알 수 없음</note_no_log>
+  <mouse_hint>노브를 누른 채 드래그하면 선택한 컨트롤러의 스틱이 따라 움직이고, 게임 창이 뒤에 있어도 게임이 받습니다. 놓으면 스틱은 다시 컨트롤러 것이 됩니다.</mouse_hint>
+  <mouse_anchoring_off>{what}이(가) 꺼져 있어 마우스 스틱이 아무것도 하지 않습니다. {page} 페이지 위쪽에서 켜세요.</mouse_anchoring_off>
+  <mouse_tip>팁: VR에서는 SteamVR에서 ancora 창을 컨트롤러 중 하나에 고정하세요(데스크톱 보기, ancora 창 보기 추가, 컨트롤러에 부착). 플레이 중에도 패드를 마우스로 다룰 수 있습니다.</mouse_tip>
   <tray_open>ancora 열기</tray_open>
   <tray_exit>종료</tray_exit>
 </language>

@@ -4,6 +4,7 @@
   <nav_status>Tila</nav_status>
   <nav_tune>Säätö</nav_tune>
   <nav_diag>Vianmääritys</nav_diag>
+  <nav_mouse>Hiirisauva</nav_mouse>
   <rail_steamvr_on>SteamVR käynnissä</rail_steamvr_on>
   <rail_steamvr_off>SteamVR pois</rail_steamvr_off>
   <rail_both>Molemmat ohjaimet</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Kieli</what_language>
   <note_copied>Vianmääritys kopioitu</note_copied>
   <note_no_log>SteamVR-lokin sijainti tuntematon</note_no_log>
+  <mouse_hint>Pidä nuppia painettuna ja vedä: valitun ohjaimen sauva seuraa sitä, ja peli saa sen, kun sen ikkuna on taustalla. Päästä irti, niin sauva on taas ohjaimen.</mouse_hint>
+  <mouse_anchoring_off>{what} on pois päältä, joten hiirisauva ei tee mitään. Kytke se päälle sivun {page} yläosasta.</mouse_anchoring_off>
+  <mouse_tip>Vinkki: kiinnitä VR:ssä ancora-ikkuna johonkin ohjaimeesi SteamVR:ssä (työpöytänäkymä, lisää näkymä ancora-ikkunasta, kiinnitä se ohjaimeen), niin alusta pysyy hiiren ulottuvilla pelatessa.</mouse_tip>
   <tray_open>Avaa ancora</tray_open>
   <tray_exit>Lopeta</tray_exit>
 </language>

@@ -4,6 +4,7 @@
   <nav_status>Состояние</nav_status>
   <nav_tune>Настройка</nav_tune>
   <nav_diag>Диагностика</nav_diag>
+  <nav_mouse>Мышь-стик</nav_mouse>
   <rail_steamvr_on>SteamVR запущен</rail_steamvr_on>
   <rail_steamvr_off>SteamVR выключен</rail_steamvr_off>
   <rail_both>Оба контроллера</rail_both>
@@ -152,6 +153,9 @@
   <what_language>язык</what_language>
   <note_copied>Диагностика скопирована</note_copied>
   <note_no_log>Расположение журнала SteamVR неизвестно</note_no_log>
+  <mouse_hint>Зажмите ручку и тяните: стик выбранного контроллера следует за ней, и игра получает его, пока её окно на заднем плане. Отпустите, и стик снова у контроллера.</mouse_hint>
+  <mouse_anchoring_off>{what} выключено, поэтому мышь-стик ничего не делает. Включите его вверху страницы «{page}».</mouse_anchoring_off>
+  <mouse_tip>Совет: в VR прикрепите окно ancora к одному из контроллеров в SteamVR (вид рабочего стола, добавьте вид окна ancora, прикрепите его к контроллеру), чтобы площадка была в досягаемости мыши во время игры.</mouse_tip>
   <tray_open>Открыть ancora</tray_open>
   <tray_exit>Выход</tray_exit>
 </language>

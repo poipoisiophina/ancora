@@ -4,6 +4,7 @@
   <nav_status>Стан</nav_status>
   <nav_tune>Налаштування</nav_tune>
   <nav_diag>Діагностика</nav_diag>
+  <nav_mouse>Миша-стік</nav_mouse>
   <rail_steamvr_on>SteamVR працює</rail_steamvr_on>
   <rail_steamvr_off>SteamVR вимкнено</rail_steamvr_off>
   <rail_both>Обидва контролери</rail_both>
@@ -152,6 +153,9 @@
   <what_language>мова</what_language>
   <note_copied>Діагностику скопійовано</note_copied>
   <note_no_log>Розташування журналу SteamVR невідоме</note_no_log>
+  <mouse_hint>Затисніть ручку й тягніть: стік обраного контролера рухається за нею, і гра отримує його, поки її вікно у фоні. Відпустіть, і стік знову в контролера.</mouse_hint>
+  <mouse_anchoring_off>{what} вимкнено, тож миша-стік нічого не робить. Увімкніть угорі сторінки «{page}».</mouse_anchoring_off>
+  <mouse_tip>Порада: у VR прикріпіть вікно ancora до одного з контролерів у SteamVR (вигляд робочого столу, додайте вигляд вікна ancora, прикріпіть його до контролера), щоб майданчик був у досяжності миші під час гри.</mouse_tip>
   <tray_open>Відкрити ancora</tray_open>
   <tray_exit>Вихід</tray_exit>
 </language>

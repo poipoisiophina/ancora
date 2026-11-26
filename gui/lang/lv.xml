@@ -4,6 +4,7 @@
   <nav_status>Statuss</nav_status>
   <nav_tune>Regulēšana</nav_tune>
   <nav_diag>Diagnostika</nav_diag>
+  <nav_mouse>Peles svira</nav_mouse>
   <rail_steamvr_on>SteamVR darbojas</rail_steamvr_on>
   <rail_steamvr_off>SteamVR izslēgts</rail_steamvr_off>
   <rail_both>Abi kontrolieri</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Valoda</what_language>
   <note_copied>Diagnostika nokopēta</note_copied>
   <note_no_log>SteamVR žurnāla atrašanās vieta nav zināma</note_no_log>
+  <mouse_hint>Turiet rokturi un velciet: izvēlētā kontroliera svira tam seko, un spēle to saņem, kamēr tās logs ir fonā. Atlaidiet, un svira atkal ir kontroliera.</mouse_hint>
+  <mouse_anchoring_off>{what} ir izslēgta, tāpēc peles svira neko nedara. Ieslēdziet to lapas {page} augšā.</mouse_anchoring_off>
+  <mouse_tip>Padoms: VR vidē SteamVR piestipriniet ancora logu vienam no kontrolieriem (darbvirsmas skats, pievienojiet ancora loga skatu, piestipriniet to kontrolierim), lai spēlējot laukums būtu peles sasniedzamībā.</mouse_tip>
   <tray_open>Atvērt ancora</tray_open>
   <tray_exit>Iziet</tray_exit>
 </language>

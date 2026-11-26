@@ -6,6 +6,7 @@
   <nav_status>lon</nav_status>
   <nav_tune>ante</nav_tune>
   <nav_diag>lukin insa</nav_diag>
+  <nav_mouse>palisa pi ilo luka</nav_mouse>
   <rail_steamvr_on>SteamVR li pali</rail_steamvr_on>
   <rail_steamvr_off>SteamVR li lape</rail_steamvr_off>
   <rail_both>ilo luka tu</rail_both>
@@ -154,6 +155,9 @@
   <what_language>toki</what_language>
   <note_copied>lukin insa li sama</note_copied>
   <note_no_log>mi sona ala e ma pi lipu SteamVR</note_no_log>
+  <mouse_hint>o awen e nena o tawa e ona: palisa pi ilo luka sina li tawa sama, la musi li kama jo e ona lon tenpo ni: lipu ona li lon monsi. o pini e luka, la palisa li pali sama tenpo pini.</mouse_hint>
+  <mouse_anchoring_off>{what} li lape, la palisa pi ilo luka li pali ala. o open e ona lon sewi pi lipu {page}.</mouse_anchoring_off>
+  <mouse_tip>sona: lon VR la o pana e lipu ancora tawa ilo luka sina lon SteamVR (lukin pi supa lawa, o pana e lukin pi lipu ancora, o pana e ona tawa ilo luka), la ilo luka pi tawa li ken lon tenpo musi.</mouse_tip>
   <tray_open>o open e ancora</tray_open>
   <tray_exit>o pini</tray_exit>
 </language>

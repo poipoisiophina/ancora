@@ -4,6 +4,7 @@
   <nav_status>Estado</nav_status>
   <nav_tune>Ajuste</nav_tune>
   <nav_diag>Diagnóstico</nav_diag>
+  <nav_mouse>Stick de ratón</nav_mouse>
   <rail_steamvr_on>SteamVR activo</rail_steamvr_on>
   <rail_steamvr_off>SteamVR apagado</rail_steamvr_off>
   <rail_both>Ambos mandos</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Idioma</what_language>
   <note_copied>Diagnóstico copiado</note_copied>
   <note_no_log>Ubicación del registro de SteamVR desconocida</note_no_log>
+  <mouse_hint>Mantén el botón y arrástralo: el stick del controlador elegido lo sigue, y el juego lo recibe mientras su ventana está en segundo plano. Suelta y el stick vuelve a ser del controlador.</mouse_hint>
+  <mouse_anchoring_off>{what} está desactivado, así que el stick de ratón no hace nada. Actívalo arriba en la página {page}.</mouse_anchoring_off>
+  <mouse_tip>Consejo: en VR, acopla la ventana de ancora a uno de tus controladores en SteamVR (vista de escritorio, añade una vista de la ventana de ancora, fíjala a un controlador), para que el pad quede al alcance del ratón mientras juegas.</mouse_tip>
   <tray_open>Abrir ancora</tray_open>
   <tray_exit>Salir</tray_exit>
 </language>

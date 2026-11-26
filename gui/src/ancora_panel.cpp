@@ -56,6 +56,7 @@
 #include <thread>
 #include <mmsystem.h>
 #include "../../driver/src/ancora_state.h"
+#include "../../driver/src/ancora_mouse.h"
 #include "../../driver/src/ancora_average.h"
 #include "../../driver/src/ancora_edge.h"
 #include "../../driver/src/ancora_config.h"
@@ -596,7 +597,7 @@ struct LogFacts {
 struct TrailPoint { float x, y; uint64_t t; };
 struct Trail { TrailPoint p[kTrail]; int head = 0, count = 0; };
 
-enum Page { PAGE_STATUS, PAGE_TUNE, PAGE_DIAG };
+enum Page { PAGE_STATUS, PAGE_TUNE, PAGE_DIAG, PAGE_MOUSE };   // in rail order
 
 struct App {
     HWND hwnd = nullptr;
@@ -693,7 +694,8 @@ void trace(const char* f, ...) {
 // ---- focusable regions -------------------------------------------------------------------
 enum Id { ID_NONE, ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_MASTER, ID_CORRECT, ID_GATE, ID_AVERAGE, ID_SLIDER, ID_CURVE,
           ID_TUNE_HAND, ID_TUNE_START, ID_TUNE_APPLY, ID_TUNE_RESET, ID_TUNE_EDGE, ID_TUNE_EDGE_APPLY,
-          ID_TUNE_EDGE_CLEAR, ID_EDGE_ON, ID_TUNE_EDGE_FINISH, ID_TUNE_CENTER_CLEAR, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG };
+          ID_TUNE_EDGE_CLEAR, ID_EDGE_ON, ID_TUNE_EDGE_FINISH, ID_TUNE_CENTER_CLEAR, ID_COPY, ID_OPEN_CFG, ID_OPEN_LOG, ID_LANG,
+          ID_NAV_MOUSE, ID_MOUSE_LEFT, ID_MOUSE_RIGHT, ID_MOUSE_PAD };
 struct Region { D2D1_RECT_F r; Id id; int hand; };
 std::vector<Region> g_regions;     // rebuilt every frame, in focus order
 Id g_focus = ID_NAV_STATUS;
@@ -974,9 +976,15 @@ void nav_icon(ID2D1RenderTarget* t, int which, float x, float y, uint32_t c) {
         line(t, x + 4, y + 15, x + 18, y + 15, c, 1.8f);
         circle(t, x + 8, y + 7, 2.6f, c);
         circle(t, x + 14, y + 15, 2.6f, c);
-    } else {                     // diagnostics: pulse line
+    } else if (which == 2) {     // diagnostics: pulse line
         float px[6] = {3, 7, 9, 13, 15, 19}, py[6] = {12, 12, 7, 17, 12, 12};
         for (int i = 0; i < 5; ++i) line(t, x + px[i], y + py[i], x + px[i + 1], y + py[i + 1], c, 1.8f);
+    } else {                     // mouse stick: a mouse, its wheel and button seam
+        D2D1_ROUNDED_RECT body = D2D1::RoundedRect(D2D1::RectF(x + 5, y + 1, x + 17, y + 21), 6, 6);
+        g.br->SetColor(rgb(c));
+        t->DrawRoundedRectangle(body, g.br, 1.8f);
+        line(t, x + 11, y + 4, x + 11, y + 8, c, 1.8f);
+        line(t, x + 5, y + 10, x + 17, y + 10, c, 1.2f);
     }
 }
 
@@ -986,9 +994,9 @@ void draw_nav(ID2D1RenderTarget* t, uint64_t now) {
     draw_mark(t, 48, 46, 19);
     text(t, L"ancora", g.f_logo, 78, 30, kText);
 
-    const Str names[3] = {S_nav_status, S_nav_tune, S_nav_diag};
-    Id ids[3] = {ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG};
-    for (int i = 0; i < 3; ++i) {
+    const Str names[4] = {S_nav_status, S_nav_tune, S_nav_diag, S_nav_mouse};
+    Id ids[4] = {ID_NAV_STATUS, ID_NAV_TUNE, ID_NAV_DIAG, ID_NAV_MOUSE};
+    for (int i = 0; i < 4; ++i) {
         D2D1_RECT_F r = {16, 98 + i * 62.0f, kNavW - 16, 154 + i * 62.0f};
         bool sel = g.page == (Page)i;
         if (sel) fill_round(t, r, 12, kSel);
@@ -1465,6 +1473,140 @@ void draw_tune(ID2D1RenderTarget* t, uint64_t now) {
     }
 }
 
+// ---- mouse stick page (ancora_mouse.h) -------------------------------------------------------
+// A knob dragged with the mouse inside this window takes over one controller's
+// stick while it is held. The drag is relative to where the knob was grabbed, so
+// grabbing never makes the stick jump; past the rim it holds full push. The mouse
+// is read only through this window's own messages, captured while the button is down.
+struct MouseStick {
+    HANDLE map = nullptr;
+    AncoraMouse* m = nullptr;
+    HANDLE changed = nullptr;       // wakes the driver's mouse thread
+    int hand = 0;                   // the stick the knob drives: 0 left, 1 right
+    bool held = false;
+    float grab_x = 0, grab_y = 0;   // where the drag started, layout units, unmirrored
+    float x = 0, y = 0;             // knob, -1..1, y up
+    float cx = 0, cy = 0, R = 170;  // the pad, layout units, unmirrored
+};
+MouseStick g_ms;
+
+bool mouse_open() {
+    if (g_ms.m) return true;
+    g_ms.map = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, ANCORA_MOUSE_BYTES, L"" ANCORA_MOUSE_NAME);
+    g_ms.m = g_ms.map ? (AncoraMouse*)MapViewOfFile(g_ms.map, FILE_MAP_WRITE, 0, 0, ANCORA_MOUSE_BYTES) : nullptr;
+    g_ms.changed = CreateEventW(nullptr, FALSE, FALSE, L"" ANCORA_MOUSE_EVENT);
+    if (!g_ms.m) return false;
+    if (g_ms.m->seq & 1) g_ms.m->seq = g_ms.m->seq + 1;   // an earlier panel stopped mid write
+    return true;
+}
+
+// the knob as it is now, for the driver; also refreshes the time a held knob is kept
+void mouse_write() {
+    if (!mouse_open()) return;
+    AncoraMouse* m = g_ms.m;
+    m->seq = m->seq + 1;   // odd: write in progress
+    MemoryBarrier();
+    m->magic = ANCORA_MOUSE_MAGIC;
+    m->tick_ms = GetTickCount64();
+    m->hand = g_ms.held ? g_ms.hand : -1;
+    m->x = g_ms.held ? g_ms.x : 0.0f;
+    m->y = g_ms.held ? g_ms.y : 0.0f;
+    MemoryBarrier();
+    m->seq = m->seq + 1;   // even: consistent
+    if (g_ms.changed) SetEvent(g_ms.changed);
+}
+
+void redraw();
+
+// x, y: layout units, unmirrored
+void mouse_begin(float x, float y) {
+    g_ms.held = true;
+    g_ms.grab_x = x; g_ms.grab_y = y;
+    g_ms.x = g_ms.y = 0;
+    SetCapture(g.hwnd);
+    mouse_write();
+}
+
+void mouse_drag(float x, float y) {
+    mouse_knob(x - g_ms.grab_x, y - g_ms.grab_y, g_ms.R, g_ms.x, g_ms.y);
+    mouse_write();
+}
+
+// let go (button up, capture lost, page or window closed): the stick is the controller's again
+void mouse_end() {
+    if (!g_ms.held) return;
+    g_ms.held = false;   // before ReleaseCapture, whose WM_CAPTURECHANGED comes back here
+    g_ms.x = g_ms.y = 0;
+    mouse_write();
+    if (GetCapture() == g.hwnd) ReleaseCapture();
+    redraw();
+}
+
+void mouse_choose(int hand) {
+    if (g_ms.held) return;
+    g_ms.hand = hand;
+}
+
+void draw_mouse(ID2D1RenderTarget* t, uint64_t now) {
+    text(t, tr(S_nav_mouse), g.f_title, 292, 24, kText, 400);
+    const AncoraHandState& h = g_live.snap.hand[g_ms.hand];
+    bool live = live_now(now), tracked = live && connected(h, now);
+
+    // which controller's stick the knob drives
+    const Str hands[2] = {S_hand_left, S_hand_right};
+    const Id hand_ids[2] = {ID_MOUSE_LEFT, ID_MOUSE_RIGHT};
+    for (int i = 0; i < 2; ++i) {
+        D2D1_RECT_F b = {292 + i * 232.0f, 84, 292 + i * 232.0f + 220, 128};
+        bool sel = g_ms.hand == i;
+        fill_round(t, b, 12, sel ? kSel : kCard);
+        text(t, tr(hands[i]), g.f_body, b.left + 12, b.top + 11, sel ? kWhite : kMuted, b.right - b.left - 24,
+             DWRITE_TEXT_ALIGNMENT_CENTER);
+        if (sel) line(t, b.left + 18, b.bottom - 4, b.right - 18, b.bottom - 4, kOut, 3);
+        if (focused(hand_ids[i])) ring(t, b, 12);
+        region(b, hand_ids[i]);
+    }
+
+    D2D1_RECT_F card = {292, 144, kW - 32, kH - kFootH - 24};
+    fill_round(t, card, 18, kCard);
+    float lcx = (card.left + card.right) / 2, cy = (card.top + card.bottom) / 2, R = 170;
+
+    // what the knob does now, left of the pad
+    std::wstring state = tr(S_mouse_hint);
+    uint32_t color = kMuted;
+    if (!live) { state = tr(S_sub_no_signal); color = kDim; }
+    else if (!g.cfg.enable) {
+        state = sub(tr(S_mouse_anchoring_off), {{L"what", tr(S_what_anchoring)}, {L"page", tr(S_nav_status)}});
+        color = kWarn;
+    }
+    else if (!tracked) { state = tr(S_sub_wake); color = kWarn; }
+    float col_w = lcx - R - card.left - 64;
+    para(t, state, g.f_body, card.left + 28, card.top + 28, col_w, color, 196);
+    // how to reach the pad in the headset: the window docked to a controller
+    float tip_top = card.top + 236;
+    line(t, card.left + 28, tip_top - 14, card.left + 28 + col_w, tip_top - 14, kLine);
+    para(t, tr(S_mouse_tip), g.f_small, card.left + 28, tip_top, col_w, kDim, card.bottom - tip_top - 24);
+
+    // what games get from that stick, right of the pad
+    D2D1_RECT_F rb = {lcx + R + 40, card.top + 28, card.right - 28, card.top + 84};
+    fill_round(t, rb, 10, kWell);
+    text(t, tr(S_read_games), g.f_small, rb.left + 12, rb.top + 6, kDim, rb.right - rb.left - 24);
+    text(t, tracked ? fmt2(L"%+.2f %+.2f", h.out_x, h.out_y) : std::wstring(L"--"), g.f_mono, rb.left + 12, rb.top + 26,
+         tracked ? kOut : kDim, rb.right - rb.left - 24);
+
+    // the pad: physical directions, never mirrored, like the stick plots
+    float cx = physical(t, lcx);
+    g_ms.cx = cx; g_ms.cy = cy; g_ms.R = R;
+    draw_target(t, cx, cy, R, 0, false);
+    float kx = cx + g_ms.x * R, ky = cy - g_ms.y * R;
+    if (g_ms.held) line(t, cx, cy, kx, ky, kOut, 3, 0.6f);
+    circle(t, kx, ky, 40, g_ms.held ? kOut : kText, 0.16f);
+    circle(t, kx, ky, 28, g_ms.held ? kOut : kText);
+    unphysical(t);
+    D2D1_RECT_F pad = {lcx - R, cy - R, lcx + R, cy + R};
+    if (focused(ID_MOUSE_PAD)) ring(t, pad, R);
+    region(pad, ID_MOUSE_PAD);
+}
+
 // ---- diagnostics page ---------------------------------------------------------------------
 void draw_diag(ID2D1RenderTarget* t, uint64_t now) {
     text(t, tr(S_nav_diag), g.f_title, 292, 24, kText, 400);
@@ -1621,6 +1763,7 @@ void draw(ID2D1RenderTarget* t) {
     if (g.page == PAGE_STATUS) draw_status(t, now);
     if (g.page == PAGE_TUNE) draw_tune(t, now);
     if (g.page == PAGE_DIAG) draw_diag(t, now);
+    if (g.page == PAGE_MOUSE) draw_mouse(t, now);
     draw_footer(t);
     draw_tip(t);
     g.mirror = false;
@@ -1792,6 +1935,8 @@ void activate(Id id, int hand) {
     case ID_NAV_STATUS: g.page = PAGE_STATUS; break;
     case ID_NAV_TUNE:   g.page = PAGE_TUNE; break;
     case ID_NAV_DIAG:   g.page = PAGE_DIAG; break;
+    case ID_NAV_MOUSE:  g.page = PAGE_MOUSE; break;
+    case ID_MOUSE_LEFT: case ID_MOUSE_RIGHT: mouse_choose(id == ID_MOUSE_RIGHT ? 1 : 0); break;
     case ID_MASTER:
         ensure_file();
         g.cfg.enable = !g.cfg.enable;
@@ -1948,6 +2093,7 @@ void show_panel() {
 }
 
 void hide_panel() {
+    mouse_end();
     ShowWindow(g.hwnd, SW_HIDE);
     KillTimer(g.hwnd, kTimerFrame);   // no drawing while hidden
     discard_target();                 // drop the back buffer and trim while in the tray
@@ -2009,6 +2155,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     case WM_TIMER:
         if (wp == kTimerTip) { KillTimer(h, kTimerTip); if (active_tip()) redraw(); }
         if (wp == kTimerFrame && refresh_fast()) redraw();
+        if (wp == kTimerFrame && g_ms.held) mouse_write();   // keeps a held knob fresh for the driver
         if (wp == kTimerSlow) {
             bool shown = IsWindowVisible(h) && !IsIconic(h);   // not in the tray, not minimised
             refresh_slow(shown);
@@ -2044,6 +2191,11 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     }
     case WM_MOUSEMOVE: {
         float x = GET_X_LPARAM(lp) / ui_scale(), y = GET_Y_LPARAM(lp) / ui_scale();
+        if (g_ms.held) {   // the pad never mirrors, so the drag uses the unmirrored point
+            mouse_drag(x, y);
+            redraw();
+            return 0;
+        }
         if (g.rtl) x = kW - x;
         if (g.drag_hand >= 0) {
             set_dragged((x - g.drag_track.left) / (g.drag_track.right - g.drag_track.left));
@@ -2077,6 +2229,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
     }
     case WM_LBUTTONDOWN: {
         float x = GET_X_LPARAM(lp) / ui_scale(), y = GET_Y_LPARAM(lp) / ui_scale();
+        float px = x;   // unmirrored, for the mouse stick pad
         if (g.rtl) x = kW - x;
         const Region* r = hit_at(x, y);
         trace("down %.0f,%.0f id=%d hand=%d", x, y, r ? (int)r->id : 0, r ? r->hand : -1);
@@ -2085,7 +2238,11 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         if (r) {
             g_focus = r->id;
             g_focus_hand = r->hand;
-            if (r->id == ID_SLIDER || r->id == ID_AVERAGE || r->id == ID_CURVE) {
+            if (r->id == ID_MOUSE_PAD) {
+                // grabbed anywhere on the pad's circle, not its square's corners
+                float dx = px - g_ms.cx, dy = y - g_ms.cy;
+                if (dx * dx + dy * dy <= g_ms.R * g_ms.R) mouse_begin(px, y);
+            } else if (r->id == ID_SLIDER || r->id == ID_AVERAGE || r->id == ID_CURVE) {
                 g.drag_hand = r->hand;
                 g.drag_average = r->id == ID_AVERAGE;
                 g.drag_curve = r->id == ID_CURVE;
@@ -2099,7 +2256,11 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         redraw();
         return 0;
     }
+    case WM_CAPTURECHANGED:
+        mouse_end();   // another window took the mouse: let go of the stick
+        return 0;
     case WM_LBUTTONUP:
+        mouse_end();
         if (g.drag_hand >= 0) {
             int hand = g.drag_hand;
             g.drag_hand = -1;
@@ -2133,6 +2294,8 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
             }
         } else if (wp == VK_RETURN || wp == VK_SPACE) {
             if (g_focus != ID_SLIDER && g_focus != ID_AVERAGE && g_focus != ID_CURVE) activate(g_focus, g_focus_hand);
+        } else if (wp == VK_ESCAPE && g_ms.held) {
+            mouse_end();
         } else if (wp == VK_ESCAPE) {
             if (g.page != PAGE_STATUS) { g.page = PAGE_STATUS; g_focus = ID_NAV_STATUS; g_focus_hand = 0; }
             else hide_panel();
@@ -2175,6 +2338,7 @@ LRESULT CALLBACK wndproc(HWND h, UINT m, WPARAM wp, LPARAM lp) {
         if (wp) { g.exiting = true; DestroyWindow(h); }
         return 0;
     case WM_DESTROY:
+        mouse_end();
         edge_sampler_stop();
         Shell_NotifyIconW(NIM_DELETE, &g.nid);
         PostQuitMessage(0);
@@ -2342,7 +2506,7 @@ int screenshot(const std::wstring& out, const std::wstring& page, const std::wst
     g.cfg = read_config(g_ini);
     g.ini_time = file_time(g_ini);   // refresh_slow below must not re-read it and undo --lang
     apply_language(lang.empty() ? g.cfg.language : lang);
-    g.page = page == L"tune" || page == L"edge" ? PAGE_TUNE : page == L"diag" ? PAGE_DIAG : PAGE_STATUS;
+    g.page = page == L"tune" || page == L"edge" ? PAGE_TUNE : page == L"diag" ? PAGE_DIAG : page == L"mouse" ? PAGE_MOUSE : PAGE_STATUS;
     if (g_fake) {
         g.cfg.enable = true; g.cfg.hand[0] = {true, true, 0.0f, 0}; g.cfg.hand[1] = {true, false, 0.20f, 100};
         {   // the right stick: a deadzone wide toward forward left, and a curve

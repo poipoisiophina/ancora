@@ -4,6 +4,7 @@
   <nav_status>Status</nav_status>
   <nav_tune>Justera</nav_tune>
   <nav_diag>Diagnostik</nav_diag>
+  <nav_mouse>Musspak</nav_mouse>
   <rail_steamvr_on>SteamVR körs</rail_steamvr_on>
   <rail_steamvr_off>SteamVR av</rail_steamvr_off>
   <rail_both>Båda handkontrollerna</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Språk</what_language>
   <note_copied>Diagnostik kopierad</note_copied>
   <note_no_log>SteamVR-loggens plats okänd</note_no_log>
+  <mouse_hint>Håll knoppen och dra den: den valda kontrollens spak följer den, och spelet får den medan dess fönster är i bakgrunden. Släpp så är spaken kontrollens igen.</mouse_hint>
+  <mouse_anchoring_off>{what} är av, så musspaken gör ingenting. Slå på det överst på sidan {page}.</mouse_anchoring_off>
+  <mouse_tip>Tips: i VR, docka ancora-fönstret till en av dina kontroller i SteamVR (skrivbordsvy, lägg till en vy av ancora-fönstret, fäst den vid en kontroll), så att plattan är inom musens räckhåll medan du spelar.</mouse_tip>
   <tray_open>Öppna ancora</tray_open>
   <tray_exit>Avsluta</tray_exit>
 </language>

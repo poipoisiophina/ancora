@@ -18,7 +18,7 @@
 #pragma comment(lib, "shlwapi")
 
 #define ANCORA_STRINGS(X) \
-    X(nav_status) X(nav_tune) X(nav_diag) \
+    X(nav_status) X(nav_tune) X(nav_diag) X(nav_mouse) \
     X(rail_steamvr_on) X(rail_steamvr_off) X(rail_both) X(rail_one) X(rail_none) \
     X(lang_auto) X(lang_missing) \
     X(hint_back) X(hint_apply) X(hint_select) X(hint_next) \
@@ -56,6 +56,7 @@
     X(tip_gate) X(tip_smoothing) X(tip_deadzone) X(tip_curve) X(tip_edge) \
     X(what_left_edge) X(what_right_edge) \
     X(what_language) X(note_copied) X(note_no_log) \
+    X(mouse_hint) X(mouse_anchoring_off) X(mouse_tip) \
     X(tray_open) X(tray_exit)
 
 enum Str {

@@ -4,6 +4,7 @@
   <nav_status>Būsena</nav_status>
   <nav_tune>Derinimas</nav_tune>
   <nav_diag>Diagnostika</nav_diag>
+  <nav_mouse>Pelės svirtis</nav_mouse>
   <rail_steamvr_on>SteamVR veikia</rail_steamvr_on>
   <rail_steamvr_off>SteamVR išjungtas</rail_steamvr_off>
   <rail_both>Abu valdikliai</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Kalba</what_language>
   <note_copied>Diagnostika nukopijuota</note_copied>
   <note_no_log>SteamVR žurnalo vieta nežinoma</note_no_log>
+  <mouse_hint>Laikykite rankenėlę ir tempkite: pasirinkto valdiklio svirtis seka ją, o žaidimas ją gauna, kol jo langas fone. Paleiskite ir svirtis vėl valdiklio.</mouse_hint>
+  <mouse_anchoring_off>{what} išjungta, todėl pelės svirtis nieko nedaro. Įjunkite puslapio {page} viršuje.</mouse_anchoring_off>
+  <mouse_tip>Patarimas: VR aplinkoje SteamVR prisekite ancora langą prie vieno iš valdiklių (darbalaukio vaizdas, pridėkite ancora lango vaizdą, pritvirtinkite jį prie valdiklio), kad žaidžiant pultas būtų pasiekiamas pele.</mouse_tip>
   <tray_open>Atverti ancora</tray_open>
   <tray_exit>Išeiti</tray_exit>
 </language>

@@ -4,6 +4,7 @@
   <nav_status>Status</nav_status>
   <nav_tune>Ajuste</nav_tune>
   <nav_diag>Diagnóstico</nav_diag>
+  <nav_mouse>Analógico do mouse</nav_mouse>
   <rail_steamvr_on>SteamVR em execução</rail_steamvr_on>
   <rail_steamvr_off>SteamVR desligado</rail_steamvr_off>
   <rail_both>Os dois controles</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Idioma</what_language>
   <note_copied>Diagnóstico copiado</note_copied>
   <note_no_log>Local do log do SteamVR desconhecido</note_no_log>
+  <mouse_hint>Segure o botão e arraste: o analógico do controle escolhido o acompanha, e o jogo o recebe enquanto a janela dele está em segundo plano. Solte e o analógico volta a ser do controle.</mouse_hint>
+  <mouse_anchoring_off>{what} está desligado, então o analógico do mouse não faz nada. Ligue no topo da página {page}.</mouse_anchoring_off>
+  <mouse_tip>Dica: em VR, encaixe a janela do ancora em um dos seus controles no SteamVR (visão da área de trabalho, adicione uma visão da janela do ancora, prenda-a a um controle), para o pad ficar ao alcance do mouse enquanto você joga.</mouse_tip>
   <tray_open>Abrir ancora</tray_open>
   <tray_exit>Sair</tray_exit>
 </language>

@@ -4,6 +4,7 @@
   <nav_status>Status</nav_status>
   <nav_tune>Justér</nav_tune>
   <nav_diag>Diagnostik</nav_diag>
+  <nav_mouse>Musestik</nav_mouse>
   <rail_steamvr_on>SteamVR kører</rail_steamvr_on>
   <rail_steamvr_off>SteamVR slukket</rail_steamvr_off>
   <rail_both>Begge controllere</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Sprog</what_language>
   <note_copied>Diagnostik kopieret</note_copied>
   <note_no_log>SteamVR-loggens placering ukendt</note_no_log>
+  <mouse_hint>Hold knappen og træk den: den valgte controllers stik følger den, og spillet får det, mens dets vindue er i baggrunden. Slip, og stikket er controllerens igen.</mouse_hint>
+  <mouse_anchoring_off>{what} er slået fra, så musestikket gør intet. Slå det til øverst på siden {page}.</mouse_anchoring_off>
+  <mouse_tip>Tip: i VR skal du docke ancora-vinduet til en af dine controllere i SteamVR (skrivebordsvisning, tilføj en visning af ancora-vinduet, fastgør den til en controller), så pladen er inden for musens rækkevidde, mens du spiller.</mouse_tip>
   <tray_open>Åbn ancora</tray_open>
   <tray_exit>Afslut</tray_exit>
 </language>

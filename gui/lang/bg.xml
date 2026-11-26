@@ -4,6 +4,7 @@
   <nav_status>Състояние</nav_status>
   <nav_tune>Настройка</nav_tune>
   <nav_diag>Диагностика</nav_diag>
+  <nav_mouse>Мишка-стик</nav_mouse>
   <rail_steamvr_on>SteamVR работи</rail_steamvr_on>
   <rail_steamvr_off>SteamVR е изключен</rail_steamvr_off>
   <rail_both>И двата контролера</rail_both>
@@ -152,6 +153,9 @@
   <what_language>Език</what_language>
   <note_copied>Диагностиката е копирана</note_copied>
   <note_no_log>Мястото на дневника на SteamVR е неизвестно</note_no_log>
+  <mouse_hint>Задръжте бутона и го плъзнете: стикът на избрания контролер го следва, а играта го получава, докато прозорецът ѝ е на заден план. Пуснете и стикът отново е на контролера.</mouse_hint>
+  <mouse_anchoring_off>{what} е изключено, затова мишка-стикът не прави нищо. Включете го горе на страницата {page}.</mouse_anchoring_off>
+  <mouse_tip>Съвет: във VR закачете прозореца на ancora към един от контролерите си в SteamVR (изглед на работния плот, добавете изглед на прозореца на ancora, прикачете го към контролер), за да е подложката в обсега на мишката, докато играете.</mouse_tip>
   <tray_open>Отвори ancora</tray_open>
   <tray_exit>Изход</tray_exit>
 </language>

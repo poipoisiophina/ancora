@@ -155,6 +155,21 @@ while a stretch is on. To undo it, press **Remove ... stretch** on the Tune page
 Only needed when something is wrong. **Copy diagnostics** copies a report you
 can send to whoever helps you.
 
+### Mouse stick page
+
+Move a controller's stick with the mouse. Pick **Left controller** or **Right
+controller**, then hold the knob and drag it: that stick follows the knob, up to
+full push at the edge of the circle. Let go and the stick is the controller's
+again. The game gets it while its window is in the background, so you can drag
+in the ancora window, seen in the headset through any desktop view (the SteamVR
+dashboard, Virtual Desktop, ...). ancora only reads the mouse inside its own
+window. It needs **Anchoring on**, and the controller itself must be on.
+
+> **Tip:** to use the mouse stick in VR, dock the ancora window to one of your
+> controllers in SteamVR: open the desktop view, add a view of the ancora
+> window, and attach it to a controller. The pad then stays in reach of the
+> mouse while you play.
+
 ### Keyboard
 
 Tab or arrow keys move around, Enter selects, Left/Right change a slider,
